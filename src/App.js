@@ -34,6 +34,20 @@ const lightnessConfig = {
   step: 1,
 }
 
+const scaleXConfig = {
+  value: 1,
+  min: 0,
+  max: 2,
+  step: 0.01,
+}
+
+const scaleYConfig = {
+  value: 1,
+  min: 0,
+  max: 4,
+  step: 0.01,
+}
+
 export default function App() {
   const { hue, saturarion, lightness } = useControls({
     hue: hueConfig,
@@ -41,16 +55,21 @@ export default function App() {
     lightness: lightnessConfig
   })
 
+  const { scaleX, scaleY } = useControls({
+    scaleX: scaleXConfig,
+    scaleY: scaleYConfig
+  })
+
   return (
     <>
-      <Leva collapsed={true} flat={false}></Leva>
+      <Leva collapsed={true} flat={false} ></Leva>
       <Canvas>
         <ambientLight intensity={Math.PI / 2} />
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} decay={0} intensity={Math.PI} />
         <pointLight position={[-10, -10, -10]} decay={0} intensity={.9} />
 
         <Suspense fallback={<Loader />}>
-          <Model hue={hue} saturation={saturarion} lightness={lightness} />
+          <Model hue={hue} saturation={saturarion} lightness={lightness} uScale={scaleX} vScale={scaleY} />
         </Suspense>
 
         <OrbitControls />

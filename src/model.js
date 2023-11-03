@@ -8,11 +8,14 @@ import { useGLTF } from '@react-three/drei'
 import { MeshStandardMaterial, Color } from 'three';
 import { TextureLoader } from 'three/src/loaders/TextureLoader'
 
-export default function Model({ hue, saturation, lightness }) {
+export default function Model({ hue, saturation, lightness, uScale, vScale, position }) {
   const { nodes } = useGLTF('/models/salmon/salmon.gltf')
 
+  const texture = new TextureLoader().load('./models/salmon/food_0013_height_1k.png')
+  texture.repeat.set(uScale, vScale)
+  // const textureMap = extractMap(uScale, texture)
   const hslColor = extractColor(hue, saturation, lightness)
-  const material = getMaterial(hslColor)
+  const material = getMaterial(hslColor, texture/* , textureMap */)
 
   return (
     <group dispose={null}>
@@ -85,11 +88,11 @@ export default function Model({ hue, saturation, lightness }) {
 
 useGLTF.preload('/models/salmon/salmon.gltf')
 
-function getMaterial(color) {
+function getMaterial(color, image) {
   return (
     new MeshStandardMaterial({
       color: color,
-      map: new TextureLoader().load('./models/salmon/food_0013_height_1k.png'),
+      map: image
     })
   )
 }
