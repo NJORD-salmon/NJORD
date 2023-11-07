@@ -49,12 +49,13 @@ const scaleYConfig = {
 }
 
 export default function App() {
-  const { hue, saturarion, lightness } = useControls({
+// sliders for colors 
+  const { hue, saturarion, lightness } = useControls({ 
     hue: hueConfig,
     saturarion: saturarionConfig,
     lightness: lightnessConfig
   })
-
+// slider for scaling textures
   const { scaleX, scaleY } = useControls({
     scaleX: scaleXConfig,
     scaleY: scaleYConfig
