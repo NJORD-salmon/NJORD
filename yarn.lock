@@ -7704,6 +7704,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"gl-noise@npm:^1.6.1":
+  version: 1.6.1
+  resolution: "gl-noise@npm:1.6.1"
+  checksum: 7b1d5c32fcaeab8f845308bab31ef32cf95876bb7b83e9edeb07477bf85e7d80af917fe53a8731855e89c3614442fe676f29711db612ac78cf8fd525e1a43bfe
+  languageName: node
+  linkType: hard
+
 "glob-parent@npm:^5.1.2, glob-parent@npm:~5.1.2":
   version: 5.1.2
   resolution: "glob-parent@npm:5.1.2"
@@ -7835,6 +7842,29 @@ __metadata:
   version: 0.0.0
   resolution: "glsl-noise@npm:0.0.0"
   checksum: 442630e86ed109079f4ed92f3b59d24d0b9da60c03cb8ac9313a056996bf4b5d696b4c6121ee29952e8a19c5cf174a999cfe672464959db36fc75334c3134677
+  languageName: node
+  linkType: hard
+
+"glsl-token-functions@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "glsl-token-functions@npm:1.0.1"
+  checksum: 21ee0b142c73cdd219c88e14a560534bf67aa870706c72af47c9a92ca4d59b568da39ab7e0d4363d8ec5e27e1ad73512bfa39735bd1429fe692b9b418359f4f7
+  languageName: node
+  linkType: hard
+
+"glsl-token-string@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "glsl-token-string@npm:1.0.1"
+  checksum: 01ff4fbfa02956d5b10e96f98ab1066937993b2ff9a2c24d23bf72fd417b59d9849cd856815c84d6170d3715bd064c4fbd1cff540a0e315c1fa9b20f2f3306e6
+  languageName: node
+  linkType: hard
+
+"glsl-tokenizer@npm:^2.1.5":
+  version: 2.1.5
+  resolution: "glsl-tokenizer@npm:2.1.5"
+  dependencies:
+    through2: "npm:^0.6.3"
+  checksum: 5bcc4491afb0b09032702af83f0afa8acadfa0f5c94a7a0d7c3498396cc35722e1915c976c8efef80a1a9ef0976ecb8ce4e044a34b16d7d537ae4c80f346ad19
   languageName: node
   linkType: hard
 
@@ -12255,13 +12285,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"proxy-compare@npm:2.5.1":
-  version: 2.5.1
-  resolution: "proxy-compare@npm:2.5.1"
-  checksum: 116fc69ae9a6bb3654e6907fb09b73e84aa47c89275ca52648fc1d2ac8b35dbf54daa8bab078d7a735337c928e87eb52059e705434adf14989bbe6c5dcdd08fa
-  languageName: node
-  linkType: hard
-
 "psl@npm:^1.1.28, psl@npm:^1.1.33":
   version: 1.9.0
   resolution: "psl@npm:1.9.0"
@@ -12656,6 +12679,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"readable-stream@npm:>=1.0.33-1 <1.1.0-0, readable-stream@npm:~1.0.33-1":
+  version: 1.0.34
+  resolution: "readable-stream@npm:1.0.34"
+  dependencies:
+    core-util-is: "npm:~1.0.0"
+    inherits: "npm:~2.0.1"
+    isarray: "npm:0.0.1"
+    string_decoder: "npm:~0.10.x"
+  checksum: 02272551396ed8930ddee1a088bdf0379f0f7cc47ac49ed8804e998076cb7daec9fbd2b1fd9c0490ec72e56e8bb3651abeb8080492b8e0a9c3f2158330908ed6
+  languageName: node
+  linkType: hard
+
 "readable-stream@npm:^2.0.1":
   version: 2.3.8
   resolution: "readable-stream@npm:2.3.8"
@@ -12679,18 +12714,6 @@ __metadata:
     string_decoder: "npm:^1.1.1"
     util-deprecate: "npm:^1.0.1"
   checksum: e37be5c79c376fdd088a45fa31ea2e423e5d48854be7a22a58869b4e84d25047b193f6acb54f1012331e1bcd667ffb569c01b99d36b0bd59658fb33f513511b7
-  languageName: node
-  linkType: hard
-
-"readable-stream@npm:~1.0.33-1":
-  version: 1.0.34
-  resolution: "readable-stream@npm:1.0.34"
-  dependencies:
-    core-util-is: "npm:~1.0.0"
-    inherits: "npm:~2.0.1"
-    isarray: "npm:0.0.1"
-    string_decoder: "npm:~0.10.x"
-  checksum: 02272551396ed8930ddee1a088bdf0379f0f7cc47ac49ed8804e998076cb7daec9fbd2b1fd9c0490ec72e56e8bb3651abeb8080492b8e0a9c3f2158330908ed6
   languageName: node
   linkType: hard
 
@@ -13089,12 +13112,13 @@ __metadata:
     "@types/three": "npm:^0.158.0"
     dat.gui: "npm:^0.7.9"
     eslint: "npm:^8.52.0"
+    gl-noise: "npm:^1.6.1"
     leva: "npm:^0.9.35"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
     react-scripts: "npm:^5.0.1"
     three: "npm:^0.158.0"
-    valtio: "npm:^1.11.3"
+    three-custom-shader-material: "npm:^5.4.0"
   languageName: unknown
   linkType: soft
 
@@ -14306,6 +14330,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"three-custom-shader-material@npm:^5.4.0":
+  version: 5.4.0
+  resolution: "three-custom-shader-material@npm:5.4.0"
+  dependencies:
+    glsl-token-functions: "npm:^1.0.1"
+    glsl-token-string: "npm:^1.0.1"
+    glsl-tokenizer: "npm:^2.1.5"
+    object-hash: "npm:^3.0.0"
+  peerDependencies:
+    "@react-three/fiber": ">=8.0"
+    react: ">=18.0"
+    three: ">=0.154"
+  peerDependenciesMeta:
+    "@react-three/fiber":
+      optional: true
+    react:
+      optional: true
+  checksum: a0aba861bd930e72edc45cb1873a151712411229f4ee55ea2b6585d806a74c9ed8d81659ddae87f6a50822612710c77ec6e8eac55b6a422eb38ecd77b2e1f2b9
+  languageName: node
+  linkType: hard
+
 "three-mesh-bvh@npm:^0.6.7":
   version: 0.6.8
   resolution: "three-mesh-bvh@npm:0.6.8"
@@ -14349,6 +14394,16 @@ __metadata:
   version: 6.0.2
   resolution: "throat@npm:6.0.2"
   checksum: 45caf1ce86a895f71fcb9bd3de67e1df6f73a519e780765dd0cf63ca8363de08ad207cfb714bc650ee9ddeef89971517b5f3a64087fcffce2bda034697af7c18
+  languageName: node
+  linkType: hard
+
+"through2@npm:^0.6.3":
+  version: 0.6.5
+  resolution: "through2@npm:0.6.5"
+  dependencies:
+    readable-stream: "npm:>=1.0.33-1 <1.1.0-0"
+    xtend: "npm:>=4.0.0 <4.1.0-0"
+  checksum: 3294325d73b120ffbb8cd00e28a649a99e194cef2638bf782b6c2eb0c163b388f7b7bb908003949f58f9f6b8f771defd24b6e4df051eb410fd87931521963b98
   languageName: node
   linkType: hard
 
@@ -14852,15 +14907,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"use-sync-external-store@npm:1.2.0":
-  version: 1.2.0
-  resolution: "use-sync-external-store@npm:1.2.0"
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
-  checksum: ac4814e5592524f242921157e791b022efe36e451fe0d4fd4d204322d5433a4fc300d63b0ade5185f8e0735ded044c70bcf6d2352db0f74d097a238cebd2da02
-  languageName: node
-  linkType: hard
-
 "util-deprecate@npm:^1.0.1, util-deprecate@npm:^1.0.2, util-deprecate@npm:~1.0.1":
   version: 1.0.2
   resolution: "util-deprecate@npm:1.0.2"
@@ -14953,24 +14999,6 @@ __metadata:
     spdx-correct: "npm:^3.0.0"
     spdx-expression-parse: "npm:^3.0.0"
   checksum: 7b91e455a8de9a0beaa9fe961e536b677da7f48c9a493edf4d4d4a87fd80a7a10267d438723364e432c2fcd00b5650b5378275cded362383ef570276e6312f4f
-  languageName: node
-  linkType: hard
-
-"valtio@npm:^1.11.3":
-  version: 1.11.3
-  resolution: "valtio@npm:1.11.3"
-  dependencies:
-    proxy-compare: "npm:2.5.1"
-    use-sync-external-store: "npm:1.2.0"
-  peerDependencies:
-    "@types/react": ">=16.8"
-    react: ">=16.8"
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-    react:
-      optional: true
-  checksum: 87bee02636862b1107c0d6fb9c3814d942bb8099f76b2df0d680a418d2cb59c1184f8f2deb04c8bc22f2b6ddc0f8ef9a4460b8fa05b1b5c6d74194f663407191
   languageName: node
   linkType: hard
 
@@ -15679,6 +15707,13 @@ __metadata:
   version: 2.2.0
   resolution: "xmlchars@npm:2.2.0"
   checksum: b64b535861a6f310c5d9bfa10834cf49127c71922c297da9d4d1b45eeaae40bf9b4363275876088fbe2667e5db028d2cd4f8ee72eed9bede840a67d57dab7593
+  languageName: node
+  linkType: hard
+
+"xtend@npm:>=4.0.0 <4.1.0-0":
+  version: 4.0.2
+  resolution: "xtend@npm:4.0.2"
+  checksum: 366ae4783eec6100f8a02dff02ac907bf29f9a00b82ac0264b4d8b832ead18306797e283cf19de776538babfdcb2101375ec5646b59f08c52128ac4ab812ed0e
   languageName: node
   linkType: hard
 

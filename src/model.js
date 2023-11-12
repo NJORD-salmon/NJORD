@@ -8,12 +8,16 @@ import { useGLTF } from '@react-three/drei'
 import { MeshStandardMaterial, Color } from 'three';
 import { TextureLoader } from 'three/src/loaders/TextureLoader'
 
-export default function Model({ hue, saturation, lightness, uScale, vScale, position }) {
+export default function Model({ hue, saturation, lightness, uScale, vScale, textureIndex }) {
+  // select which gltf model to load
   const { nodes } = useGLTF('/models/salmon/salmon.gltf')
 
-  const texture = new TextureLoader().load('./models/salmon/food_0013_height_1k.png')
+  const textureVector = ['./models/salmon/food_0013_height_1k.png', "./models/salmon/1.jpeg", "./models/salmon/2.jpeg"]
+  // load texture
+  const texture = new TextureLoader().load(textureVector[textureIndex])
+  // change the scale of the texture
   texture.repeat.set(uScale, vScale)
-  // const textureMap = extractMap(uScale, texture)
+
   const hslColor = extractColor(hue, saturation, lightness)
   const material = getMaterial(hslColor, texture/* , textureMap */)
 
@@ -88,15 +92,17 @@ export default function Model({ hue, saturation, lightness, uScale, vScale, posi
 
 useGLTF.preload('/models/salmon/salmon.gltf')
 
+// assign the color and the map to the mesh material
 function getMaterial(color, image) {
   return (
     new MeshStandardMaterial({
       color: color,
-      map: image
+      map: image,
     })
   )
 }
 
+// convert color in HSL mode
 function extractColor(hue, saturation, lightness) {
   return new Color("hsl(0, 100%, 100%)")
     .setHSL(hue / 360 ?? 0, saturation / 100 ?? 0, lightness / 100 ?? 0)

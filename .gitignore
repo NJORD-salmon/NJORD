@@ -6,7 +6,7 @@ node_modules
 *.env*
 .npmrc
 
-.code
+.vscode
 
 .pnp.*
 .yarn/*
