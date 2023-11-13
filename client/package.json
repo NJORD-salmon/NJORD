@@ -1,9 +1,9 @@
 {
   "dependencies": {
-    "@react-three/drei": "^9.88.7",
-    "@react-three/fiber": "^8.15.8",
+    "@react-three/drei": "^9.88.13",
+    "@react-three/fiber": "^8.15.10",
     "@react-three/gltfjsx": "^4.3.4",
-    "@types/three": "^0.158.0",
+    "@types/three": "^0.158.2",
     "dat.gui": "^0.7.9",
     "gl-noise": "^1.6.1",
     "leva": "^0.9.35",
@@ -35,6 +35,6 @@
     ]
   },
   "devDependencies": {
-    "eslint": "^8.52.0"
+    "eslint": "^8.53.0"
   }
 }

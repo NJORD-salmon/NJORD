@@ -1,4 +1,4 @@
-import { useRef,/* useState, useEffect,*/ Suspense } from "react"
+import { Suspense } from "react"
 // OrbitControls to move the camera around
 import { OrbitControls } from "@react-three/drei"
 import { Canvas,/* useFrame, useLoader*/ } from "@react-three/fiber"
@@ -14,6 +14,30 @@ function Loader() {
   const { progress } = useProgress()
   return <Html center>{progress} % loaded</Html>
 }
+
+
+
+
+// start websocket client + change hue value
+// const arduinoSocket = new WebSocket("ws://localhost:9000");
+
+// arduinoSocket.onopen = (event) => {
+//   document.querySelector("#root").innerHTML += '<p>Connection Opened</p>'
+// };
+
+
+
+// arduinoSocket.onmessage = (event) => {
+//   document.querySelector("#root").innerHTML += `<p>${event.data}</p>`
+//   // TODO
+//   const payload = JSON.parse(event.data)
+
+//   console.log(payload.hue)
+// };
+
+
+
+
 
 // configuration of the HSL value and characteristics
 const hueConfig = {
@@ -64,9 +88,10 @@ export default function App() {
   // slider to change color
   const { hue, saturation, lightness } = useControls({
     hue: hueConfig,
-    saturarion: saturationConfig,
+    saturation: saturationConfig,
     lightness: lightnessConfig
   })
+
   // slider for scaling textures
   const { scaleX, scaleY } = useControls({
     scaleX: scaleXConfig,
@@ -78,10 +103,9 @@ export default function App() {
     texture: textureConfig
   })
 
-  // start websocket client + change hue value
-
   return (
     <>
+
       <Leva collapsed={false} flat={false} ></Leva>
       <Canvas>
         <ambientLight intensity={Math.PI / 2} />
