@@ -1,4 +1,4 @@
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 // OrbitControls to move the camera around
 import { OrbitControls } from "@react-three/drei"
 import { Canvas,/* useFrame, useLoader*/ } from "@react-three/fiber"
@@ -14,30 +14,6 @@ function Loader() {
   const { progress } = useProgress()
   return <Html center>{progress} % loaded</Html>
 }
-
-
-
-
-// start websocket client + change hue value
-// const arduinoSocket = new WebSocket("ws://localhost:9000");
-
-// arduinoSocket.onopen = (event) => {
-//   document.querySelector("#root").innerHTML += '<p>Connection Opened</p>'
-// };
-
-
-
-// arduinoSocket.onmessage = (event) => {
-//   document.querySelector("#root").innerHTML += `<p>${event.data}</p>`
-//   // TODO
-//   const payload = JSON.parse(event.data)
-
-//   console.log(payload.hue)
-// };
-
-
-
-
 
 // configuration of the HSL value and characteristics
 const hueConfig = {
@@ -85,10 +61,15 @@ const textureConfig = {
 }
 
 export default function App() {
+  // TODO check useState and applications
+  const [hue, setHue] = useState(6);
+  const [saturation, setSaturation] = useState(93);
+  // usestate 60 for lightness to have salmon color
+
   // slider to change color
-  const { hue, saturation, lightness } = useControls({
-    hue: hueConfig,
-    saturation: saturationConfig,
+  const { lightness } = useControls({
+    // hue: hueConfig,
+    // saturation: saturationConfig,
     lightness: lightnessConfig
   })
 
@@ -103,10 +84,31 @@ export default function App() {
     texture: textureConfig
   })
 
+  // TODO manage connection
+  // start websocket client + change hue value
+  const arduinoSocket = new WebSocket("ws://localhost:9000");
+  arduinoSocket.onopen = (event) => {
+    // document.querySelector("#root").innerHTML += '<p>Connection Opened</p>'
+    console.log(event)
+  };
+
+  arduinoSocket.onmessage = (event) => {
+    try {
+      // parse JSON and set the parameters values
+      const payload = JSON.parse(event.data);
+      setHue(payload.hue * 360 / 255)
+      setSaturation(payload.saturation * 100 / 255)
+      console.log(payload)
+    }
+    catch (error) {
+      console.log('Error parsing JSON:', error, event.data); /*✔️ Friendly message for debugging ! */
+    }
+  };
+
   return (
     <>
 
-      <Leva collapsed={false} flat={false} ></Leva>
+      <Leva collapsed={false} flat={false} hidden={false}></Leva>
       <Canvas>
         <ambientLight intensity={Math.PI / 2} />
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} decay={0} intensity={Math.PI} />
