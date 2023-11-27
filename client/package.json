@@ -10,6 +10,7 @@
     "dat.gui": "^0.7.9",
     "gl-noise": "^1.6.1",
     "leva": "^0.9.35",
+    "promise-fs": "^2.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.19.0",

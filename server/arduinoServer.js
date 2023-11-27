@@ -1,6 +1,8 @@
-import WebSocket, { WebSocketServer } from 'ws';
+import WebSocket, { WebSocketServer } from 'ws'
 import { SerialPort } from 'serialport'
-import { ReadlineParser } from 'serialport';
+import { ReadlineParser } from 'serialport'
+import { join } from 'path'
+import { writeFile } from "node:fs/promises"
 
 function main() {
   // set up websocket for client (webpage) and server communication
@@ -67,10 +69,21 @@ function setupSerialPort(wss) {
   port.on("open", () => {
     console.log('serial port open');
   });
-  parser.on('data', data => {
-    // if data is the same as before, stop sending till it changes
+  parser.on('data', async (data) => {
+    // if data is the same as before, stop sending untill it changes
     if (data !== previousValue) {
       console.info(data);
+
+      const payload = JSON.parse(data)
+      // when you send the salmon in the acquarium, it saves the configuration in a file
+      if (payload.type === "ok") {
+        try {
+          await writeFile(join('./customizedSalmons', 'obj.json'), data + "\n");
+          console.info("file saved correctly")
+        } catch (error) {
+          console.error("failed to save salmon", error)
+        }
+      }
 
       wss.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {

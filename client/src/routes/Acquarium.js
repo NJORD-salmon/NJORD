@@ -1,17 +1,15 @@
 import React, { useRef, useState, Suspense } from "react"
-
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import Modal from '@mui/material/Modal'
-
+import Box from "@mui/material/Box"
+import Button from "@mui/material/Button"
+import Modal from "@mui/material/Modal"
 import { OrbitControls, Stats, TransformControls, } from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
 
 
-import Caustics from '../components/caustic'
-import WaterLights from '../components/waterlights'
-import { Floor } from '../components/floor'
-import Model from '../components/model'
+import Caustics from "../components/caustic"
+import WaterLights from "../components/waterlights"
+import Floor from "../components/floor"
+import Model from "../components/model"
 
 // modal style
 const style = {
@@ -20,7 +18,7 @@ const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 1200,
-  height: 800,
+  height: 600,
   border: '2px solid #000',
   boxShadow: 24,
 };
@@ -33,7 +31,7 @@ function Fish() {
 
   const modelsData = [
     { "hue": 0, "saturation": 209, "lightness": 71, "texture": 3 },
-    { "hue": 149, "saturation": 189, "lightness": 81, "texture": 0 }
+    /*     { "hue": 149, "saturation": 189, "lightness": 81, "texture": 0 }*/
   ]
 
   const models = modelsData.map(config => (<Model
@@ -88,7 +86,7 @@ export default function Water() {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <iframe src="http://localhost:3000/configurator" width={1200} height={800}></iframe>
+            <iframe src="http://localhost:3000/configurator" width={1200} height={600}></iframe>
           </Box>
         </Modal>
       </div>
