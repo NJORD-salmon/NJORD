@@ -3,5 +3,6 @@
 *.log
 *.env*
 .npmrc
+*.woff2
 
 .vscode

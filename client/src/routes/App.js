@@ -7,7 +7,6 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography';
 // GUI template to debug the sliders
 import { Leva, useControls } from "leva"
-import { isTypedArray } from "three/src/animation/AnimationUtils"
 
 import Lights from "../components/light"
 import Model from "../components/model"
@@ -29,20 +28,20 @@ function getTexture(texture, divider) {
 const scaleXConfig = {
   value: 1,
   min: 0,
-  max: 2,
+  max: 5,
   step: 0.01,
 }
 const scaleYConfig = {
   value: 1,
   min: 0,
-  max: 4,
+  max: 5,
   step: 0.01,
 }
 
 const textureConfig = {
-  value: 1,
+  value: 0,
   min: 0,
-  max: 3,
+  max: 4,
   step: 1,
 }
 
