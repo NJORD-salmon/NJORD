@@ -38,7 +38,9 @@ export default function Model({
     "../models/salmon/1.jpeg",
     "../models/salmon/2.jpeg",
     "../models/salmon/3.jpeg",
-    "../models/salmon/4.jpeg"
+    "../models/salmon/4.jpeg",
+    "../models/salmon/5.jpeg",
+    "../models/salmon/6.jpeg",
   ]
   // load texture
   const texture = new TextureLoader().load(textureVector[textureIndex])
@@ -134,7 +136,7 @@ function getCostantMaterial(color) {
     new MeshStandardMaterial({
       color: color,
       bumpMap: new TextureLoader().load("../models/salmon/salmon_textures/Chinook_salmon_bump.png"),
-      bumpScale: 0.5
+      bumpScale: 0.5,
     })
   )
 }

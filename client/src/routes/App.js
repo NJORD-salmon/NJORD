@@ -17,7 +17,7 @@ function Loader() {
   return <Html center>{progress} % loaded</Html>
 }
 
-// const numberOfTextures = 4
+// const numberOfTextures = 8
 // const textureRangeSize = 256 / numberOfTextures
 
 function getTexture(texture, divider) {
@@ -41,7 +41,7 @@ const scaleYConfig = {
 const textureConfig = {
   value: 0,
   min: 0,
-  max: 4,
+  max: 6,
   step: 1,
 }
 
@@ -130,12 +130,14 @@ export default function App() {
             <Typography class="modal-modal-title">
               Do you want to save this salmon?
             </Typography>
-            <Typography id="modal-modal-back" class="modal-description" sx={{ mt: 2 }}>
-              Back
-            </Typography>
-            <Typography id="modal-modal-ok" class="modal-description" sx={{ mt: 2 }}>
-              Ok
-            </Typography>
+            <div>
+              <Typography id="modal-modal-back" class="modal-description" sx={{ mt: 2 }}>
+                Back
+              </Typography>
+              <Typography id="modal-modal-ok" class="modal-description" sx={{ mt: 2 }}>
+                Ok
+              </Typography>
+            </div>
           </Box>
         </Modal>
       </div>
@@ -166,7 +168,7 @@ export default function App() {
           enableZoom={false}
           enablePan={false}
         />
-        <Stats />
+        {/* <Stats /> */}
       </Canvas>
     </>
   )
