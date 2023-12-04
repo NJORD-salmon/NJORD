@@ -17,8 +17,8 @@ function Loader() {
   return <Html center>{progress} % loaded</Html>
 }
 
-// const numberOfTextures = 8
-// const textureRangeSize = 256 / numberOfTextures
+const numberOfTextures = 6
+const textureRangeSize = 256 / numberOfTextures
 
 function getTexture(texture, divider) {
   return Math.floor(texture / divider)
@@ -41,7 +41,7 @@ const scaleYConfig = {
 const textureConfig = {
   value: 0,
   min: 0,
-  max: 6,
+  max: 5,
   step: 1,
 }
 
@@ -49,7 +49,7 @@ export default function App() {
   const [hue, setHue] = useState(6);
   const [saturation, setSaturation] = useState(93);
   const [lightness, setLightness] = useState(60);
-  // const [texture, setTexture] = useState(0);
+  const [texture, setTexture] = useState(0);
   // const [scaleX, setScaleX] = useState(1);
   // const [scaleY, setScaleY] = useState(1); 
 
@@ -60,10 +60,10 @@ export default function App() {
   const [open, setOpen] = React.useState(false);
 
   // TODO slider for scaling textures
-  const { scaleX, scaleY, texture } = useControls({
+  const { scaleX, scaleY/* , texture */ } = useControls({
     scaleX: scaleXConfig,
     scaleY: scaleYConfig,
-    texture: textureConfig
+    // texture: textureConfig
   })
 
   // read changes of button with modal
@@ -99,7 +99,7 @@ export default function App() {
         setHue((payload.values.hue) * 360 / 255);
         setSaturation((payload.values.saturation) * 100 / 255);
         setLightness(10 + (payload.values.lightness) * 90 / 255);
-        // setTexture(payload.values.texture);
+        setTexture(payload.values.texture);
         //  TODO fix scale payload
         // setScaleX(payload.scaleX);
         // setScaleX(payload.scaleX);
@@ -153,10 +153,11 @@ export default function App() {
             lightness={lightness}
             uScale={scaleX}
             vScale={scaleY}
-            textureIndex={/* getTexture(texture, textureRangeSize) */ texture}
+            textureIndex={getTexture(texture, textureRangeSize)}
             modelScale={3.5}
             position={[0.5, 0, 0]}
             rotation={[0, 0.95, 0]}
+            animIndex={0}
           />
         </Suspense>
 

@@ -13,7 +13,7 @@ function main() {
     }
   })
 
-  // TODO: return when receive message from acqurium -> return array of salmon configs
+  // TODO: return when receive message from aqurium -> return array of salmon configs
 
   /* currently return just two preconfigured salmons
   websocket code
@@ -75,7 +75,7 @@ function setupSerialPort(wss) {
       console.info(data);
 
       const payload = JSON.parse(data)
-      // when you send the salmon in the acquarium, it saves the configuration in a file
+      // when you send the salmon in the aquarium, it saves the configuration in a file
       if (payload.type === "ok") {
         try {
           await writeFile(join('./customizedSalmons', 'obj.json'), data + "\n");

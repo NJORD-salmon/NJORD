@@ -7,7 +7,7 @@ import {
 
 import './styles.css'
 import App from './routes/App'
-import Water from './routes/Acquarium'
+import Water from './routes/Aquarium'
 
 const router = createBrowserRouter([
   {

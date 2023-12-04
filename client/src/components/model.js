@@ -8,6 +8,7 @@ import { useAnimations, useGLTF } from '@react-three/drei'
 import { MeshStandardMaterial, Color, RepeatWrapping } from 'three';
 import { useFrame } from "@react-three/fiber"
 import { TextureLoader } from 'three/src/loaders/TextureLoader'
+import { degToRad } from 'three/src/math/MathUtils';
 
 export default function Model({
   hue,
@@ -18,14 +19,10 @@ export default function Model({
   textureIndex,
   position = [0, 0, 0],
   modelScale,
-  rotation
+  rotation = [0, degToRad(90), 0],
+  animIndex = 0,
+  movementAnim = false
 }) {
-
-  const myMesh = useRef()
-  // select which gltf model to load
-  const { nodes, animations } = useGLTF('../models/salmon/salmon.gltf')
-  const { actions, names } = useAnimations(animations, myMesh)
-  console.log(actions)
 
   const eyeMaterial = new MeshStandardMaterial({
     color: 0x000000,
@@ -36,7 +33,7 @@ export default function Model({
   const textureVector = [
     '../models/salmon/0.png',
     "../models/salmon/1.jpeg",
-    "../models/salmon/2.jpeg",
+    // "../models/salmon/2.jpeg",
     "../models/salmon/3.jpeg",
     "../models/salmon/4.jpeg",
     "../models/salmon/5.jpeg",
@@ -53,26 +50,49 @@ export default function Model({
   const material = getMaterial(hslColor, texture)
   const constantMaterial = getCostantMaterial(hslColor)
 
-  // const influence = useRef(0);
+  const myMesh = useRef()
+  // select which gltf model to load
+  const { nodes, animations } = useGLTF('../models/salmon/salmon.gltf')
+  const { actions, names } = useAnimations(animations, myMesh)
+  console.log(actions)
 
   useEffect(() => {
-    // this is execute after the rendering phase
-    //  myMesh.current?.updateMorphTargets();
-    // Reset and fade in animation after an index has been changed
-    actions[names[0]].reset().fadeIn(0.5).play();
-    return () => {
-      actions[names[0]].fadeOut(0.5);
-    };
-  }, [actions, names])
-  useFrame(({ clock }) => {
+    // this is executed after the rendering phase
 
-    // in case no animation is found, do not update targets
-    /* if (myMesh.current?.morphTargetInfluences) {
-      // this is executed at every frame to "render" the frame 
-      influence.current = Math.abs(Math.sin(clock.getElapsedTime() * 2))
- 
-      myMesh.current.morphTargetInfluences[0] = influence.current; 
-    }*/
+    // Reset and fade in animation after an index has been changed
+    actions[names[animIndex]].reset().fadeIn(0.5).play();
+
+    // TODO change animation when turning
+    // right now it doesn't work
+    if ((myMesh.current.position.x > widthRadius - 1 && myMesh.current.position.x <= widthRadius)
+      || (myMesh.current.position.x < -widthRadius + 1 && myMesh.current.position.x >= -widthRadius)) {
+      animIndex = 5
+    }
+
+
+
+    return () => {
+      actions[names[animIndex]].fadeOut(0.5);
+    };
+  }, [actions, names, animIndex])
+
+  const widthRadius = 4 - position[2]
+
+  useFrame(({ clock }) => {
+    // add movement animation to scene if aquarium
+    if (movementAnim) {
+      const timer = clock.getElapsedTime() / 5.7
+      myMesh.current.position.x = Math.sin(timer) * widthRadius
+
+      if ((myMesh.current.position.x > widthRadius - 1 && myMesh.current.position.x <= widthRadius)
+        || (myMesh.current.position.x < -widthRadius + 1 && myMesh.current.position.x >= -widthRadius)) {
+        // 880 it's the number opf frames to complete the 180° rotation
+        myMesh.current.rotation.y += degToRad(180) / 880
+        console.log(animIndex)
+      }
+    }
+
+
   })
 
   return (
@@ -146,3 +166,4 @@ function extractColor(hue, saturation, lightness) {
   return new Color("hsl(0, 100%, 100%)")
     .setHSL((hue ?? 0) / 360, (saturation ?? 0) / 100, (lightness ?? 0) / 100)
 }
+

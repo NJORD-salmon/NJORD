@@ -4,19 +4,24 @@ import Button from "@mui/material/Button"
 import Modal from "@mui/material/Modal"
 import { OrbitControls } from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
+import { degToRad } from "three/src/math/MathUtils.js"
 
-
-import Caustics from "../components/caustic"
 import WaterLights from "../components/waterlights.js"
-// import Floor from "../components/floor.js"
-import Model from "../components/model"
+// import Floor from "../components/floor.js" // for lights debugging
+import Model from "../components/model.js"
+
+function getRandom(min = 0, max = 5) {
+  return Math.random() * (max - min) + min;
+}
 
 function Fish() {
   const modelsData = [
-    { "hue": 0, "saturation": 209, "lightness": 50, "texture": 3 },
-    /* { "hue": 149, "saturation": 189, "lightness": 40, "texture": 0 },
-     { "hue": 120, "saturation": 196, "lightness": 86, "texture": 1} */
+    { "hue": 0, "saturation": 209, "lightness": 50, "texture": 3, "positionY": -4 },
+    /*{ "hue": 149, "saturation": 189, "lightness": 40, "texture": 0, "positionY": -3 },
+    { "hue": 120, "saturation": 196, "lightness": 86, "texture": 1} */
   ]
+
+
 
   const models = modelsData.map(config => (<Model
     castShadow={true}
@@ -26,9 +31,11 @@ function Fish() {
     uScale={5}
     vScale={1}
     textureIndex={config.texture}
-    rotation={[0, getRandom(-0.8, 0.8), 0]}
     // TODO for now we give random positions
-    position={[getRandom(-4.2, 4.2), getRandom(-1.5, 1.5), getRandom(-7, 1.5)]}
+    // position={[y, z, x]}
+    position={[/* getRandom(-4.2, 4.2) */ config.positionY, getRandom(-1.5, 1.5), /* getRandom(-7, 1.5) */-1]}
+    animIndex={0}
+    movementAnim={true}
   />))
 
 
@@ -36,7 +43,7 @@ function Fish() {
   return (
     <>
       <WaterLights />
-      {/* <Caustics > */}
+
 
       {/* for debugging */}
       {/*<Floor sizeY={6} sizeX={22} position={[0, -2, 0]} rotation-x={-Math.PI / 2} />
@@ -47,7 +54,7 @@ function Fish() {
 
       {models}
 
-      {/* </Caustics> */}
+
     </>
   )
 }
@@ -96,6 +103,8 @@ export default function Water() {
       </div >
 
       <Canvas
+        // TODO fix orthographic camera to get better fish motion
+        // orthographic
         shadows
         camera={{
           fov: 75,
@@ -116,6 +125,4 @@ export default function Water() {
   )
 }
 
-function getRandom(min = 0, max = 5) {
-  return Math.random() * (max - min) + min;
-} 
+
