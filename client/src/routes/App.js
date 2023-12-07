@@ -49,7 +49,7 @@ export default function App() {
   const [hue, setHue] = useState(6);
   const [saturation, setSaturation] = useState(93);
   const [lightness, setLightness] = useState(60);
-  const [texture, setTexture] = useState(0);
+  // const [texture, setTexture] = useState(0);
   // const [scaleX, setScaleX] = useState(1);
   // const [scaleY, setScaleY] = useState(1); 
 
@@ -60,10 +60,10 @@ export default function App() {
   const [open, setOpen] = React.useState(false);
 
   // TODO slider for scaling textures
-  const { scaleX, scaleY/* , texture */ } = useControls({
+  const { scaleX, scaleY, texture } = useControls({
     scaleX: scaleXConfig,
     scaleY: scaleYConfig,
-    // texture: textureConfig
+    texture: textureConfig
   })
 
   // read changes of button with modal
@@ -74,8 +74,12 @@ export default function App() {
     } else if (okButton === 1) {
       // close the modal, start animation and save the data
       return () => {
-        alert("Saved")
-        setOpen(false);
+        // display(document.getElementById("saving-screen"))
+        display()
+        setTimeout(() => {
+          // code is executed after 1 second
+          setOpen(false)
+        }, 5000)
       }
     } else if (backButton === 1) {
       // just go back to customization
@@ -85,7 +89,7 @@ export default function App() {
 
   useEffect(() => {
     // start websocket client + change hue value
-    const arduinoSocket = new WebSocket("ws://localhost:9000");
+    const arduinoSocket = new WebSocket(`ws://${SERVER_ADDRESS}:9000`);
     arduinoSocket.onopen = (event) => {
       // if it works, then connection opened
       // console.log(event)
@@ -99,7 +103,7 @@ export default function App() {
         setHue((payload.values.hue) * 360 / 255);
         setSaturation((payload.values.saturation) * 100 / 255);
         setLightness(10 + (payload.values.lightness) * 90 / 255);
-        setTexture(payload.values.texture);
+        //setTexture(payload.values.texture);
         //  TODO fix scale payload
         // setScaleX(payload.scaleX);
         // setScaleX(payload.scaleX);
@@ -127,15 +131,22 @@ export default function App() {
           aria-describedby="modal-modal-description"
         >
           <Box id="box-modal">
-            <Typography class="modal-modal-title">
-              Do you want to save this salmon?
-            </Typography>
-            <div>
-              <Typography id="modal-modal-back" class="modal-description" sx={{ mt: 2 }}>
-                Back
+            <div id="saving-screen">
+              <Typography class="modal-modal-title">
+                Do you want to save this salmon?
               </Typography>
-              <Typography id="modal-modal-ok" class="modal-description" sx={{ mt: 2 }}>
-                Ok
+              <div>
+                <Typography id="modal-modal-back" class="modal-description" sx={{ mt: 2 }}>
+                  Back
+                </Typography>
+                <Typography id="modal-modal-ok" class="modal-description" sx={{ mt: 2 }}>
+                  Ok
+                </Typography>
+              </div>
+            </div>
+            <div id="saved-screen">
+              <Typography class="modal-modal-title" >
+                Salmon saved!
               </Typography>
             </div>
           </Box>
@@ -153,7 +164,7 @@ export default function App() {
             lightness={lightness}
             uScale={scaleX}
             vScale={scaleY}
-            textureIndex={getTexture(texture, textureRangeSize)}
+            textureIndex={/* getTexture(texture, textureRangeSize) */ texture}
             modelScale={3.5}
             position={[0.5, 0, 0]}
             rotation={[0, 0.95, 0]}
@@ -173,4 +184,17 @@ export default function App() {
       </Canvas>
     </>
   )
+}
+
+function display() {
+  if (document.getElementById("saved-screen").style.display === "none") {
+    document.getElementById("saved-screen").style.display = "block";
+  } else {
+    document.getElementById("saved-screen").style.display = "none";
+  }
+  if (document.getElementById("saved-screen").style.display === "block") {
+    document.getElementById("saved-screen").style.display = "none";
+  } else {
+    document.getElementById("saved-screen").style.display = "block";
+  }
 }

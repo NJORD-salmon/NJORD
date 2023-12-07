@@ -9,7 +9,6 @@ const WaterLights = forwardRef((props, ref) => {
 
   return (
     <>
-      {/* TODO sistema le luci */}
       <hemisphereLight
         intensity={Math.PI / 8}
         position={[1, 1, 1]}

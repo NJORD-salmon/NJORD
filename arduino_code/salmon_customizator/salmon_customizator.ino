@@ -84,7 +84,7 @@ void loop() {
   values["hue"].set(analogRead(A0) / 4);
   values["saturation"].set(analogRead(A1) / 4);
   values["lightness"].set(analogRead(A2) / 4);
-  values["texture"].set(analogRead(A3) / 4);
+  // values["texture"].set(analogRead(A3) / 4);
   // values["scaleX"].set(analogRead(A4) / 4);
   // values["scaleY"].set(analogRead(A5) / 4);
 

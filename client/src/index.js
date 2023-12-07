@@ -8,6 +8,7 @@ import {
 import './styles.css'
 import App from './routes/App'
 import Water from './routes/Aquarium'
+import Visualizer from './routes/Visualizer'
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
   {
     path: "/configurator",
     element: <App />,
+  },
+  {
+    path: "/visualizer",
+    element: <Visualizer />,
   },
 ]);
 
