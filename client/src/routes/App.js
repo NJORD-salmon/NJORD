@@ -10,12 +10,18 @@ import { Leva, useControls } from "leva"
 
 import Lights from "../components/light"
 import Model from "../components/model"
+import { FixHue, FixSaturation, FixLightness } from "../components/fixValues"
+import { SERVER_ADDRESS } from "../env"
+
+
 
 // view the load progress
 function Loader() {
   const { progress } = useProgress()
   return <Html center>{progress} % loaded</Html>
 }
+
+let currentState
 
 const numberOfTextures = 6
 const textureRangeSize = 256 / numberOfTextures
@@ -24,7 +30,7 @@ function getTexture(texture, divider) {
   return Math.floor(texture / divider)
 }
 
-// configuration of the scale of the texture
+// configuration for screen sliders
 const scaleXConfig = {
   value: 1,
   min: 0,
@@ -37,7 +43,6 @@ const scaleYConfig = {
   max: 5,
   step: 0.01,
 }
-
 const textureConfig = {
   value: 0,
   min: 0,
@@ -66,27 +71,6 @@ export default function App() {
     texture: textureConfig
   })
 
-  // read changes of button with modal
-  useEffect(() => {
-    if (nextButton === 1) {
-      // open the modal to save the salmon
-      return () => setOpen(true)
-    } else if (okButton === 1) {
-      // close the modal, start animation and save the data
-      return () => {
-        // display(document.getElementById("saving-screen"))
-        display()
-        setTimeout(() => {
-          // code is executed after 1 second
-          setOpen(false)
-        }, 5000)
-      }
-    } else if (backButton === 1) {
-      // just go back to customization
-      return () => setOpen(false)
-    }
-  }, [nextButton, okButton, backButton])
-
   useEffect(() => {
     // start websocket client + change hue value
     const arduinoSocket = new WebSocket(`ws://${SERVER_ADDRESS}:9000`);
@@ -100,9 +84,9 @@ export default function App() {
         // parse JSON and set the parameters values
         const payload = JSON.parse(event.data);
 
-        setHue((payload.values.hue) * 360 / 255);
-        setSaturation((payload.values.saturation) * 100 / 255);
-        setLightness(10 + (payload.values.lightness) * 90 / 255);
+        setHue(FixHue(payload.values.hue));
+        setSaturation(FixSaturation(payload.values.saturation));
+        setLightness(FixLightness(payload.values.lightness));
         //setTexture(payload.values.texture);
         //  TODO fix scale payload
         // setScaleX(payload.scaleX);
@@ -112,6 +96,10 @@ export default function App() {
         setOkButton(payload.values.ok);
         setbackButton(payload.values.back);
         console.log(payload)
+
+        // TODO: fix modals
+        currentState = payload.currentState
+        console.log(currentState)
       }
       catch (error) {
         // Friendly message for debugging
@@ -121,6 +109,27 @@ export default function App() {
 
     return () => arduinoSocket.close();
   }, []);
+
+  // read changes of button with modal
+  useEffect(() => {
+    if (currentState === "SAVE") {
+      // open the modal to save the salmon
+      return () => setOpen(true)
+    } else if (currentState === "DISPLAY") {
+      // close the modal, start animation and save the data
+      return () => {
+        //  mostra conferma di salvataggio
+        display()
+        setTimeout(() => {
+          // code is executed after 1 second
+          setOpen(false)
+        }, 5000)
+      }
+    } else if (currentState === "CUSTOMIZE") {
+      // just go back to customization
+      return () => setOpen(false)
+    }
+  }, [nextButton, okButton, backButton])
 
   return (
     <>
@@ -132,20 +141,20 @@ export default function App() {
         >
           <Box id="box-modal">
             <div id="saving-screen">
-              <Typography class="modal-modal-title">
+              <Typography className="modal-modal-title">
                 Do you want to save this salmon?
               </Typography>
               <div>
-                <Typography id="modal-modal-back" class="modal-description" sx={{ mt: 2 }}>
+                <Typography id="modal-modal-back" className="modal-description" sx={{ mt: 2 }}>
                   Back
                 </Typography>
-                <Typography id="modal-modal-ok" class="modal-description" sx={{ mt: 2 }}>
+                <Typography id="modal-modal-ok" className="modal-description" sx={{ mt: 2 }}>
                   Ok
                 </Typography>
               </div>
             </div>
             <div id="saved-screen">
-              <Typography class="modal-modal-title" >
+              <Typography className="modal-modal-title" >
                 Salmon saved!
               </Typography>
             </div>
@@ -191,10 +200,5 @@ function display() {
     document.getElementById("saved-screen").style.display = "block";
   } else {
     document.getElementById("saved-screen").style.display = "none";
-  }
-  if (document.getElementById("saved-screen").style.display === "block") {
-    document.getElementById("saved-screen").style.display = "none";
-  } else {
-    document.getElementById("saved-screen").style.display = "block";
   }
 }

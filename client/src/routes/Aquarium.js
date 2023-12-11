@@ -1,4 +1,4 @@
-import React, { /* useRef, useState, */ useEffect, Suspense } from "react"
+import React, { useEffect, Suspense, useState } from "react"
 import Box from "@mui/material/Box"
 import Button from "@mui/material/Button"
 import Modal from "@mui/material/Modal"
@@ -6,62 +6,40 @@ import { OrbitControls, Stats } from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
 import { degToRad } from "three/src/math/MathUtils.js"
 
-
 import WaterLights from "../components/waterlights.js"
 // import Floor from "../components/floor.js" // for lights debugging
 import Model from "../components/model.js"
+import { FixHue, FixSaturation, FixLightness } from "../components/fixValues.js"
+import { SERVER_ADDRESS } from "../env"
 
 
 function getRandom(min = 0, max = 5) {
   return Math.random() * (max - min) + min;
 }
 
-function newPosition(position, index) {
-  for (let i = 0; i < index; i++) {
-    position = [getRandom(-1, 1), getRandom(-1, 1), i - index]
-    console.log("aaaaaahhhhhhhhh")
-  }
-  return position
-}
+function Fish({ fishes }) {
 
-function Fish() {
-  const modelsData = [
-    { "hue": 0, "saturation": 209, "lightness": 50, "texture": 3, "positionY": 0, "positionX": -5 },
-    { "hue": 210, "saturation": 189, "lightness": 40, "texture": 0, "positionY": 5, "positionX": -5 },
-    { "hue": 210, "saturation": 189, "lightness": 40, "texture": 0, "positionY": 5, "positionX": -5 },
-    { "hue": 210, "saturation": 189, "lightness": 40, "texture": 0, "positionY": 5, "positionX": -5 },
-    { "hue": 210, "saturation": 189, "lightness": 40, "texture": 0, "positionY": 5, "positionX": -5 },
-    { "hue": 210, "saturation": 189, "lightness": 40, "texture": 0, "positionY": 5, "positionX": -5 },
-    { "hue": 210, "saturation": 189, "lightness": 40, "texture": 0, "positionY": 5, "positionX": -5 },
-    { "hue": 210, "saturation": 189, "lightness": 40, "texture": 0, "positionY": 5, "positionX": -5 },
-  ]
-
-  const models = modelsData.map((config, idx) => {
+  const models = fishes.map((config, idx) => {
     return <Model
       castShadow={true}
-      hue={config.hue}
-      saturation={config.saturation}
-      lightness={config.lightness}
-      uScale={5}
+      hue={FixHue(config.hue)}
+      saturation={FixSaturation(config.saturation)}
+      lightness={FixLightness(config.lightness)}
+      uScale={1}
       vScale={1}
-      textureIndex={config.texture}
+      textureIndex={config.texture ?? 0}
       // TODO for now we give random positions
       // position={[y, z, x]}
-      position={[getRandom(-3, 3), getRandom(-3, 3), getRandom(-7, 0)]}
+      position={[getRandom(-3, 3), getRandom(-2, 2),/*  getRandom(-7, 0) */ -idx / 2]}
       animIndex={0}
       movementAnim={true}
       key={idx}
     />
   })
 
-  // newPosition(models.position, models.length)
-  for (let i = 0; i < models.length; i++) {
-    models.position = [getRandom(-1, 1), getRandom(-1, 1), i - models.length]
-    console.log("aaaaaahhhhhhhhh")
-  }
-
   return (
     <>
+
       <WaterLights />
 
       {/* for debugging */}
@@ -71,23 +49,31 @@ function Fish() {
         <Floor sizeY={12} sizeX={6} position={[-11, 4, 0]} rotation-y={Math.PI / 2} /> */}
 
       {models}
+
     </>
   )
 }
 
 export default function Water() {
+  const [fishes, setFishes] = useState([])
 
   useEffect(() => {
-    // start websocket client + change hue value
-    const arduinoSocket = new WebSocket("ws://localhost:9000");
+    // start websocket client 
+    const arduinoSocket = new WebSocket(`ws://${SERVER_ADDRESS}:9000`);
     arduinoSocket.onopen = (event) => {
       // if it works, then connection opened
-      // console.log(event)
+      // send a messagge to server to request fish parameters
+      arduinoSocket.send('gimme-fish')
     };
 
     arduinoSocket.onmessage = (event) => {
       try {
-
+        // if there are fishes in the JSON, then change fishes state
+        const payload = JSON.parse(event.data)
+        if (payload?.fishes?.length > 0) {
+          console.log(payload)
+          setFishes(payload.fishes)
+        }
       }
       catch (error) {
         // Friendly message for debugging
@@ -104,7 +90,7 @@ export default function Water() {
 
   return (
     <>
-      <div class={'modal-button'}>
+      <div className={'modal-button'}>
         <Button onClick={handleOpen}>Open modal</Button>
         <Modal
           open={openModal}
@@ -133,7 +119,7 @@ export default function Water() {
         <fog attach="fog" args={['#cecece', 0.1, 15]} />
 
         <Suspense>
-          <Fish />
+          <Fish fishes={fishes} />
         </Suspense>
         <OrbitControls />
 
@@ -142,5 +128,3 @@ export default function Water() {
     </>
   )
 }
-
-

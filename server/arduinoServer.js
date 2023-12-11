@@ -2,7 +2,7 @@ import WebSocket, { WebSocketServer } from 'ws'
 import { SerialPort } from 'serialport'
 import { ReadlineParser } from 'serialport'
 import { join } from 'path'
-import { writeFile } from "node:fs/promises"
+import { writeFile, readFile, readdir } from "node:fs/promises"
 
 import { STATES, StateMachine } from './stateMachine.js'
 
@@ -18,11 +18,20 @@ const PAGES = {
   APP: 'app'
 }
 
+let fishNumber = 0
+
 function main() {
   // set up websocket for client (webpage) and server communication
   const wss = setupWSS({
     port: 9000,
-    fn: (data) => {
+    fn: async (ws, data) => {
+      if (data.toString() === 'gimme-fish') {
+        console.log('catch aah')
+        const response = {
+          fishes: await readSalmonParameters()
+        }
+        ws.send(JSON.stringify(response))
+      }
       console.log('received: %s', data);
     }
   })
@@ -56,13 +65,17 @@ function main() {
 }
 
 function setupWSS({ port, fn }) {
+  if (fn !== undefined && typeof fn !== 'function') {
+    throw new Error('provided fn parameter is not a function')
+  }
+
   // define which websocket port
   const wss = new WebSocketServer({ port: port });
 
   wss.on('connection', function connection(ws) {
     ws.on('error', console.error);
 
-    ws.on('message', fn);
+    ws.on('message', (data) => fn(ws, data));
 
     ws.on('close', () => {
       console.log(`connection terminated on port ${port}`)
@@ -81,6 +94,7 @@ function setupSerialPort(wss, automa) {
   const parser = port.pipe(new ReadlineParser({ delimiter: '\r\n' }))
 
   let previousValue = null
+  // to prevent changings in the parameters when saving
   let lastChosenParameters = {}
 
   // Read the port data
@@ -89,7 +103,7 @@ function setupSerialPort(wss, automa) {
   })
 
   parser.on('data', async (data) => {
-    // if data is the same as before, stop sending untill it changes
+    // if data is the same as before, stop sending until it changes
     if (data !== previousValue) {
       const payload = JSON.parse(data)
       const {
@@ -110,7 +124,7 @@ function setupSerialPort(wss, automa) {
               ...payload,
               currentState
             })
-            client.send(data, { binary: false })
+            client.send(augmentedData, { binary: false })
           }
         })
       }
@@ -151,7 +165,7 @@ async function processArduinoSignal(automa, payload, lastParameters) {
     }
     case STATES.SAVE: {
       if (payload.type === COMMANDS.BACK) {
-        // tell the client to close the saving modal
+        // TODO: tell the client to close the saving modal
         automa.changeState(STATES.CUSTOMIZE)
         output.notifyClients = true
       } else if (payload.type === COMMANDS.OK) {
@@ -164,8 +178,10 @@ async function processArduinoSignal(automa, payload, lastParameters) {
       break
     }
     case STATES.DISPLAY: {
+      // TODO: generate QR code 
       if (payload.type === COMMANDS.OK) {
-        // TODO: generate QR code and
+        // send salmon in the aquarium
+
         automa.changeState(STATES.TUTORIAL)
       }
       break
@@ -181,12 +197,37 @@ async function processArduinoSignal(automa, payload, lastParameters) {
 
 async function writeSalmonParameters(parameters) {
   try {
-    await writeFile(join('./customizedSalmons', 'obj.json'), JSON.stringify(parameters) + "\n");
-
+    await writeFile(join('./customizedSalmons', `fish_${fishNumber}.json`), JSON.stringify(parameters) + "\n");
+    // change the fish number to write up to 30 json files
+    if (fishNumber < 29) {
+      fishNumber++
+    } else fishNumber = 0
     console.info("salmon saved correctly")
   } catch (error) {
     console.error("failed to save salmon", error)
   }
+}
+
+async function readSalmonParameters() {
+  let fishFiles
+  try {
+    fishFiles = (await readdir('./customizedSalmons')).filter(elem => elem.endsWith('.json'))
+  } catch (error) {
+    console.error('impossible to load directory content')
+  }
+
+  const fishes = []
+
+  for (const fishFile of fishFiles) {
+    try {
+      const fish = await readFile(join('./customizedSalmons', fishFile), { encoding: 'utf8' })
+      fishes.push(JSON.parse(fish?.trim()))
+    } catch (error) {
+      console.error("failed reading files", error);
+    }
+  }
+
+  return fishes
 }
 
 main()

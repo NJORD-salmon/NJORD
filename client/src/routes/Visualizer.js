@@ -1,4 +1,4 @@
-import React, { Suspense, useState, useEffect } from "react"
+import React, { Suspense } from "react"
 // OrbitControls to move the camera around
 import { OrbitControls, ContactShadows, Html, useProgress } from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
@@ -41,7 +41,6 @@ export default function Visualizer() {
         <ContactShadows position={[0, -2, 0]} opacity={0.7} scale={10} blur={1.5} far={2} />
 
         <OrbitControls
-
           enableZoom={false}
           enablePan={false}
         />
