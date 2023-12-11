@@ -8,6 +8,7 @@ import { useSearchParams } from "react-router-dom";
 import Lights from "../components/light"
 import Model from "../components/model"
 
+
 // view the load progress
 function Loader() {
   const { progress } = useProgress()
@@ -16,6 +17,8 @@ function Loader() {
 
 export default function Visualizer() {
   const [searchParams] = useSearchParams();
+  // here it is not necessary to fix the values since they don't change 
+  // it is already managed in the salmon
   const { h, s, l, u, v, t } = Object.fromEntries(searchParams.entries())
 
   return (
@@ -38,10 +41,12 @@ export default function Visualizer() {
           />
         </Suspense>
 
-        <ContactShadows position={[0, -2, 0]} opacity={0.7} scale={10} blur={1.5} far={2} />
+        {/* <ContactShadows position={[0, -2, 0]} opacity={0.7} scale={10} blur={1.5} far={2} /> */}
 
         <OrbitControls
-          enableZoom={false}
+          enableZoom={true}
+          minDistance={2.5}
+          maxDistance={10}
           enablePan={false}
         />
       </Canvas>

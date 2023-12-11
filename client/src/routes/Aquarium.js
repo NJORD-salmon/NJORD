@@ -1,6 +1,5 @@
 import React, { useEffect, Suspense, useState } from "react"
 import Box from "@mui/material/Box"
-import Button from "@mui/material/Button"
 import Modal from "@mui/material/Modal"
 import { OrbitControls, Stats } from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
@@ -25,12 +24,12 @@ function Fish({ fishes }) {
       hue={FixHue(config.hue)}
       saturation={FixSaturation(config.saturation)}
       lightness={FixLightness(config.lightness)}
-      uScale={1}
-      vScale={1}
-      textureIndex={config.texture ?? 0}
+      uScale={config.uScale ?? 1}
+      vScale={config.vScale ?? 1}
+      textureIndex={/* FixTexture */(config.texture) ?? 0}
       // TODO for now we give random positions
       // position={[y, z, x]}
-      position={[getRandom(-3, 3), getRandom(-2, 2),/*  getRandom(-7, 0) */ -idx / 2]}
+      position={[getRandom(-3, 3), getRandom(-2, 2), -idx / 2]}
       animIndex={0}
       movementAnim={true}
       key={idx}
@@ -39,23 +38,22 @@ function Fish({ fishes }) {
 
   return (
     <>
-
       <WaterLights />
 
       {/* for debugging */}
-      {/*<Floor sizeY={6} sizeX={22} position={[0, -2, 0]} rotation-x={-Math.PI / 2} />
-        <Floor sizeY={12} sizeX={22} position={[0, 4, -3]} />
-         <Floor sizeY={12} sizeX={6} position={[11, 4, 0]} rotation-y={-Math.PI / 2} />
-        <Floor sizeY={12} sizeX={6} position={[-11, 4, 0]} rotation-y={Math.PI / 2} /> */}
+      {/* <Floor sizeY={6} sizeX={22} position={[0, -2, 0]} rotation-x={-Math.PI / 2} />
+      <Floor sizeY={12} sizeX={22} position={[0, 4, -3]} />
+      <Floor sizeY={12} sizeX={6} position={[11, 4, 0]} rotation-y={-Math.PI / 2} />
+      <Floor sizeY={12} sizeX={6} position={[-11, 4, 0]} rotation-y={Math.PI / 2} /> */}
 
       {models}
-
     </>
   )
 }
 
 export default function Water() {
   const [fishes, setFishes] = useState([])
+  const [currentState, setCurrentState] = useState("CUSTOMIZE");
 
   useEffect(() => {
     // start websocket client 
@@ -84,17 +82,31 @@ export default function Water() {
     return () => arduinoSocket.close();
   }, []);
 
-  const [openModal, setOpenModal] = React.useState(false);
-  const handleOpen = () => setOpenModal(true);
-  const handleClose = () => setOpenModal(false);
-
+  const [open, setOpen] = React.useState(false);
+  // read changes to manage modal
+  /*useEffect(() => {
+   switch (currentState) {
+      case "CUSTOMIZE": {
+        setOpen(true)
+        break
+      }
+      case "DISPLAY": {
+        setOpen(false)
+ 
+        break
+      }
+      default: {
+        throw new Error('unknown state')
+      }
+    }
+  }, [currentState])
+ */
   return (
     <>
       <div className={'modal-button'}>
-        <Button onClick={handleOpen}>Open modal</Button>
+
         <Modal
-          open={openModal}
-          onClose={handleClose}
+          open={open}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >

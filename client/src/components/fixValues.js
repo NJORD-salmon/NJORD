@@ -10,10 +10,17 @@ export function FixLightness(lit) {
   return 10 + lit * 90 / 255
 }
 
-export function FixUScale() {
+export function FixTexture(texture) {
+  const numberOfTextures = 6
+  const textureRangeSize = 256 / numberOfTextures
 
+  return Math.floor(texture / textureRangeSize)
 }
 
-export function FixVScale() {
+export function FixUScale(scaleX) {
+  return 0.4 + scaleX * 3 / 255
+}
 
+export function FixVScale(scaleY) {
+  return 0.4 + scaleY * 5 / 255
 }

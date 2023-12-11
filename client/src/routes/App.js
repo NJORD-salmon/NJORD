@@ -14,20 +14,10 @@ import { FixHue, FixSaturation, FixLightness } from "../components/fixValues"
 import { SERVER_ADDRESS } from "../env"
 
 
-
 // view the load progress
 function Loader() {
   const { progress } = useProgress()
   return <Html center>{progress} % loaded</Html>
-}
-
-let currentState
-
-const numberOfTextures = 6
-const textureRangeSize = 256 / numberOfTextures
-
-function getTexture(texture, divider) {
-  return Math.floor(texture / divider)
 }
 
 // configuration for screen sliders
@@ -58,13 +48,15 @@ export default function App() {
   // const [scaleX, setScaleX] = useState(1);
   // const [scaleY, setScaleY] = useState(1); 
 
-  const [nextButton, setNextButton] = useState(false);
-  const [okButton, setOkButton] = useState(false);
+  const [nextButton, setNextButton] = useState(0);
+  const [okButton, setOkButton] = useState(0);
   const [backButton, setbackButton] = useState(false);
 
   const [open, setOpen] = React.useState(false);
+  // TODO: change initial state (page) to TUTORIAL in the future
+  const [currentState, setCurrentState] = useState("CUSTOMIZE");
 
-  // TODO slider for scaling textures
+  // TODO: slider for scaling textures
   const { scaleX, scaleY, texture } = useControls({
     scaleX: scaleXConfig,
     scaleY: scaleYConfig,
@@ -87,18 +79,17 @@ export default function App() {
         setHue(FixHue(payload.values.hue));
         setSaturation(FixSaturation(payload.values.saturation));
         setLightness(FixLightness(payload.values.lightness));
-        //setTexture(payload.values.texture);
-        //  TODO fix scale payload
-        // setScaleX(payload.scaleX);
-        // setScaleX(payload.scaleX);
+        //setTexture(FixTexture(payload.values.texture));
+        // setScaleX(FixUScale(payload.scaleX));
+        // setScaleY(FixVScale(payload.scaleY));
 
         setNextButton(payload.values.next);
         setOkButton(payload.values.ok);
         setbackButton(payload.values.back);
-        console.log(payload)
+        // console.log(payload)
 
         // TODO: fix modals
-        currentState = payload.currentState
+        setCurrentState(payload.currentState)
         console.log(currentState)
       }
       catch (error) {
@@ -108,28 +99,39 @@ export default function App() {
     };
 
     return () => arduinoSocket.close();
-  }, []);
+  }, [currentState]);
 
   // read changes of button with modal
   useEffect(() => {
-    if (currentState === "SAVE") {
-      // open the modal to save the salmon
-      return () => setOpen(true)
-    } else if (currentState === "DISPLAY") {
-      // close the modal, start animation and save the data
-      return () => {
-        //  mostra conferma di salvataggio
-        display()
-        setTimeout(() => {
-          // code is executed after 1 second
-          setOpen(false)
-        }, 5000)
+    switch (currentState) {
+      case "TUTORIAL": {
+        setOpen(false)
+        break
       }
-    } else if (currentState === "CUSTOMIZE") {
-      // just go back to customization
-      return () => setOpen(false)
+      case "CUSTOMIZE": {
+        setOpen(false)
+        break
+      }
+      case "SAVE": {
+        // open the modal to save the salmon
+        setOpen(true)
+        break
+      }
+      case "DISPLAY": {
+        document.getElementById("saved-screen").style.display = "block";
+
+        // TODO: qr code, press ok => start animation
+        // setTimeout(() => {
+        // code is executed after 1 second
+
+        // }, 1000)
+        break
+      }
+      default: {
+        throw new Error('unknown state')
+      }
     }
-  }, [nextButton, okButton, backButton])
+  }, [currentState])
 
   return (
     <>
@@ -173,7 +175,7 @@ export default function App() {
             lightness={lightness}
             uScale={scaleX}
             vScale={scaleY}
-            textureIndex={/* getTexture(texture, textureRangeSize) */ texture}
+            textureIndex={texture}
             modelScale={3.5}
             position={[0.5, 0, 0]}
             rotation={[0, 0.95, 0]}
@@ -181,24 +183,18 @@ export default function App() {
           />
         </Suspense>
 
-        <ContactShadows position={[0, -2, 0]} opacity={0.7} scale={10} blur={1.5} far={2} />
+        {/* <ContactShadows position={[0, -2, 0]} opacity={0.7} scale={10} blur={1.5} far={2} /> */}
 
         <OrbitControls
-          minPolarAngle={Math.PI / 2}
-          maxPolarAngle={Math.PI / 2}
-          enableZoom={false}
+          /* minPolarAngle={Math.PI / 2}
+          maxPolarAngle={Math.PI / 2} */
+          enableZoom={true}
+          minDistance={2.5}
+          maxDistance={10}
           enablePan={false}
         />
-        {/* <Stats /> */}
+        <Stats />
       </Canvas>
     </>
   )
-}
-
-function display() {
-  if (document.getElementById("saved-screen").style.display === "none") {
-    document.getElementById("saved-screen").style.display = "block";
-  } else {
-    document.getElementById("saved-screen").style.display = "none";
-  }
 }

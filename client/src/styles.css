@@ -76,6 +76,8 @@ iframe {
 
 #saved-screen {
   display:none;
+  padding-top: 60px;
+  color: crimson;
 }
 
 #saving-screen {

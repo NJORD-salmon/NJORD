@@ -7,7 +7,7 @@ void setup() {
 
 void loop() {
   StaticJsonDocument<72> doc;  // 88 in tot.
-  doc["type"].set("DATA");
+  doc["type"].set("data");
 
   if (digitalRead(7) == HIGH) {
     doc["type"].set("next");

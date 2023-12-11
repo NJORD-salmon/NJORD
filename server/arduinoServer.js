@@ -3,6 +3,7 @@ import { SerialPort } from 'serialport'
 import { ReadlineParser } from 'serialport'
 import { join } from 'path'
 import { writeFile, readFile, readdir } from "node:fs/promises"
+import { statSync } from 'fs'
 
 import { STATES, StateMachine } from './stateMachine.js'
 
@@ -10,7 +11,7 @@ const COMMANDS = {
   OK: 'ok',
   NEXT: 'next',
   BACK: 'back',
-  DATA: 'DATA'
+  DATA: 'data'
 }
 
 const PAGES = {
@@ -18,6 +19,9 @@ const PAGES = {
   APP: 'app'
 }
 
+const BASEPATH = './customizedSalmons'
+
+// TODO: set last fish file number
 let fishNumber = 0
 
 function main() {
@@ -36,16 +40,7 @@ function main() {
     }
   })
 
-  // TODO: return when receive message from aqurium -> return array of salmon configs
-
-  /* currently return just two preconfigured salmons
-  websocket code
-
-  onMessage => return [
-    {"hue":0,"saturation":209,"lightness":71,"texture":255},
-    {"hue":149,"saturation":189,"lightness":81,"texture":0}
-  ]
-  */
+  // TODO: return when receive message from aqurium -> return also currentState
 
   console.log('server started')
 
@@ -197,11 +192,9 @@ async function processArduinoSignal(automa, payload, lastParameters) {
 
 async function writeSalmonParameters(parameters) {
   try {
-    await writeFile(join('./customizedSalmons', `fish_${fishNumber}.json`), JSON.stringify(parameters) + "\n");
+    await writeFile(join(BASEPATH, `fish_${fishNumber}.json`), JSON.stringify(parameters) + "\n");
     // change the fish number to write up to 30 json files
-    if (fishNumber < 29) {
-      fishNumber++
-    } else fishNumber = 0
+    fishNumber++
     console.info("salmon saved correctly")
   } catch (error) {
     console.error("failed to save salmon", error)
@@ -211,23 +204,38 @@ async function writeSalmonParameters(parameters) {
 async function readSalmonParameters() {
   let fishFiles
   try {
-    fishFiles = (await readdir('./customizedSalmons')).filter(elem => elem.endsWith('.json'))
+    fishFiles = (await readdir(BASEPATH)).filter(elem => elem.endsWith('.json'))
   } catch (error) {
     console.error('impossible to load directory content')
   }
+
+  sortFishFiles(fishFiles)
 
   const fishes = []
 
   for (const fishFile of fishFiles) {
     try {
-      const fish = await readFile(join('./customizedSalmons', fishFile), { encoding: 'utf8' })
+      // read each fishFile content and push it in the array fishes
+      const fish = await readFile(join(BASEPATH, fishFile), { encoding: 'utf8' })
       fishes.push(JSON.parse(fish?.trim()))
     } catch (error) {
       console.error("failed reading files", error);
     }
   }
 
-  return fishes
+  return fishes.slice(0, 10)
+}
+
+// get last 10 created files
+async function sortFishFiles(fishFiles) {
+  let sorted = await fishFiles.sort((a, b) => {
+    let aStat = statSync(`${BASEPATH}/${a}`);
+    let bStat = statSync(`${BASEPATH}/${b}`);
+
+    return new Date(bStat.birthtime).getTime() - new Date(aStat.birthtime).getTime();
+  })
+
+  return sorted
 }
 
 main()
