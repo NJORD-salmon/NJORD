@@ -48,11 +48,18 @@ function main() {
   const automa = new StateMachine(STATES.CUSTOMIZE)
 
   // set up serialport for server and arduino communication
-  const port = setupSerialPort(wss, automa)
+  let port
+  try {
+    port = setupSerialPort(wss, automa)
+  } catch (error) {
+    console.error('impossible to connect to Arduino', error)
+  }
 
   // signal interrupted
   process.on('SIGINT', () => {
-    port.close()
+    if (port?.isOpen) {
+      port.close()
+    }
     wss.close()
 
     console.log('server terminated')
@@ -89,13 +96,15 @@ function setupSerialPort(wss, automa) {
   const parser = port.pipe(new ReadlineParser({ delimiter: '\r\n' }))
 
   let previousValue = null
-  // to prevent changings in the parameters when saving
+  // to prevent changes in the parameters when saving
   let lastChosenParameters = {}
 
   // Read the port data
   port.on("open", () => {
     console.log('serial port open')
   })
+
+  port.on('error', console.error)
 
   parser.on('data', async (data) => {
     // if data is the same as before, stop sending until it changes
