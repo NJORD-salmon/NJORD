@@ -1,5 +1,6 @@
 import React, { useEffect, Suspense, useState } from "react"
 import Box from "@mui/material/Box"
+import Button from '@mui/material/Button'
 import Modal from "@mui/material/Modal"
 import { OrbitControls, Stats } from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
@@ -8,11 +9,23 @@ import { degToRad } from "three/src/math/MathUtils.js"
 import WaterLights from "../components/waterlights.js"
 // import Floor from "../components/floor.js" // for lights debugging
 import Model from "../components/model.js"
-import { FixHue, FixSaturation, FixLightness } from "../components/fixValues.js"
 import { SERVER_ADDRESS } from "../env"
+import {
+  FixHue,
+  FixSaturation,
+  FixLightness,
+  FixTexture,
+  FixUScale,
+  FixVScale
+} from "../components/fixValues"
 
+function getRandomY(min, max) {
+  return Math.random() * (max - min) + min;
+}
 
-function getRandom(min = 0, max = 5) {
+function getRandomZ(idx) {
+  const min = -1.5 - idx / 4
+  const max = 1.5 + idx / 4
   return Math.random() * (max - min) + min;
 }
 
@@ -24,12 +37,12 @@ function Fish({ fishes }) {
       hue={FixHue(config.hue)}
       saturation={FixSaturation(config.saturation)}
       lightness={FixLightness(config.lightness)}
-      uScale={config.uScale ?? 1}
-      vScale={config.vScale ?? 1}
-      textureIndex={/* FixTexture */(config.texture) ?? 0}
+      uScale={FixUScale(config.scaleX)}
+      vScale={FixVScale(config.scaleY)}
+      textureIndex={FixTexture(config.texture)}
       // TODO for now we give random positions
       // position={[y, z, x]}
-      position={[getRandom(-3, 3), getRandom(-2, 2), -idx / 2]}
+      position={[getRandomY(-3, 3), getRandomZ(idx), -idx / 2]}
       animIndex={0}
       movementAnim={true}
       key={idx}
@@ -60,7 +73,7 @@ export default function Water() {
     const arduinoSocket = new WebSocket(`ws://${SERVER_ADDRESS}:9000`);
     arduinoSocket.onopen = (event) => {
       // if it works, then connection opened
-      // send a messagge to server to request fish parameters
+      // send a message to server to request fish parameters
       arduinoSocket.send('gimme-fish')
     };
 
@@ -83,6 +96,8 @@ export default function Water() {
   }, []);
 
   const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   // read changes to manage modal
   /*useEffect(() => {
    switch (currentState) {
@@ -104,9 +119,10 @@ export default function Water() {
   return (
     <>
       <div className={'modal-button'}>
-
+        <Button onClick={handleOpen}>Open modal</Button>
         <Modal
           open={open}
+          onClose={handleClose}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
@@ -117,8 +133,6 @@ export default function Water() {
       </div >
 
       <Canvas
-        // TODO fix orthographic camera to get better fish motion
-        // orthographic
         shadows
         camera={{
           fov: 30,
@@ -128,7 +142,7 @@ export default function Water() {
 
         }} >
 
-        <fog attach="fog" args={['#cecece', 0.1, 15]} />
+        <fog attach="fog" args={['#cecece', 0.1, 20]} />
 
         <Suspense>
           <Fish fishes={fishes} />

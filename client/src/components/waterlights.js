@@ -31,19 +31,19 @@ const WaterLights = forwardRef((props, ref) => {
       <pointLight
         position={[-9, 3, 2]}
         decay={0}
-        intensity={3}
+        intensity={2}
         castShadow
       />
       <pointLight
         position={[9, 3, 2]}
         decay={0}
-        intensity={3}
+        intensity={2}
         castShadow
       />
       <pointLight
         position={[0, 3, 4]}
         decay={0}
-        intensity={3}
+        intensity={2}
         castShadow
       />
     </>

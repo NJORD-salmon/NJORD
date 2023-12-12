@@ -7,8 +7,8 @@ import { statSync } from 'fs'
 
 import { STATES, StateMachine } from './stateMachine.js'
 
+
 const COMMANDS = {
-  OK: 'ok',
   NEXT: 'next',
   BACK: 'back',
   DATA: 'data'
@@ -30,9 +30,18 @@ function main() {
     port: 9000,
     fn: async (ws, data) => {
       if (data.toString() === 'gimme-fish') {
-        console.log('catch aah')
+        console.log('catch them')
         const response = {
           fishes: await readSalmonParameters()
+        }
+        ws.send(JSON.stringify(response))
+      }
+      if (data.toString() === 'send-qr-params') {
+        console.log('show qr')
+        const response = {
+          "h": 250,
+          "s": 60,
+          "l": 50
         }
         ws.send(JSON.stringify(response))
       }
@@ -40,7 +49,7 @@ function main() {
     }
   })
 
-  // TODO: return when receive message from aqurium -> return also currentState
+  // TODO: return when receive message from aquarium -> return also currentState
 
   console.log('server started')
 
@@ -116,9 +125,10 @@ function setupSerialPort(wss, automa) {
         parameters
       } = await processArduinoSignal(automa, payload, lastChosenParameters)
 
-      // update parameters to be saved when retured by the processing function
+      // update parameters to be saved when returned by the processing function
       if (parameters) {
         lastChosenParameters = parameters
+        // TODO extract params
       }
 
       if (notifyClients) {
@@ -151,7 +161,10 @@ async function processArduinoSignal(automa, payload, lastParameters) {
 
   switch (automa.currentState) {
     case STATES.TUTORIAL: {
+      // if (payload.type === COMMANDS.NEXT) {
       automa.changeState(STATES.CUSTOMIZE)
+      output.notifyClients = true
+      // }
       break
     }
     case STATES.CUSTOMIZE: {
@@ -172,7 +185,7 @@ async function processArduinoSignal(automa, payload, lastParameters) {
         // TODO: tell the client to close the saving modal
         automa.changeState(STATES.CUSTOMIZE)
         output.notifyClients = true
-      } else if (payload.type === COMMANDS.OK) {
+      } else if (payload.type === COMMANDS.NEXT) {
         // save salmon parameters and move the next UI
         await writeSalmonParameters(lastParameters)
 
@@ -183,9 +196,9 @@ async function processArduinoSignal(automa, payload, lastParameters) {
     }
     case STATES.DISPLAY: {
       // TODO: generate QR code 
-      if (payload.type === COMMANDS.OK) {
+      if (payload.type === COMMANDS.NEXT) {
         // send salmon in the aquarium
-
+        output.notifyClients = true
         automa.changeState(STATES.TUTORIAL)
       }
       break
@@ -200,6 +213,7 @@ async function processArduinoSignal(automa, payload, lastParameters) {
 }
 
 async function writeSalmonParameters(parameters) {
+  // write saved salmon file
   try {
     await writeFile(join(BASEPATH, `fish_${fishNumber}.json`), JSON.stringify(parameters) + "\n");
     // change the fish number to write up to 30 json files
@@ -232,7 +246,7 @@ async function readSalmonParameters() {
     }
   }
 
-  return fishes.slice(0, 10)
+  return fishes.slice(0, 9)
 }
 
 // get last 10 created files

@@ -7,12 +7,12 @@ export const STATES = {
 
 export class StateMachine {
 
-  constructor(initalState, verbose = false) {
+  constructor(initialState, verbose = false) {
     this.states = STATES
     this.verbose = verbose
 
-    if (this.states[initalState] !== undefined) {
-      this.currentState = initalState
+    if (this.states[initialState] !== undefined) {
+      this.currentState = initialState
     } else {
       throw new Error('invalid state selected')
     }

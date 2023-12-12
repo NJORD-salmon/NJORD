@@ -50,7 +50,7 @@ export default function Model({
 
   const hslColor = extractColor(hue, saturation, lightness)
   const material = getMaterial(hslColor, texture)
-  const constantMaterial = getCostantMaterial(hslColor)
+  const constantMaterial = getConstantMaterial(hslColor)
 
   const myMesh = useRef()
   // select which gltf model to load
@@ -144,7 +144,7 @@ function getMaterial(color, image) {
   )
 }
 
-function getCostantMaterial(color) {
+function getConstantMaterial(color) {
   return (
     new MeshStandardMaterial({
       color: color,

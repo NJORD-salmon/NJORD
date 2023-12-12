@@ -13,6 +13,7 @@
     "promise-fs": "^2.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-qr-code": "^2.0.12",
     "react-router-dom": "^6.19.0",
     "react-scripts": "^5.0.1",
     "three": "^0.158.0",

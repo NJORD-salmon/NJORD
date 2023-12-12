@@ -87,3 +87,8 @@ iframe {
 .modal-button {
   text-align: center;
 }
+
+#container {
+  display: none;
+  padding-top: 30px;
+}
