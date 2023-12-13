@@ -1,3 +1,5 @@
+// functions to get the right range of values of the data received from Arduino
+
 export function FixHue(hue) {
   return hue * 360 / 255
 }

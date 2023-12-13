@@ -6,7 +6,6 @@ import { Canvas } from "@react-three/fiber"
 import Modal from "@mui/material/Modal"
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-// GUI template to debug the sliders
 
 import Lights from "../components/light"
 import Model from "../components/model"
@@ -20,8 +19,9 @@ import {
   FixVScale
 } from "../components/fixValues"
 
-let h, s, l, u, v, t
 
+// parameters for the url code of the visualizer
+let h, s, l, u, v, t
 
 // view the load progress
 function Loader() {
@@ -45,7 +45,7 @@ export default function App() {
   const [currentState, setCurrentState] = useState("CUSTOMIZE");
 
   useEffect(() => {
-    // start websocket client + change hue value
+    // start websocket client + change values
     const arduinoSocket = new WebSocket(`ws://${SERVER_ADDRESS}:9000`);
     arduinoSocket.onopen = (event) => {
       // if it works, then connection opened
@@ -68,7 +68,6 @@ export default function App() {
         setbackButton(payload.values.back);
         console.log(payload)
 
-        // TODO: fix modals
         setCurrentState(payload.currentState)
         console.log(currentState)
       }
@@ -81,40 +80,42 @@ export default function App() {
     return () => arduinoSocket.close();
   }, [currentState]);
 
-  // read changes of button with modal
+  // modal config + saving url parameters
   useEffect(() => {
     switch (currentState) {
       case "TUTORIAL": {
-
         setOpen(false)
 
         break
       }
       case "CUSTOMIZE": {
+        // keep the modal closed
         setOpen(false)
-        // TODO fix them
-        // if continue to save the values, when changing status the last saved are of the actual salmon
+        // if continue to save the values, when changing status the last saved are the actual of the salmon
         h = Math.floor(hue)
         s = Math.floor(saturation)
         l = Math.floor(lightness)
         u = scaleX.toFixed(3)
         v = scaleY.toFixed(3)
         t = texture
-        console.log(u)
+
         break
       }
       case "SAVE": {
         // open the modal to save the salmon
         setOpen(true)
+
         break
       }
       case "DISPLAY": {
+        // saved file confirmation
         document.getElementById("saving-screen").style.display = "none";
         document.getElementById("saved-screen").style.display = "block";
         // show qr code
         document.getElementById("container").style.display = "block";
 
-        // TODO: qr code, press next => start animation
+        // TODO: press next => start animation, next state
+
         break
       }
       default: {
@@ -166,7 +167,6 @@ export default function App() {
         </Modal>
       </div>
 
-      {/* <Leva collapsed={false} flat={false} hidden={false}></Leva> */}
       <Canvas shadows >
         <Lights />
 

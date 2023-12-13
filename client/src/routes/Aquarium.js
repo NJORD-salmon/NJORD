@@ -19,6 +19,7 @@ import {
   FixVScale
 } from "../components/fixValues"
 
+
 function getRandomY(min, max) {
   return Math.random() * (max - min) + min;
 }
@@ -40,7 +41,7 @@ function Fish({ fishes }) {
       uScale={FixUScale(config.scaleX)}
       vScale={FixVScale(config.scaleY)}
       textureIndex={FixTexture(config.texture)}
-      // TODO for now we give random positions
+      // TODO for now we give random positions => fix positions
       // position={[y, z, x]}
       position={[getRandomY(-3, 3), getRandomZ(idx), -idx / 2]}
       animIndex={0}
@@ -53,8 +54,7 @@ function Fish({ fishes }) {
     <>
       <WaterLights />
 
-      {/* for debugging */}
-      {/* 
+      {/* for debugging
       <Floor sizeY={12} sizeX={22} position={[0, 0, -5]} />
       <Floor sizeY={6} sizeX={22} position={[0, -2, 0]} rotation-x={-Math.PI / 2} />
       <Floor sizeY={12} sizeX={6} position={[11, 4, 0]} rotation-y={-Math.PI / 2} />
@@ -73,7 +73,6 @@ export default function Water() {
     // start websocket client 
     const arduinoSocket = new WebSocket(`ws://${SERVER_ADDRESS}:9000`);
     arduinoSocket.onopen = (event) => {
-      // if it works, then connection opened
       // send a message to server to request fish parameters
       arduinoSocket.send('gimme-fish')
     };
@@ -83,7 +82,7 @@ export default function Water() {
         // if there are fishes in the JSON, then change fishes state
         const payload = JSON.parse(event.data)
         if (payload?.fishes?.length > 0) {
-          console.log(payload)
+          /* console.log(payload) */
           setFishes(payload.fishes)
         }
       }
@@ -99,7 +98,8 @@ export default function Water() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  // read changes to manage modal
+
+  // TODO read changes to manage modal
   /*useEffect(() => {
    switch (currentState) {
       case "CUSTOMIZE": {
@@ -117,6 +117,7 @@ export default function Water() {
     }
   }, [currentState])
  */
+
   return (
     <>
       <div className={'modal-button'}>
@@ -136,13 +137,14 @@ export default function Water() {
       <Canvas
         shadows
         camera={{
+          // less fov, less perspective distortion
           fov: 30,
           position: [0, 0, 3],
           rotation: [0, 0, 0],
           zoom: 0.4
-
         }} >
 
+        {/* to give the impression of something farther away */}
         <fog attach="fog" args={['#cecece', 0.1, 20]} />
 
         <Suspense>

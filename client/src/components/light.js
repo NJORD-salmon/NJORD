@@ -1,4 +1,5 @@
 export default function Lights() {
+  // lights for the configurator
   return (
     <>
       <ambientLight intensity={Math.PI / 2} />

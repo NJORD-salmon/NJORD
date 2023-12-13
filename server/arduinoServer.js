@@ -119,7 +119,6 @@ function setupSerialPort(wss, automa) {
       // update parameters to be saved when returned by the processing function
       if (parameters) {
         lastChosenParameters = parameters
-        // TODO extract params
       }
 
       if (notifyClients) {
@@ -156,6 +155,7 @@ async function processArduinoSignal(automa, payload, lastParameters) {
       automa.changeState(STATES.CUSTOMIZE)
       output.notifyClients = true
       // }
+
       break
     }
     case STATES.CUSTOMIZE: {
@@ -169,11 +169,11 @@ async function processArduinoSignal(automa, payload, lastParameters) {
         output.notifyClients = true
         output.parameters = payload.values
       }
+
       break
     }
     case STATES.SAVE: {
       if (payload.type === COMMANDS.BACK) {
-        // TODO: tell the client to close the saving modal
         automa.changeState(STATES.CUSTOMIZE)
         output.notifyClients = true
       } else if (payload.type === COMMANDS.NEXT) {
@@ -183,15 +183,16 @@ async function processArduinoSignal(automa, payload, lastParameters) {
         automa.changeState(STATES.DISPLAY)
         output.notifyClients = true
       }
+
       break
     }
     case STATES.DISPLAY: {
-      // TODO: generate QR code 
       if (payload.type === COMMANDS.NEXT) {
         // send salmon in the aquarium
         output.notifyClients = true
         automa.changeState(STATES.TUTORIAL)
       }
+
       break
     }
     default: {
@@ -218,12 +219,8 @@ async function writeSalmonParameters(parameters) {
 
 async function readSalmonParameters(min, max) {
   let fishFiles
-  try {
-    fishFiles = (await readdir(BASEPATH)).filter(elem => elem.endsWith('.json'))
-  } catch (error) {
-    console.error('impossible to load directory content')
-  }
 
+  filterFishFiles(fishFiles)
   sortFishFiles(fishFiles)
 
   const fishes = []
@@ -241,6 +238,14 @@ async function readSalmonParameters(min, max) {
   return (
     fishes.slice(min, max)
   )
+}
+
+async function filterFishFiles(fishFiles) {
+  try {
+    fishFiles = (await readdir(BASEPATH)).filter(elem => elem.endsWith('.json'))
+  } catch (error) {
+    console.error('impossible to load directory content')
+  }
 }
 
 async function sortFishFiles(fishFiles) {

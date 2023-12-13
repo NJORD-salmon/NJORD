@@ -59,7 +59,6 @@ export default function Model({
   const { nodes } = useGraph(clone)
 
   const { actions, names } = useAnimations(animations, myMesh)
-  // console.log(actions)
 
   // this is executed after the rendering phase
   useEffect(() => {
@@ -77,7 +76,7 @@ export default function Model({
   const widthRadius = 3.5 - position[2]
 
   useFrame(({ clock }) => {
-    // add movement animation to scene if aquarium
+    // add movement animation to scene if in aquarium
     if (movementAnim) {
       const timer = clock.getElapsedTime() / 5.8
       myMesh.current.position.x = Math.sin(timer) * widthRadius
@@ -90,8 +89,8 @@ export default function Model({
 
   return (
     <group ref={myMesh} dispose={null} scale={modelScale} position={position} rotation={rotation} animIndex={animIndex}>
-      {/* <group name="Scene"> */}
       <group name="Salmon">
+        {/* meat, the one which changes texture */}
         <skinnedMesh
           name="Salmon_Meat"
           object={nodes.Salmon_Meat}
@@ -128,13 +127,12 @@ export default function Model({
         <primitive object={nodes.Root} />
       </group>
     </group>
-    // </group>
   );
 }
 
 useGLTF.preload('/models/salmon/salmon.gltf')
 
-// assign the color and the map to the mesh material
+// assign the color and the map to the meat material
 function getMaterial(color, image) {
   return (
     new MeshStandardMaterial({
@@ -144,6 +142,7 @@ function getMaterial(color, image) {
   )
 }
 
+// assign the color and the map to the mesh constant material
 function getConstantMaterial(color) {
   return (
     new MeshStandardMaterial({

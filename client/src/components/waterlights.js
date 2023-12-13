@@ -2,6 +2,7 @@ import { useHelper } from '@react-three/drei'
 import { forwardRef, useRef } from 'react'
 import { DirectionalLightHelper } from 'three'
 
+// lights for the aquarium
 const WaterLights = forwardRef((props, ref) => {
   const dirLight = useRef()
 
@@ -49,4 +50,5 @@ const WaterLights = forwardRef((props, ref) => {
     </>
   )
 })
+
 export default WaterLights

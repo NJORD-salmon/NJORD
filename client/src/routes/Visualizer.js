@@ -2,7 +2,6 @@ import React, { Suspense } from "react"
 // OrbitControls to move the camera around
 import { OrbitControls, ContactShadows, Html, useProgress } from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
-
 import { useSearchParams } from "react-router-dom";
 
 import Lights from "../components/light"
@@ -18,7 +17,7 @@ function Loader() {
 export default function Visualizer() {
   const [searchParams] = useSearchParams();
   // here it is not necessary to fix the values since they don't change 
-  // it is already managed in the salmon
+  // and it has already been managed before
   const { h, s, l, u, v, t } = Object.fromEntries(searchParams.entries())
 
   return (
