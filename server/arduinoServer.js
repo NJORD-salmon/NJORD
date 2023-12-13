@@ -32,16 +32,7 @@ function main() {
       if (data.toString() === 'gimme-fish') {
         console.log('catch them')
         const response = {
-          fishes: await readSalmonParameters()
-        }
-        ws.send(JSON.stringify(response))
-      }
-      if (data.toString() === 'send-qr-params') {
-        console.log('show qr')
-        const response = {
-          "h": 250,
-          "s": 60,
-          "l": 50
+          fishes: await readSalmonParameters(0, 9)
         }
         ws.send(JSON.stringify(response))
       }
@@ -218,13 +209,14 @@ async function writeSalmonParameters(parameters) {
     await writeFile(join(BASEPATH, `fish_${fishNumber}.json`), JSON.stringify(parameters) + "\n");
     // change the fish number to write up to 30 json files
     fishNumber++
+
     console.info("salmon saved correctly")
   } catch (error) {
     console.error("failed to save salmon", error)
   }
 }
 
-async function readSalmonParameters() {
+async function readSalmonParameters(min, max) {
   let fishFiles
   try {
     fishFiles = (await readdir(BASEPATH)).filter(elem => elem.endsWith('.json'))
@@ -245,11 +237,12 @@ async function readSalmonParameters() {
       console.error("failed reading files", error);
     }
   }
-
-  return fishes.slice(0, 9)
+  // get last 10 created files
+  return (
+    fishes.slice(min, max)
+  )
 }
 
-// get last 10 created files
 async function sortFishFiles(fishFiles) {
   let sorted = await fishFiles.sort((a, b) => {
     let aStat = statSync(`${BASEPATH}/${a}`);

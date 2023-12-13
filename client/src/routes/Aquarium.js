@@ -54,8 +54,9 @@ function Fish({ fishes }) {
       <WaterLights />
 
       {/* for debugging */}
-      {/* <Floor sizeY={6} sizeX={22} position={[0, -2, 0]} rotation-x={-Math.PI / 2} />
-      <Floor sizeY={12} sizeX={22} position={[0, 4, -3]} />
+      {/* 
+      <Floor sizeY={12} sizeX={22} position={[0, 0, -5]} />
+      <Floor sizeY={6} sizeX={22} position={[0, -2, 0]} rotation-x={-Math.PI / 2} />
       <Floor sizeY={12} sizeX={6} position={[11, 4, 0]} rotation-y={-Math.PI / 2} />
       <Floor sizeY={12} sizeX={6} position={[-11, 4, 0]} rotation-y={Math.PI / 2} /> */}
 

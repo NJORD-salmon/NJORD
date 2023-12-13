@@ -7,7 +7,6 @@ import Modal from "@mui/material/Modal"
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 // GUI template to debug the sliders
-import { Leva, useControls } from "leva"
 
 import Lights from "../components/light"
 import Model from "../components/model"
@@ -20,6 +19,9 @@ import {
   FixUScale,
   FixVScale
 } from "../components/fixValues"
+
+let h, s, l, u, v, t
+
 
 // view the load progress
 function Loader() {
@@ -90,6 +92,15 @@ export default function App() {
       }
       case "CUSTOMIZE": {
         setOpen(false)
+        // TODO fix them
+        // if continue to save the values, when changing status the last saved are of the actual salmon
+        h = Math.floor(hue)
+        s = Math.floor(saturation)
+        l = Math.floor(lightness)
+        u = scaleX.toFixed(3)
+        v = scaleY.toFixed(3)
+        t = texture
+        console.log(u)
         break
       }
       case "SAVE": {
@@ -110,7 +121,7 @@ export default function App() {
         throw new Error('unknown state')
       }
     }
-  }, [currentState])
+  }, [currentState, hue, saturation, lightness, scaleX, scaleY, texture])
 
   return (
     <>
@@ -146,7 +157,7 @@ export default function App() {
               <QRCode
                 size={256}
                 style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-                value={`${SERVER_ADDRESS}:3000/visualizer?`}
+                value={`${SERVER_ADDRESS}:3000/visualizer?h=${h}&s=${s}&l=${l}&u=${u}&v=${v}&t=${t}`}
                 viewBox={`0 0 256 256`}
               />
             </div>
