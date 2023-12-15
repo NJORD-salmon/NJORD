@@ -33,13 +33,13 @@ export default function Model({
   })
 
   const textureVector = [
-    '../models/salmon/0.png',
-    "../models/salmon/1.jpeg",
-    "../models/salmon/2.jpeg",
-    "../models/salmon/3.jpeg",
-    "../models/salmon/4.jpeg",
-    "../models/salmon/5.jpeg",
-    "../models/salmon/6.jpeg",
+    '../models/salmon/meat_textures/0.png',
+    "../models/salmon/meat_textures/1.jpeg",
+    "../models/salmon/meat_textures/2.jpeg",
+    "../models/salmon/meat_textures/3.jpeg",
+    "../models/salmon/meat_textures/4.jpeg",
+    "../models/salmon/meat_textures/5.jpeg",
+    "../models/salmon/meat_textures/6.jpeg",
   ]
   // load texture
   const texture = new TextureLoader().load(textureVector[textureIndex])
@@ -75,7 +75,7 @@ export default function Model({
   // widthRadius is how much the fish can move on the x axis
   const widthRadius = 3.5 - position[2]
 
-  useFrame(({ clock }) => {
+  /*useFrame(({ clock }) => {
     // add movement animation to scene if in aquarium
     if (movementAnim) {
       const timer = clock.getElapsedTime() / 5.8
@@ -85,7 +85,51 @@ export default function Model({
         // TODO: turn salmon and change animation
       }
     }
-  })
+  }) */
+
+  const rotationRef = useRef(-90)
+  const max_X = 3.5 - position[2]
+
+  /* useEffect(() => {
+    // 1 for moving right, -1 for moving left
+    let direction = 1
+    let isRotating = false
+
+    const animate = () => {
+      // update position
+      myMesh.current.position.x += 0.02 * direction;
+
+      // check if the mesh reaches the max X value
+      if (Math.abs(myMesh.current.position.x) >= max_X) {
+        // rotate by 180 degrees if not already rotating
+        if (!isRotating) {
+          isRotating = true;
+          rotationRef.current += Math.PI;
+        }
+
+        // apply rotation
+        myMesh.current.rotation.y = rotationRef.current;
+
+        // update direction after the rotation is complete
+        if (rotationRef.current >= Math.PI) {
+          direction *= -1; // Invert direction
+          isRotating = false;
+          rotationRef.current = 0; // Reset rotation
+        }
+      }
+
+      // Request the next animation frame
+      requestAnimationFrame(animate);
+    };
+
+    // Start the animation loop
+    animate();
+
+    // Cleanup function
+    return () => {
+      // Stop any ongoing animations or cleanup resources if needed
+    };
+  }, []); // Empty dependency array ensures that the effect runs only once */
 
   return (
     <group ref={myMesh} dispose={null} scale={modelScale} position={position} rotation={rotation} animIndex={animIndex}>

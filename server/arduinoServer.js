@@ -32,7 +32,8 @@ function main() {
       if (data.toString() === 'gimme-fish') {
         console.log('catch them')
         const response = {
-          fishes: await readSalmonParameters(0, 9)
+          fishes: await readSalmonParameters(0, 9),
+          currentState: automa.currentState  // include current state in the response
         }
         ws.send(JSON.stringify(response))
       }
@@ -220,7 +221,11 @@ async function writeSalmonParameters(parameters) {
 async function readSalmonParameters(min, max) {
   let fishFiles
 
-  filterFishFiles(fishFiles)
+  try {
+    fishFiles = (await readdir(BASEPATH)).filter(elem => elem.endsWith('.json'))
+  } catch (error) {
+    console.error('impossible to load directory content')
+  }
   sortFishFiles(fishFiles)
 
   const fishes = []
@@ -240,13 +245,7 @@ async function readSalmonParameters(min, max) {
   )
 }
 
-async function filterFishFiles(fishFiles) {
-  try {
-    fishFiles = (await readdir(BASEPATH)).filter(elem => elem.endsWith('.json'))
-  } catch (error) {
-    console.error('impossible to load directory content')
-  }
-}
+
 
 async function sortFishFiles(fishFiles) {
   let sorted = await fishFiles.sort((a, b) => {

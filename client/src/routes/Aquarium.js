@@ -1,6 +1,5 @@
 import React, { useEffect, Suspense, useState } from "react"
 import Box from "@mui/material/Box"
-import Button from '@mui/material/Button'
 import Modal from "@mui/material/Modal"
 import { OrbitControls, Stats } from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
@@ -44,6 +43,7 @@ function Fish({ fishes }) {
       // TODO for now we give random positions => fix positions
       // position={[y, z, x]}
       position={[getRandomY(-3, 3), getRandomZ(idx), -idx / 2]}
+      rotation={[0, degToRad(90), 0]}
       animIndex={0}
       movementAnim={true}
       key={idx}
@@ -82,9 +82,10 @@ export default function Water() {
         // if there are fishes in the JSON, then change fishes state
         const payload = JSON.parse(event.data)
         if (payload?.fishes?.length > 0) {
-          /* console.log(payload) */
           setFishes(payload.fishes)
         }
+
+        setCurrentState(payload.currentState)
       }
       catch (error) {
         // Friendly message for debugging
@@ -93,22 +94,30 @@ export default function Water() {
     };
 
     return () => arduinoSocket.close();
-  }, []);
+  }, [currentState]);
 
   const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
 
-  // TODO read changes to manage modal
-  /*useEffect(() => {
-   switch (currentState) {
+  // read changes to manage modal
+  useEffect(() => {
+    switch (currentState) {
+      case "TUTORIAL": {
+        setOpen(false)
+        break
+      }
       case "CUSTOMIZE": {
         setOpen(true)
         break
       }
+      case "SAVE": {
+        setOpen(true)
+        document.getElementById("modal-configurator").style.display = "none";
+        document.getElementById("await-salmon").style.display = "block";
+        break
+      }
       case "DISPLAY": {
         setOpen(false)
- 
+
         break
       }
       default: {
@@ -116,20 +125,20 @@ export default function Water() {
       }
     }
   }, [currentState])
- */
 
   return (
     <>
       <div className={'modal-button'}>
-        <Button onClick={handleOpen}>Open modal</Button>
         <Modal
           open={open}
-          onClose={handleClose}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <Box id="modal-configurator" sx={{ mt: 2 }}>
-            <iframe src={`http://${SERVER_ADDRESS}:3000/configurator`} title="salmon_window"></iframe>
+          <Box sx={{ mt: 2 }}>
+            <iframe id="modal-configurator" src={`http://${SERVER_ADDRESS}:3000/configurator`} title="salmon_window"></iframe>
+            <div id="await-salmon">
+              <h1>ANIMATION OF LOGO TO WAIT...</h1>
+            </div>
           </Box>
         </Modal>
       </div >

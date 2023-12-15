@@ -73,6 +73,14 @@ iframe {
   box-shadow: 24;
 }
 
+#await-salmon {
+  display: none;
+  top: 40%;
+left: 35%;
+  position: absolute;
+  color: white;
+}
+
 #saved-screen {
   display:none;
   padding-top: 60px;

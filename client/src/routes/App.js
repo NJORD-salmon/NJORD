@@ -66,7 +66,6 @@ export default function App() {
 
         setNextButton(payload.values.next);
         setbackButton(payload.values.back);
-        console.log(payload)
 
         setCurrentState(payload.currentState)
         console.log(currentState)
