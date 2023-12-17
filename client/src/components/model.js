@@ -59,7 +59,7 @@ export default function Model({
   const { nodes } = useGraph(clone)
 
   const { actions, names } = useAnimations(animations, myMesh)
-  console.log(actions)
+  // console.log(actions)
   // this is executed after the rendering phase
   useEffect(() => {
     // reset and fade in animation after an index has been changed
