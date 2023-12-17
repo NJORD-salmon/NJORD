@@ -24,8 +24,8 @@ function getRandomY(min, max) {
 }
 
 function getRandomZ(idx) {
-  const min = -1.5 - idx / 4
-  const max = 1.5 + idx / 4
+  const min = -1.4 - idx / 4
+  const max = 1.4 + idx / 4
   return Math.random() * (max - min) + min;
 }
 
@@ -43,7 +43,7 @@ function Fish({ fishes }) {
       // TODO for now we give random positions => fix positions
       // position={[y, z, x]}
       position={[getRandomY(-3, 3), getRandomZ(idx), -idx / 2]}
-      rotation={[0, degToRad(90), 0]}
+      rotation={[0, degToRad(-90), 0]}
       animIndex={0}
       movementAnim={true}
       key={idx}
@@ -107,6 +107,8 @@ export default function Water() {
       }
       case "CUSTOMIZE": {
         setOpen(true)
+        /*    document.getElementById("modal-configurator").style.display = "block";
+           document.getElementById("await-salmon").style.display = "none"; */
         break
       }
       case "SAVE": {
@@ -148,7 +150,7 @@ export default function Water() {
         camera={{
           // less fov, less perspective distortion
           fov: 30,
-          position: [0, 0, 3],
+          position: [0, 0, 4],
           rotation: [0, 0, 0],
           zoom: 0.4
         }} >

@@ -245,8 +245,6 @@ async function readSalmonParameters(min, max) {
   )
 }
 
-
-
 async function sortFishFiles(fishFiles) {
   let sorted = await fishFiles.sort((a, b) => {
     let aStat = statSync(`${BASEPATH}/${a}`);

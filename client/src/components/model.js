@@ -59,7 +59,7 @@ export default function Model({
   const { nodes } = useGraph(clone)
 
   const { actions, names } = useAnimations(animations, myMesh)
-
+  console.log(actions)
   // this is executed after the rendering phase
   useEffect(() => {
     // reset and fade in animation after an index has been changed
@@ -87,49 +87,61 @@ export default function Model({
     }
   }) */
 
-  const rotationRef = useRef(-90)
-  const max_X = 3.5 - position[2]
+  const max_X = 3.5 - position[2] / 4
+  const radius = 3.5 - position[2] / 4
+  const speed = 0.01 + Math.abs(position[2]) / 800; // Adjust the speed value to control the speed
 
-  /* useEffect(() => {
-    // 1 for moving right, -1 for moving left
-    let direction = 1
-    let isRotating = false
-
-    const animate = () => {
-      // update position
-      myMesh.current.position.x += 0.02 * direction;
-
-      // check if the mesh reaches the max X value
-      if (Math.abs(myMesh.current.position.x) >= max_X) {
-        // rotate by 180 degrees if not already rotating
-        if (!isRotating) {
-          isRotating = true;
-          rotationRef.current += Math.PI;
-        }
-
-        // apply rotation
-        myMesh.current.rotation.y = rotationRef.current;
-
-        // update direction after the rotation is complete
-        if (rotationRef.current >= Math.PI) {
-          direction *= -1; // Invert direction
-          isRotating = false;
-          rotationRef.current = 0; // Reset rotation
-        }
-      }
-
-      // Request the next animation frame
-      requestAnimationFrame(animate);
-    };
-
-    // Start the animation loop
-    animate();
+  useEffect(() => {
+    // Initial setup with random initial angle
+    myMesh.current.userData.theta = Math.random() * Math.PI * 2;
 
     // Cleanup function
     return () => {
       // Stop any ongoing animations or cleanup resources if needed
     };
-  }, []); // Empty dependency array ensures that the effect runs only once */
+  }, []); // Empty dependency array ensures that the effect runs only once
+
+  let prevPosition = position[2]
+
+  useFrame(() => {
+
+    // check if speed is greater than 0 to allow movement
+    if (speed > 0 && movementAnim) {
+      // parameterized equation for the infinity symbol
+      const x = radius * Math.sin(myMesh.current.userData.theta);
+      const y = radius * Math.sin(myMesh.current.userData.theta) * Math.cos(myMesh.current.userData.theta);
+
+      // update the mesh position
+      myMesh.current.position.x = x;
+      myMesh.current.position.y = y;
+
+      // calculate the tangent vector to the path
+      const tangentX = radius * Math.cos(myMesh.current.userData.theta);
+      const tangentY = -radius * Math.sin(myMesh.current.userData.theta);
+
+      // set the rotation based on the tangent vector
+      myMesh.current.rotation.z = Math.atan2(tangentY, tangentX);
+
+      // update angle
+      myMesh.current.userData.theta += speed;
+
+      // Reset angle when a full circle is completed
+      if (myMesh.current.userData.theta >= Math.PI * 2) {
+        myMesh.current.userData.theta = 0;
+      }
+
+      /* if (myMesh.current.position.x - prevPosition > 0) {
+        myMesh.current.rotation.y = degToRad(90)
+      } else {
+        myMesh.current.rotation.y = degToRad(-90)
+      } */
+    }
+    prevPosition = myMesh.current.position.x
+  });
+
+
+
+
 
   return (
     <group ref={myMesh} dispose={null} scale={modelScale} position={position} rotation={rotation} animIndex={animIndex}>
