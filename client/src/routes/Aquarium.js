@@ -1,6 +1,8 @@
 import React, { useEffect, Suspense, useState } from "react"
 import Box from "@mui/material/Box"
 import Modal from "@mui/material/Modal"
+
+import { ErrorBoundary } from 'react-error-boundary'
 import { OrbitControls, Stats } from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
 import { degToRad } from "three/src/math/MathUtils.js"
@@ -60,7 +62,9 @@ function Fish({ fishes }) {
       <Floor sizeY={12} sizeX={6} position={[11, 4, 0]} rotation-y={-Math.PI / 2} />
       <Floor sizeY={12} sizeX={6} position={[-11, 4, 0]} rotation-y={Math.PI / 2} /> */}
 
-      {models}
+      <ErrorBoundary>
+        {models}
+      </ErrorBoundary>
     </>
   )
 }

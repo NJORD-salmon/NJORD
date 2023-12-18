@@ -12,6 +12,10 @@ import { degToRad } from 'three/src/math/MathUtils';
 
 import * as skeletonUtils from "three/examples/jsm/utils/SkeletonUtils.js"
 
+const MODELS_BASEPATH = process.env.NODE_ENV === 'production'
+  ? './models/salmon/'
+  : './NJORD/models/salmon/'
+
 export default function Model({
   hue,
   saturation,
@@ -27,14 +31,14 @@ export default function Model({
 }) {
   // load textures
   const textureVector = [
-    "./NJORD/models/salmon/meat_textures/0.png",
-    "./NJORD/models/salmon/meat_textures/1.jpeg",
-    "./NJORD/models/salmon/meat_textures/2.jpeg",
-    "./NJORD/models/salmon/meat_textures/3.jpeg",
-    "./NJORD/models/salmon/meat_textures/4.jpeg",
-    "./NJORD/models/salmon/meat_textures/5.jpeg",
-    "./NJORD/models/salmon/meat_textures/6.jpeg",
-    "./NJORD/models/salmon/meat_textures/7.jpeg",
+    `${MODELS_BASEPATH}meat_textures/0.png`,
+    `${MODELS_BASEPATH}meat_textures/1.jpeg`,
+    `${MODELS_BASEPATH}meat_textures/2.jpeg`,
+    `${MODELS_BASEPATH}meat_textures/3.jpeg`,
+    `${MODELS_BASEPATH}meat_textures/4.jpeg`,
+    `${MODELS_BASEPATH}meat_textures/5.jpeg`,
+    `${MODELS_BASEPATH}meat_textures/6.jpeg`,
+    `${MODELS_BASEPATH}meat_textures/7.jpeg`,
   ]
 
   const texture = new TextureLoader().load(textureVector[textureIndex])
@@ -50,7 +54,7 @@ export default function Model({
   // fish face material
   const constantMaterial = new MeshStandardMaterial({
     color: extractColor(6, 93, 60),
-    bumpMap: new TextureLoader().load("./NJORD/models/salmon/salmon_textures/Chinook_salmon_bump.png"),
+    bumpMap: new TextureLoader().load(`${MODELS_BASEPATH}salmon_textures/Chinook_salmon_bump.png`),
     bumpScale: 0.5,
   })
 
@@ -82,7 +86,7 @@ export default function Model({
 
   const myMesh = useRef()
   // select which gltf model to load
-  const { scene, animations } = useGLTF('./NJORD/models/salmon/salmon.gltf')
+  const { scene, animations } = useGLTF(`${MODELS_BASEPATH}salmon.gltf`)
   const clone = useMemo(() => skeletonUtils.clone(scene), [scene])
   const { nodes } = useGraph(clone)
 
@@ -166,9 +170,6 @@ export default function Model({
   });
 
 
-
-
-
   return (
     <group ref={myMesh} dispose={null} scale={modelScale} position={position} rotation={rotation} animIndex={animIndex}>
       <group name="Salmon">
@@ -212,7 +213,7 @@ export default function Model({
   );
 }
 
-useGLTF.preload('./NJORD/models/salmon/salmon.gltf')
+useGLTF.preload(`${MODELS_BASEPATH}salmon.gltf`)
 
 // assign the color and the map to the meat material
 function getMaterial(color, image) {
