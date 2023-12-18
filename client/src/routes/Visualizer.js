@@ -17,7 +17,7 @@ function Loader() {
 export default function Visualizer() {
   const [searchParams] = useSearchParams();
   // here it is not necessary to fix the values since they don't change 
-  // and it has already been managed before
+  // and they have already been managed before
   const { h, s, l, u, v, t } = Object.fromEntries(searchParams.entries())
 
   return (

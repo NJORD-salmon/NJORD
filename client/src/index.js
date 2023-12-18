@@ -1,5 +1,6 @@
-import { StrictMode } from 'react';
+import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { ErrorBoundary } from 'react-error-boundary'
 import {
   createBrowserRouter,
   RouterProvider,
@@ -10,23 +11,29 @@ import App from './routes/App'
 import Water from './routes/Aquarium'
 import Visualizer from './routes/Visualizer'
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Water />
-  },
-  {
-    path: "/configurator",
-    element: <App />,
-  },
-  {
-    path: "/visualizer",
-    element: <Visualizer />,
-  },
-]);
+
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <Water />
+    },
+    {
+      path: "/configurator",
+      element: <App />,
+    },
+    {
+      path: "/visualizer",
+      element: <Visualizer />,
+    },
+  ],
+  { basename: '/NJORD' }
+);
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <ErrorBoundary>
+      <RouterProvider router={router} />
+    </ErrorBoundary>
   </StrictMode>
 );

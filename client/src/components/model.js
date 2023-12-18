@@ -25,23 +25,18 @@ export default function Model({
   animIndex = 0,
   movementAnim = false,
 }) {
-
-  const eyeMaterial = new MeshStandardMaterial({
-    color: 0x000000,
-    metalness: 0.8,
-    roughness: 0.3
-  })
-
+  // load textures
   const textureVector = [
-    '../models/salmon/meat_textures/0.png',
-    "../models/salmon/meat_textures/1.jpeg",
-    "../models/salmon/meat_textures/2.jpeg",
-    "../models/salmon/meat_textures/3.jpeg",
-    "../models/salmon/meat_textures/4.jpeg",
-    "../models/salmon/meat_textures/5.jpeg",
-    "../models/salmon/meat_textures/6.jpeg",
+    "./NJORD/models/salmon/meat_textures/0.png",
+    "./NJORD/models/salmon/meat_textures/1.jpeg",
+    "./NJORD/models/salmon/meat_textures/2.jpeg",
+    "./NJORD/models/salmon/meat_textures/3.jpeg",
+    "./NJORD/models/salmon/meat_textures/4.jpeg",
+    "./NJORD/models/salmon/meat_textures/5.jpeg",
+    "./NJORD/models/salmon/meat_textures/6.jpeg",
+    "./NJORD/models/salmon/meat_textures/7.jpeg",
   ]
-  // load texture
+
   const texture = new TextureLoader().load(textureVector[textureIndex])
   // change the scale of the texture
   texture.wrapS = RepeatWrapping;
@@ -50,11 +45,44 @@ export default function Model({
 
   const hslColor = extractColor(hue, saturation, lightness)
   const material = getMaterial(hslColor, texture)
-  const constantMaterial = getConstantMaterial(hslColor)
+  // const constantMaterial = getConstantMaterial(hslColor)
+
+  // fish face material
+  const constantMaterial = new MeshStandardMaterial({
+    color: extractColor(6, 93, 60),
+    bumpMap: new TextureLoader().load("./NJORD/models/salmon/salmon_textures/Chinook_salmon_bump.png"),
+    bumpScale: 0.5,
+  })
+
+  // fish meat
+  /* const material = new MeshStandardMaterial({
+    color: extractColor(6, 93, 60),
+    map: textureVector[0],
+  }) */
+
+  // set changing properties of materials
+  constantMaterial.color = hslColor
+  material.color = hslColor
+  /* if (material.map !== textureVector[animIndex]) {
+    material.map = textureVector[animIndex]
+    console.log("ssss")
+  } */
+
+  // change the scale of the texture
+  // material.map.wrapS = RepeatWrapping
+  // material.map.wrapT = RepeatWrapping
+  // material.map.repeat.set(uScale, vScale)
+
+  // eye material
+  const eyeMaterial = new MeshStandardMaterial({
+    color: 0x000000,
+    metalness: 0.8,
+    roughness: 0.3
+  })
 
   const myMesh = useRef()
   // select which gltf model to load
-  const { scene, animations } = useGLTF('../models/salmon/salmon.gltf')
+  const { scene, animations } = useGLTF('./NJORD/models/salmon/salmon.gltf')
   const clone = useMemo(() => skeletonUtils.clone(scene), [scene])
   const { nodes } = useGraph(clone)
 
@@ -75,17 +103,7 @@ export default function Model({
   // widthRadius is how much the fish can move on the x axis
   const widthRadius = 3.5 - position[2]
 
-  /*useFrame(({ clock }) => {
-    // add movement animation to scene if in aquarium
-    if (movementAnim) {
-      const timer = clock.getElapsedTime() / 5.8
-      myMesh.current.position.x = Math.sin(timer) * widthRadius
-      if ((myMesh.current.position.x > widthRadius - 1 && myMesh.current.position.x <= widthRadius)
-        || (myMesh.current.position.x < -widthRadius + 1 && myMesh.current.position.x >= -widthRadius)) {
-        // TODO: turn salmon and change animation
-      }
-    }
-  }) */
+  // TODO: fix salmon movements and animation
 
   const max_X = 3.5 - position[2] / 4
   const radius = 3.5 - position[2] / 4
@@ -119,8 +137,16 @@ export default function Model({
       const tangentX = radius * Math.cos(myMesh.current.userData.theta);
       const tangentY = -radius * Math.sin(myMesh.current.userData.theta);
 
-      // set the rotation based on the tangent vector
-      myMesh.current.rotation.z = Math.atan2(tangentY, tangentX);
+      // Calculate the angle between the tangent vector and the positive x-axis
+      const angle = Math.atan2(tangentX, tangentY);
+
+      // Set the rotation based on the angle
+      myMesh.current.rotation.z = angle;
+
+
+      // Set the rotation around the x-axis to make the x-axis parallel to the tangent
+      myMesh.current.rotation.x = degToRad(-90);
+      myMesh.current.rotation.y = degToRad(-90);
 
       // update angle
       myMesh.current.userData.theta += speed;
@@ -130,11 +156,11 @@ export default function Model({
         myMesh.current.userData.theta = 0;
       }
 
-      /* if (myMesh.current.position.x - prevPosition > 0) {
+      if (myMesh.current.position.x - prevPosition > 0) {
         myMesh.current.rotation.y = degToRad(90)
       } else {
         myMesh.current.rotation.y = degToRad(-90)
-      } */
+      }
     }
     prevPosition = myMesh.current.position.x
   });
@@ -186,7 +212,7 @@ export default function Model({
   );
 }
 
-useGLTF.preload('/models/salmon/salmon.gltf')
+useGLTF.preload('./NJORD/models/salmon/salmon.gltf')
 
 // assign the color and the map to the meat material
 function getMaterial(color, image) {
@@ -194,17 +220,6 @@ function getMaterial(color, image) {
     new MeshStandardMaterial({
       color: color,
       map: image,
-    })
-  )
-}
-
-// assign the color and the map to the mesh constant material
-function getConstantMaterial(color) {
-  return (
-    new MeshStandardMaterial({
-      color: color,
-      bumpMap: new TextureLoader().load("../models/salmon/salmon_textures/Chinook_salmon_bump.png"),
-      bumpScale: 0.5,
     })
   )
 }

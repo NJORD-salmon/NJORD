@@ -49,7 +49,6 @@ export default function App() {
     const arduinoSocket = new WebSocket(`ws://${SERVER_ADDRESS}:9000`);
     arduinoSocket.onopen = (event) => {
       // if it works, then connection opened
-      // console.log(event)
     };
 
     arduinoSocket.onmessage = (event) => {
@@ -68,7 +67,6 @@ export default function App() {
         setbackButton(payload.values.back);
 
         setCurrentState(payload.currentState)
-        console.log(currentState)
       }
       catch (error) {
         // Friendly message for debugging
@@ -187,8 +185,6 @@ export default function App() {
         {/* <ContactShadows position={[0, -2, 0]} opacity={0.7} scale={10} blur={1.5} far={2} /> */}
 
         <OrbitControls
-          /* minPolarAngle={Math.PI / 2}
-          maxPolarAngle={Math.PI / 2} */
           enableZoom={true}
           minDistance={2.5}
           maxDistance={10}

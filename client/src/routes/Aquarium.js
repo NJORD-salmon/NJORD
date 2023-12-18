@@ -40,7 +40,7 @@ function Fish({ fishes }) {
       uScale={FixUScale(config.scaleX)}
       vScale={FixVScale(config.scaleY)}
       textureIndex={FixTexture(config.texture)}
-      // TODO for now we give random positions => fix positions
+      // TODO fix z positions
       // position={[y, z, x]}
       position={[getRandomY(-3, 3), getRandomZ(idx), -idx / 2]}
       rotation={[0, degToRad(-90), 0]}
@@ -139,14 +139,14 @@ export default function Water() {
           <Box sx={{ mt: 2 }}>
             <iframe id="modal-configurator" src={`http://${SERVER_ADDRESS}:3000/configurator`} title="salmon_window"></iframe>
             <div id="await-salmon">
-              <h1>ANIMATION OF LOGO TO WAIT...</h1>
+              <h1>LOGO ANIMATION...</h1>
             </div>
           </Box>
         </Modal>
       </div >
 
       <Canvas
-        shadows
+        // shadows
         camera={{
           // less fov, less perspective distortion
           fov: 30,
@@ -156,7 +156,7 @@ export default function Water() {
         }} >
 
         {/* to give the impression of something farther away */}
-        <fog attach="fog" args={['#cecece', 0.1, 20]} />
+        {/* <fog attach="fog" args={['#cecece', 0.1, 20]} /> */}
 
         <Suspense>
           <Fish fishes={fishes} />
