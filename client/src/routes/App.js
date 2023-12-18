@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography'
 
 import Lights from "../components/light"
 import Model from "../components/model"
-import { SERVER_ADDRESS } from "../env"
+import { SERVER_ADDRESS, WS_SERVER } from "../env"
 import {
   FixHue,
   FixSaturation,
@@ -46,7 +46,7 @@ export default function App() {
 
   useEffect(() => {
     // start websocket client + change values
-    const arduinoSocket = new WebSocket(`ws://${SERVER_ADDRESS}:9000`);
+    const arduinoSocket = new WebSocket(`ws://${WS_SERVER}:9000`);
     arduinoSocket.onopen = (event) => {
       // if it works, then connection opened
     };
@@ -155,7 +155,7 @@ export default function App() {
               <QRCode
                 size={256}
                 style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-                value={`${SERVER_ADDRESS}:3000/visualizer?h=${h}&s=${s}&l=${l}&u=${u}&v=${v}&t=${t}`}
+                value={`${SERVER_ADDRESS}/visualizer?h=${h}&s=${s}&l=${l}&u=${u}&v=${v}&t=${t}`}
                 viewBox={`0 0 256 256`}
               />
             </div>

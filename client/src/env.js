@@ -1,2 +1,4 @@
-// export const SERVER_ADDRESS = '192.168.21.49'
-export const SERVER_ADDRESS = 'localhost'
+export const SERVER_ADDRESS = process.env.NODE_ENV === 'production'
+  ? 'https://miriambixso02.github.io/NJORD'
+  : 'http://localhost:3000/NJORD'
+export const WS_SERVER = 'localhost'

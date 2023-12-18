@@ -10,7 +10,7 @@ import { degToRad } from "three/src/math/MathUtils.js"
 import WaterLights from "../components/waterlights.js"
 // import Floor from "../components/floor.js" // for lights debugging
 import Model from "../components/model.js"
-import { SERVER_ADDRESS } from "../env"
+import { SERVER_ADDRESS, WS_SERVER } from "../env"
 import {
   FixHue,
   FixSaturation,
@@ -75,7 +75,7 @@ export default function Water() {
 
   useEffect(() => {
     // start websocket client 
-    const arduinoSocket = new WebSocket(`ws://${SERVER_ADDRESS}:9000`);
+    const arduinoSocket = new WebSocket(`ws://${WS_SERVER}:9000`);
     arduinoSocket.onopen = (event) => {
       // send a message to server to request fish parameters
       arduinoSocket.send('gimme-fish')
@@ -141,7 +141,7 @@ export default function Water() {
           aria-describedby="modal-modal-description"
         >
           <Box sx={{ mt: 2 }}>
-            <iframe id="modal-configurator" src={`http://${SERVER_ADDRESS}:3000/configurator`} title="salmon_window"></iframe>
+            <iframe id="modal-configurator" src={`${SERVER_ADDRESS}/configurator`} title="salmon_window"></iframe>
             <div id="await-salmon">
               <h1>LOGO ANIMATION...</h1>
             </div>

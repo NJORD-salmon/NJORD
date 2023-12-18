@@ -14,7 +14,7 @@ import * as skeletonUtils from "three/examples/jsm/utils/SkeletonUtils.js"
 
 const MODELS_BASEPATH = process.env.NODE_ENV === 'production'
   ? './models/salmon/'
-  : './NJORD/models/salmon/'
+  : './models/salmon/'
 
 export default function Model({
   hue,
