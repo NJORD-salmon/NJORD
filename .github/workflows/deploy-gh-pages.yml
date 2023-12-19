@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: 20
           cache: "yarn"
-        working-directory: ./client
+          cache-dependency-path: "./client/yarn.lock"
       - run: yarn install --immutable
         working-directory: ./client
       - name: Deploy with gh-pages
