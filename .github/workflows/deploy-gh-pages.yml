@@ -18,7 +18,9 @@ jobs:
           node-version: 20
           cache: 'yarn'
       - run: yarn install --immutable
+        working-directory: ./client
       - name: Deploy with gh-pages
+        working-directory: ./client
         run: |
           git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
           yarn run deploy -- -u "github-actions-bot <support+actions@github.com>"
