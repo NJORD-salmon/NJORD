@@ -1,6 +1,8 @@
 name: Deploy gh-pages
 
 on:
+  # the following is necessary to run from Github UI
+  workflow_dispatch:
   push:
     branches:
       - main
