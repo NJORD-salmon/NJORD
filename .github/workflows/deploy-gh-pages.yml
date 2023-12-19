@@ -17,9 +17,8 @@ jobs:
         with:
           node-version: 20
           cache: "yarn"
-      - run: |
-          corepack enable
-          yarn install --immutable
+        working-directory: ./client
+      - run: yarn install --immutable
         working-directory: ./client
       - name: Deploy with gh-pages
         working-directory: ./client
