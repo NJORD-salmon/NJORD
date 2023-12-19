@@ -45,7 +45,7 @@ function Fish({ fishes }) {
       // TODO fix z positions
       // position={[y, z, x]}
       position={[getRandomY(-3, 3), getRandomZ(idx), -idx / 2]}
-      rotation={[0, degToRad(-90), 0]}
+      rotation
       animIndex={0}
       movementAnim={true}
       key={idx}
@@ -160,7 +160,7 @@ export default function Water() {
         }} >
 
         {/* to give the impression of something farther away */}
-        {/* <fog attach="fog" args={['#cecece', 0.1, 20]} /> */}
+        <fog attach="fog" args={['#cecece', 0.1, 20]} />
 
         <Suspense>
           <Fish fishes={fishes} />
