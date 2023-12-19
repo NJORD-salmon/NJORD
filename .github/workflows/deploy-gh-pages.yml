@@ -6,7 +6,7 @@ on:
   push:
     branches:
       - main
-    
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -16,8 +16,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'yarn'
-      - run: yarn install --immutable
+          cache: "yarn"
+      - run: |
+          corepack enable
+          yarn install --immutable
         working-directory: ./client
       - name: Deploy with gh-pages
         working-directory: ./client

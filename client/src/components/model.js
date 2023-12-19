@@ -8,7 +8,7 @@ import { useAnimations, useGLTF } from '@react-three/drei'
 import { MeshStandardMaterial, Color, RepeatWrapping, Vector3 } from 'three';
 import { useFrame, useGraph } from "@react-three/fiber"
 import { TextureLoader } from 'three/src/loaders/TextureLoader'
-import { degToRad } from 'three/src/math/MathUtils';
+// import { degToRad } from 'three/src/math/MathUtils';
 
 import * as skeletonUtils from "three/examples/jsm/utils/SkeletonUtils.js"
 
