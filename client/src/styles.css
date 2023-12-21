@@ -11,9 +11,18 @@ body,
   padding: 0;
 }
 
+/* trial font */
+@font-face {
+  font-family: "TWKLausanne";
+  src:
+    local("TWKLausanne"), 
+    url("./assets/font/TWKLausanne-300.woff2") 
+    format("woff2");
+}
+
 body {
   background: #cecece;
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-family: "TWKLausanne", 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 iframe {
@@ -68,10 +77,9 @@ iframe {
 
 #await-salmon {
   display: none;
-  top: 40%;
-left: 35%;
+  top: 50%;
+  left: 50%;
   position: absolute;
-  color: white;
 }
 
 #saved-screen {

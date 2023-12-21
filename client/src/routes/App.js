@@ -153,6 +153,7 @@ export default function App() {
 
             <div id="container">
               <QRCode
+                title={"Salmon visualizer"}
                 size={256}
                 style={{ height: "auto", maxWidth: "100%", width: "100%" }}
                 value={`${QR_CODE_BASE_URL}/visualizer?h=${h}&s=${s}&l=${l}&u=${u}&v=${v}&t=${t}`}
@@ -190,7 +191,7 @@ export default function App() {
           maxDistance={10}
           enablePan={false}
         />
-        <Stats />
+        {/* <Stats /> */}
       </Canvas>
     </>
   )

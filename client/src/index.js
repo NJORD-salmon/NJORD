@@ -11,11 +11,15 @@ import App from './routes/App'
 import Water from './routes/Aquarium'
 import Visualizer from './routes/Visualizer'
 
+const waterPath = process.env.NODE_ENV === 'production'
+  ? '/'
+  : '/aquarium'
+
 
 const router = createBrowserRouter(
   [
     {
-      path: "/",
+      path: waterPath,
       element: <Water />
     },
     {

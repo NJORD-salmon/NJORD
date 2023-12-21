@@ -1,11 +1,9 @@
 import React, { useEffect, Suspense, useState } from "react"
 import Box from "@mui/material/Box"
 import Modal from "@mui/material/Modal"
-
 import { ErrorBoundary } from 'react-error-boundary'
-import { OrbitControls, Stats } from "@react-three/drei"
+import { OrbitControls, Stats, Html, useProgress } from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
-import { degToRad } from "three/src/math/MathUtils.js"
 
 import WaterLights from "../components/waterlights.js"
 // import Floor from "../components/floor.js" // for lights debugging
@@ -19,7 +17,14 @@ import {
   FixUScale,
   FixVScale
 } from "../components/fixValues"
+import njordAnim from '../assets/images/njord_anim.gif'
 
+
+// view the load progress
+function Loader() {
+  const { progress } = useProgress()
+  return <Html center>{progress} % loaded</Html>
+}
 
 function getRandomY(min, max) {
   return Math.random() * (max - min) + min;
@@ -143,7 +148,7 @@ export default function Water() {
           <Box sx={{ mt: 2 }}>
             <iframe id="modal-configurator" src={`${SERVER_ADDRESS}/configurator`} title="salmon_window"></iframe>
             <div id="await-salmon">
-              <h1>LOGO ANIMATION...</h1>
+              <img src={njordAnim} alt="waiting" />
             </div>
           </Box>
         </Modal>
@@ -162,12 +167,12 @@ export default function Water() {
         {/* to give the impression of something farther away */}
         <fog attach="fog" args={['#cecece', 0.1, 20]} />
 
-        <Suspense>
+        <Suspense fallback={<Loader />}>
           <Fish fishes={fishes} />
         </Suspense>
         <OrbitControls />
 
-        <Stats />
+        {/* <Stats /> */}
       </Canvas>
     </>
   )
