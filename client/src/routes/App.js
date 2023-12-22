@@ -126,37 +126,37 @@ export default function App() {
       <div>
         <Modal
           open={open}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
+        // aria-labelledby="modal-modal-title"
+        // aria-describedby="modal-modal-description"
         >
           <Box id="box-modal">
 
             <div id="saving-screen">
-              <Typography className="modal-modal-title">
+              <Typography className="modal-title">
                 Do you want to save this salmon?
               </Typography>
               <div>
-                <Typography id="modal-modal-back" className="modal-description" sx={{ mt: 2 }}>
+                <Typography className="modal-description" sx={{ mt: 2 }}>
                   Back
                 </Typography>
-                <Typography id="modal-modal-ok" className="modal-description" sx={{ mt: 2 }}>
+                <Typography className="modal-description" sx={{ mt: 2 }}>
                   Ok
                 </Typography>
               </div>
             </div>
 
             <div id="saved-screen">
-              <Typography className="modal-modal-title" >
+              <Typography className="modal-title" >
                 Salmon saved!
               </Typography>
             </div>
 
             <div id="container">
               <QRCode
-                title={"Salmon visualizer"}
                 size={256}
                 style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-                value={`${QR_CODE_BASE_URL}/visualizer?h=${h}&s=${s}&l=${l}&u=${u}&v=${v}&t=${t}`}
+                title="NJÖRD Salmon"
+                value={`${QR_CODE_BASE_URL}/visualizer?h=${h}&s=${s}&l=${l}&u=${u}&v=${v}&t=${t} `}
                 viewBox={`0 0 256 256`}
               />
             </div>

@@ -2,8 +2,10 @@ import React, { useEffect, Suspense, useState } from "react"
 import Box from "@mui/material/Box"
 import Modal from "@mui/material/Modal"
 import { ErrorBoundary } from 'react-error-boundary'
+import { VideoTexture, Mesh, PlaneGeometry, MeshLambertMaterial } from "three"
 import { OrbitControls, Stats, Html, useProgress } from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
+import Lottie from "lottie-react";
 
 import WaterLights from "../components/waterlights.js"
 // import Floor from "../components/floor.js" // for lights debugging
@@ -17,7 +19,7 @@ import {
   FixUScale,
   FixVScale
 } from "../components/fixValues"
-import njordAnim from '../assets/images/njord_anim.gif'
+import logo from '../assets/images/data.json'
 
 
 // view the load progress
@@ -74,6 +76,18 @@ function Fish({ fishes }) {
   )
 }
 
+/* function Background() {
+  const video = document.getElementById('video');
+  const texture = new VideoTexture(video);
+
+  const bkg = new Mesh(
+    new PlaneGeometry(5, 5, 40),
+    new MeshLambertMaterial({ map: texture })
+    ,);
+
+  return (<>{bkg}</>)
+} */
+
 export default function Water() {
   const [fishes, setFishes] = useState([])
   const [currentState, setCurrentState] = useState("CUSTOMIZE");
@@ -111,13 +125,13 @@ export default function Water() {
   useEffect(() => {
     switch (currentState) {
       case "TUTORIAL": {
-        setOpen(false)
+        setOpen(true)
         break
       }
       case "CUSTOMIZE": {
         setOpen(true)
-        /*    document.getElementById("modal-configurator").style.display = "block";
-           document.getElementById("await-salmon").style.display = "none"; */
+        // TODO: fix modals in the water
+        document.getElementById("await-salmon").style.display = "none";
         break
       }
       case "SAVE": {
@@ -128,7 +142,7 @@ export default function Water() {
       }
       case "DISPLAY": {
         setOpen(false)
-
+        document.getElementById("await-salmon").style.display = "none";
         break
       }
       default: {
@@ -137,19 +151,18 @@ export default function Water() {
     }
   }, [currentState])
 
+
   return (
     <>
+      <div id="await-salmon">
+        {/* <img src={njordAnim} alt="waiting" height={800} /> */}
+        <Lottie animationData={logo} loop={true} />
+      </div>
+
       <div className={'modal-button'}>
-        <Modal
-          open={open}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={{ mt: 2 }}>
-            <iframe id="modal-configurator" src={`${SERVER_ADDRESS}/configurator`} title="salmon_window"></iframe>
-            <div id="await-salmon">
-              <img src={njordAnim} alt="waiting" />
-            </div>
+        <Modal open={open}>
+          <Box id="modal-configurator" sx={{ mt: 2 }}>
+            <iframe src={`${SERVER_ADDRESS}/configurator`} title="salmon_window" ></iframe>
           </Box>
         </Modal>
       </div >
