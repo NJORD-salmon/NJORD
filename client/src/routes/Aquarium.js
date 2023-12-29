@@ -1,14 +1,16 @@
-import React, { useEffect, Suspense, useState } from "react"
+import React, { useEffect, Suspense, useState, useRef } from "react"
 import Box from "@mui/material/Box"
 import Modal from "@mui/material/Modal"
 import { ErrorBoundary } from 'react-error-boundary'
-import { VideoTexture, Mesh, PlaneGeometry, MeshLambertMaterial } from "three"
 import { OrbitControls, Stats, Html, useProgress } from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
 import Lottie from "lottie-react";
+import ReactPlayer from 'react-player'
+
 
 import WaterLights from "../components/waterlights.js"
 // import Floor from "../components/floor.js" // for lights debugging
+import Caustics from "../components/caustics.js"
 import Model from "../components/model.js"
 import { SERVER_ADDRESS, WS_SERVER } from "../env"
 import {
@@ -19,7 +21,8 @@ import {
   FixUScale,
   FixVScale
 } from "../components/fixValues"
-import logo from '../assets/images/data.json'
+import logo from '../assets/video/data.json'
+import waterVideo from '../assets/video/video.mp4'
 
 
 // view the load progress
@@ -62,31 +65,21 @@ function Fish({ fishes }) {
   return (
     <>
       <WaterLights />
+      <Caustics>
 
-      {/* for debugging
+        {/* for debugging
       <Floor sizeY={12} sizeX={22} position={[0, 0, -5]} />
       <Floor sizeY={6} sizeX={22} position={[0, -2, 0]} rotation-x={-Math.PI / 2} />
       <Floor sizeY={12} sizeX={6} position={[11, 4, 0]} rotation-y={-Math.PI / 2} />
       <Floor sizeY={12} sizeX={6} position={[-11, 4, 0]} rotation-y={Math.PI / 2} /> */}
 
-      <ErrorBoundary>
-        {models}
-      </ErrorBoundary>
+        <ErrorBoundary>
+          {models}
+        </ErrorBoundary>
+      </Caustics>
     </>
   )
 }
-
-/* function Background() {
-  const video = document.getElementById('video');
-  const texture = new VideoTexture(video);
-
-  const bkg = new Mesh(
-    new PlaneGeometry(5, 5, 40),
-    new MeshLambertMaterial({ map: texture })
-    ,);
-
-  return (<>{bkg}</>)
-} */
 
 export default function Water() {
   const [fishes, setFishes] = useState([])
@@ -152,10 +145,28 @@ export default function Water() {
   }, [currentState])
 
 
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const onLoadedData = () => {
+    setIsVideoLoaded(true);
+  };
+
   return (
     <>
+      <div id="bkg">
+        <ReactPlayer
+          url={waterVideo}
+          playing={true}
+          controls={false}
+          loop={true}
+          muted={true}
+          playsinline={true}
+          onReady={onLoadedData}
+          width={window.innerWidth}
+          height={window.innerHeight}
+        />
+      </div>
+
       <div id="await-salmon">
-        {/* <img src={njordAnim} alt="waiting" height={800} /> */}
         <Lottie animationData={logo} loop={true} />
       </div>
 
@@ -185,7 +196,7 @@ export default function Water() {
         </Suspense>
         <OrbitControls />
 
-        {/* <Stats /> */}
+        {<Stats />}
       </Canvas>
     </>
   )

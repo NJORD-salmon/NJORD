@@ -11,7 +11,7 @@ const WaterLights = forwardRef((props, ref) => {
   return (
     <>
       <hemisphereLight
-        intensity={Math.PI / 8}
+        intensity={Math.PI / 5}
         position={[1, 1, 1]}
         scale={5}
         rotation={[Math.PI / 4, Math.PI / 5, Math.PI / 4]}
@@ -20,7 +20,7 @@ const WaterLights = forwardRef((props, ref) => {
         groundColor={0xcbc1b2}
       />
       <directionalLight
-        intensity={0.5}
+        intensity={1}
         ref={dirLight}
         castShadow
         shadow-mapSize={[4096, 4096]}
@@ -32,19 +32,19 @@ const WaterLights = forwardRef((props, ref) => {
       <pointLight
         position={[-9, 3, 2]}
         decay={0}
-        intensity={2}
+        intensity={0.8}
         castShadow
       />
       <pointLight
         position={[9, 3, 2]}
         decay={0}
-        intensity={2}
+        intensity={0.8}
         castShadow
       />
       <pointLight
         position={[0, 3, 4]}
         decay={0}
-        intensity={2}
+        intensity={0.8}
         castShadow
       />
     </>

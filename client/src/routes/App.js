@@ -23,6 +23,8 @@ import {
 // parameters for the url code of the visualizer
 let h, s, l, u, v, t
 
+let prevTexture = 0
+
 // view the load progress
 function Loader() {
   const { progress } = useProgress()
@@ -59,7 +61,11 @@ export default function App() {
         setHue(FixHue(payload.values.hue));
         setSaturation(FixSaturation(payload.values.saturation));
         setLightness(FixLightness(payload.values.lightness));
-        setTexture(FixTexture(payload.values.texture));
+        // if texture changes
+        if (prevTexture !== payload.values.texture) {
+          setTexture(FixTexture(payload.values.texture));
+        }
+
         setScaleX(FixUScale(payload.values.scaleX));
         setScaleY(FixVScale(payload.values.scaleY));
 
@@ -67,6 +73,8 @@ export default function App() {
         setbackButton(payload.values.back);
 
         setCurrentState(payload.currentState)
+
+        prevTexture = payload.values.texture
       }
       catch (error) {
         // Friendly message for debugging
@@ -191,7 +199,7 @@ export default function App() {
           maxDistance={10}
           enablePan={false}
         />
-        {/* <Stats /> */}
+        <Stats />
       </Canvas>
     </>
   )

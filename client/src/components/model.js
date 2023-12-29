@@ -6,9 +6,10 @@ import React, { useEffect, useRef, useMemo } from 'react'
 // useGLTF to load GLTF model into the canvas
 import { useAnimations, useGLTF } from '@react-three/drei'
 import { MeshStandardMaterial, Color, RepeatWrapping } from 'three';
-import { useFrame, useGraph } from "@react-three/fiber"
+import { useFrame, useGraph, useThree } from "@react-three/fiber"
 import { TextureLoader } from 'three/src/loaders/TextureLoader'
 // import { degToRad } from 'three/src/math/MathUtils';
+import { ImprovedNoise } from 'three/examples/jsm/math/ImprovedNoise';
 
 import * as skeletonUtils from "three/examples/jsm/utils/SkeletonUtils.js"
 
@@ -28,26 +29,10 @@ export default function Model({
   movementAnim = false,
 }) {
   // load textures
-  const textureVector = [
-    `${MODELS_BASEPATH}meat_textures/0.png`,
-    `${MODELS_BASEPATH}meat_textures/1.jpeg`,
-    `${MODELS_BASEPATH}meat_textures/2.jpeg`,
-    `${MODELS_BASEPATH}meat_textures/3.jpeg`,
-    `${MODELS_BASEPATH}meat_textures/4.jpeg`,
-    `${MODELS_BASEPATH}meat_textures/5.jpeg`,
-    `${MODELS_BASEPATH}meat_textures/6.jpeg`,
-    `${MODELS_BASEPATH}meat_textures/7.jpeg`,
-  ]
-
-  const texture = new TextureLoader().load(textureVector[textureIndex])
-  // change the scale of the texture
-  texture.wrapS = RepeatWrapping;
-  texture.wrapT = RepeatWrapping;
-  texture.repeat.set(uScale, vScale)
-
-  const hslColor = extractColor(hue, saturation, lightness)
-  const material = getMaterial(hslColor, texture)
-  // const constantMaterial = getConstantMaterial(hslColor)
+  const textureVector = []
+  for (let j = 0; j < 8; j++) {
+    textureVector.push(new TextureLoader().load(`${MODELS_BASEPATH}meat_textures/${j}.jpeg`))
+  }
 
   // fish face material
   const constantMaterial = new MeshStandardMaterial({
@@ -57,23 +42,21 @@ export default function Model({
   })
 
   // fish meat
-  /* const material = new MeshStandardMaterial({
+  const material = new MeshStandardMaterial({
     color: extractColor(6, 93, 60),
     map: textureVector[0],
-  }) */
+  })
+  material.map = textureVector[textureIndex]
 
-  // set changing properties of materials
+  const hslColor = extractColor(hue, saturation, lightness)
+  // set color of materials
   constantMaterial.color = hslColor
   material.color = hslColor
-  /* if (material.map !== textureVector[animIndex]) {
-    material.map = textureVector[animIndex]
-    console.log("ssss")
-  } */
 
   // change the scale of the texture
-  // material.map.wrapS = RepeatWrapping
-  // material.map.wrapT = RepeatWrapping
-  // material.map.repeat.set(uScale, vScale)
+  material.map.wrapS = RepeatWrapping;
+  material.map.wrapT = RepeatWrapping;
+  material.map.repeat.set(uScale, vScale)
 
   // eye material
   const eyeMaterial = new MeshStandardMaterial({
@@ -90,6 +73,7 @@ export default function Model({
 
   const { actions, names } = useAnimations(animations, myMesh)
   // console.log(actions)
+
   // this is executed after the rendering phase
   useEffect(() => {
     // reset and fade in animation after an index has been changed
@@ -102,29 +86,19 @@ export default function Model({
     };
   }, [actions, names, animIndex])
 
-  // Check the position along the path and trigger animations accordingly
+  // check the position along the path and trigger animations accordingly
   useFrame(() => {
-    const x = myMesh.current.position.x;
-    const y = myMesh.current.position.y;
-
-    if (x >= -1 && x < 1) {
+    if (myMesh.current.position.x >= -3 && myMesh.current.position.x < 3) {
       // Play Animation 1 when x is between 0 and 2
       actions[names[0]].play();
-    } else if (x >= 2 && x < 4) {
-      // Play Animation 2 when x is between 2 and 4
-      actions[names[3]].play();
-    } else {
-      // Default animation when x is outside the specified range
-      actions[names[2]].play();
     }
   });
 
-  // widthRadius is how much the fish can move on the x axis
-  const widthRadius = 3.5 - position[2]
-
   // TODO: fix salmon movements and animation
 
-  const radius = 3.5 - position[2] / 4
+  const { viewport } = useThree(); // Access the viewport dimensions
+
+  const radius = Math.min(viewport.width, viewport.height) - position[2] * 1.4;
   const speed = 0.003 /* + Math.abs(position[2]) / 800; */ // Adjust the speed value to control the speed
   const maxHorizontalDistance = 5; // Set the maximum horizontal distance
   const rotationSpeed = 0.2; // Adjust the rotation speed for the 180° rotation
@@ -143,29 +117,32 @@ export default function Model({
   }, []); // Empty dependency array ensures that the effect runs only once
 
   useFrame(() => {
-
     // check if speed is greater than 0 to allow movement
     if (speed > 0 && movementAnim) {
-      // parameterized equation for the infinity symbol
-      const x = radius * Math.sin(myMesh.current.userData.theta);
-      const y = radius * Math.sin(myMesh.current.userData.theta) * Math.cos(myMesh.current.userData.theta);
 
-      // Calculate random values based on the position along the path
-      const randomX = Math.sin(myMesh.current.userData.theta) * (Math.random() - 0.5) * 0.1; // Adjust the range and intensity
-      const randomY = Math.cos(myMesh.current.userData.theta) * (Math.random() - 0.5) * 0.1; // Adjust the range and intensity
+
+      const theta = myMesh.current.userData.theta;
+
+      // use ImprovedNoise noise to introduce randomness to the path
+      const noise = new ImprovedNoise(theta * 0.1, 0, 0); // Adjust the scale factor for more or less randomness
+
+
+      // parameterized equation for the infinity symbol
+      const x = radius * Math.sin(myMesh.current.userData.theta) + 0.5 /* * noise */;
+      const y = radius * Math.sin(myMesh.current.userData.theta) * Math.cos(myMesh.current.userData.theta) + 0.5 /* * noise */;
 
       // Update the mesh position with noise
       myMesh.current.position.x = x;
       myMesh.current.position.y = y;
 
-      // Calculate the vector between current and previous positions
+      // to make sure the salmon is oriented as the path it follows
+      // calculate the vector between current and previous positions
       const directionVector = [
         myMesh.current.position.x - prevPositionRef.current[0],
         myMesh.current.position.y - prevPositionRef.current[1],
         myMesh.current.position.z - prevPositionRef.current[2],
       ];
-
-      // Normalize the vector to get the direction
+      // normalize the vector to get the direction
       const length = Math.sqrt(
         directionVector[0] * directionVector[0] +
         directionVector[1] * directionVector[1] +
@@ -176,24 +153,22 @@ export default function Model({
         directionVector[1] / length,
         directionVector[2] / length,
       ];
-
-      // Use lookAt to set the rotation based on the direction
+      // use lookAt to set the rotation based on the direction
       myMesh.current.lookAt(
         myMesh.current.position.x + normalizedDirection[0],
         myMesh.current.position.y + normalizedDirection[1],
         myMesh.current.position.z + normalizedDirection[2]
       );
-
-      // Calculate the inclination angle (slope) of the curve
+      // calculate the inclination angle (slope) of the curve
       const inclinationAngle = Math.atan2(normalizedDirection[1], normalizedDirection[0]);
-
-      // // Set the rotation around the z-axis based on the inclination angle
+      // set the rotation around the z-axis based on the inclination angle
       myMesh.current.rotation.z = inclinationAngle * 2.4755;
 
-      // // Update the previous position
+
+      // update the previous position
       prevPositionRef.current = [myMesh.current.position.x, myMesh.current.position.y, myMesh.current.position.z];
 
-      // // Update angle
+      // Update angle
       myMesh.current.userData.theta += speed;
 
       // Reset angle and rotation flag when a full circle is completed
