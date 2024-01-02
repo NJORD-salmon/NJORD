@@ -10,7 +10,6 @@ import ReactPlayer from 'react-player'
 
 import WaterLights from "../components/waterlights.js"
 // import Floor from "../components/floor.js" // for lights debugging
-import Caustics from "../components/caustics.js"
 import Model from "../components/model.js"
 import { SERVER_ADDRESS, WS_SERVER } from "../env"
 import {
@@ -21,7 +20,7 @@ import {
   FixUScale,
   FixVScale
 } from "../components/fixValues"
-import logo from '../assets/video/data.json'
+import logo from '../assets/video/logo_white.json'
 import waterVideo from '../assets/video/video.mp4'
 
 
@@ -52,7 +51,6 @@ function Fish({ fishes }) {
       uScale={FixUScale(config.scaleX)}
       vScale={FixVScale(config.scaleY)}
       textureIndex={FixTexture(config.texture)}
-      // TODO fix z positions
       // position={[y, z, x]}
       position={[getRandomY(-3, 3), getRandomZ(idx), -idx / 2]}
       rotation
@@ -65,25 +63,25 @@ function Fish({ fishes }) {
   return (
     <>
       <WaterLights />
-      <Caustics>
 
-        {/* for debugging
+
+      {/* for debugging
       <Floor sizeY={12} sizeX={22} position={[0, 0, -5]} />
       <Floor sizeY={6} sizeX={22} position={[0, -2, 0]} rotation-x={-Math.PI / 2} />
       <Floor sizeY={12} sizeX={6} position={[11, 4, 0]} rotation-y={-Math.PI / 2} />
       <Floor sizeY={12} sizeX={6} position={[-11, 4, 0]} rotation-y={Math.PI / 2} /> */}
 
-        <ErrorBoundary>
-          {models}
-        </ErrorBoundary>
-      </Caustics>
+      <ErrorBoundary>
+        {models}
+      </ErrorBoundary>
+
     </>
   )
 }
 
 export default function Water() {
   const [fishes, setFishes] = useState([])
-  const [currentState, setCurrentState] = useState("CUSTOMIZE");
+  const [currentState, setCurrentState] = useState("WELCOME");
 
   useEffect(() => {
     // start websocket client 
@@ -113,29 +111,36 @@ export default function Water() {
   }, [currentState]);
 
   const [open, setOpen] = React.useState(false);
+  const [configuratorVisible, setConfiguratorVisible] = useState(false);
 
   // read changes to manage modal
   useEffect(() => {
     switch (currentState) {
-      case "TUTORIAL": {
-        setOpen(true)
+      case "WELCOME": {
+        setOpen(false)
+        setConfiguratorVisible(false)
+
         break
       }
       case "CUSTOMIZE": {
         setOpen(true)
-        // TODO: fix modals in the water
+        setConfiguratorVisible(true);
         document.getElementById("await-salmon").style.display = "none";
+
         break
       }
       case "SAVE": {
         setOpen(true)
-        document.getElementById("modal-configurator").style.display = "none";
+        setConfiguratorVisible(false);
         document.getElementById("await-salmon").style.display = "block";
         break
       }
       case "DISPLAY": {
         setOpen(false)
+        setConfiguratorVisible(false);
         document.getElementById("await-salmon").style.display = "none";
+        document.getElementById("await-salmon").style.display = "none";
+
         break
       }
       default: {
@@ -170,11 +175,15 @@ export default function Water() {
         <Lottie animationData={logo} loop={true} />
       </div>
 
-      <div className={'modal-button'}>
+      <div>
         <Modal open={open}>
-          <Box id="modal-configurator" sx={{ mt: 2 }}>
-            <iframe src={`${SERVER_ADDRESS}/configurator`} title="salmon_window" ></iframe>
-          </Box>
+          <div>
+            {configuratorVisible ? (
+              <Box id="modal-configurator">
+                <iframe src={`${SERVER_ADDRESS}/configurator`} title="salmon_window" ></iframe>
+              </Box>
+            ) : null}
+          </div>
         </Modal>
       </div >
 

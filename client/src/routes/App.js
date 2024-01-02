@@ -6,6 +6,7 @@ import { Canvas } from "@react-three/fiber"
 import Modal from "@mui/material/Modal"
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
+import Lottie from "lottie-react";
 
 import Lights from "../components/light"
 import Model from "../components/model"
@@ -18,6 +19,7 @@ import {
   FixUScale,
   FixVScale
 } from "../components/fixValues"
+import logo from '../assets/video/logo_black.json'
 
 
 // parameters for the url code of the visualizer
@@ -43,8 +45,7 @@ export default function App() {
   const [backButton, setbackButton] = useState(0);
 
   const [open, setOpen] = React.useState(false);
-  // TODO: change initial state (page) to TUTORIAL in the future
-  const [currentState, setCurrentState] = useState("CUSTOMIZE");
+  const [currentState, setCurrentState] = useState("WELCOME");
 
   useEffect(() => {
     // start websocket client + change values
@@ -88,14 +89,15 @@ export default function App() {
   // modal config + saving url parameters
   useEffect(() => {
     switch (currentState) {
-      case "TUTORIAL": {
+      case "WELCOME": {
         setOpen(false)
-
+        document.getElementById("await").style.display = "block";
         break
       }
       case "CUSTOMIZE": {
         // keep the modal closed
         setOpen(false)
+        document.getElementById("await").style.display = "none";
         // if continue to save the values, when changing status the last saved are the actual of the salmon
         h = Math.floor(hue)
         s = Math.floor(saturation)
@@ -131,6 +133,11 @@ export default function App() {
 
   return (
     <>
+
+      <div id="await">
+        <Lottie animationData={logo} loop={true} />
+      </div>
+
       <div>
         <Modal
           open={open}

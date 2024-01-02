@@ -1,5 +1,5 @@
 export const STATES = {
-  TUTORIAL: 'TUTORIAL',
+  WELCOME: 'WELCOME',
   CUSTOMIZE: 'CUSTOMIZE',
   SAVE: 'SAVE',
   DISPLAY: 'DISPLAY',
@@ -18,10 +18,10 @@ export class StateMachine {
     }
 
     this.transitions = {
-      [STATES.TUTORIAL]: [STATES.CUSTOMIZE],
+      [STATES.WELCOME]: [STATES.CUSTOMIZE],
       [STATES.CUSTOMIZE]: [STATES.CUSTOMIZE, STATES.SAVE],
       [STATES.SAVE]: [STATES.CUSTOMIZE, STATES.DISPLAY],
-      [STATES.DISPLAY]: [STATES.TUTORIAL],
+      [STATES.DISPLAY]: [STATES.WELCOME],
     }
 
     if (this.verbose) {

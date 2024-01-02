@@ -15,7 +15,7 @@ const COMMANDS = {
 }
 
 const PAGES = {
-  TUTORIAL: 'tutorial',
+  WELCOME: 'welcome',
   APP: 'app'
 }
 
@@ -41,11 +41,8 @@ function main() {
     }
   })
 
-  // TODO: return when receive message from aquarium -> return also currentState
-
   console.log('server started')
 
-  // TODO: change initial state (page) to TUTORIAL in the future
   const automa = new StateMachine(STATES.CUSTOMIZE)
 
   // set up serialport for server and arduino communication
@@ -151,11 +148,11 @@ async function processArduinoSignal(automa, payload, lastParameters) {
   const output = { notifyClients: false, parameters: null }
 
   switch (automa.currentState) {
-    case STATES.TUTORIAL: {
-      // if (payload.type === COMMANDS.NEXT) {
-      automa.changeState(STATES.CUSTOMIZE)
-      output.notifyClients = true
-      // }
+    case STATES.WELCOME: {
+      if (payload.type === COMMANDS.NEXT) {
+        automa.changeState(STATES.CUSTOMIZE)
+        output.notifyClients = true
+      }
 
       break
     }
@@ -191,7 +188,7 @@ async function processArduinoSignal(automa, payload, lastParameters) {
       if (payload.type === COMMANDS.NEXT) {
         // send salmon in the aquarium
         output.notifyClients = true
-        automa.changeState(STATES.TUTORIAL)
+        automa.changeState(STATES.WELCOME)
       }
 
       break
