@@ -15,6 +15,12 @@ import * as skeletonUtils from "three/examples/jsm/utils/SkeletonUtils.js"
 
 const MODELS_BASEPATH = './models/salmon/'
 
+// load textures
+const textureVector = []
+for (let j = 0; j < 8; j++) {
+  textureVector.push(new TextureLoader().load(`${MODELS_BASEPATH}meat_textures/${j}.jpeg`))
+}
+
 export default function Model({
   hue,
   saturation,
@@ -28,15 +34,10 @@ export default function Model({
   animIndex = 0,
   movementAnim = false,
 }) {
-  // load textures
-  const textureVector = []
-  for (let j = 0; j < 8; j++) {
-    textureVector.push(new TextureLoader().load(`${MODELS_BASEPATH}meat_textures/${j}.jpeg`))
-  }
-
   // fish face material
   const constantMaterial = new MeshStandardMaterial({
     color: extractColor(6, 93, 60),
+    // TODO: move the TextureLoader outside
     bumpMap: new TextureLoader().load(`${MODELS_BASEPATH}salmon_textures/Chinook_salmon_bump.png`),
     bumpScale: 0.5,
   })
@@ -82,7 +83,7 @@ export default function Model({
     // TODO change animation when turning
 
     return () => {
-      actions[names[animIndex]].fadeOut(0.2);
+      // actions[names[animIndex]].fadeOut(0.2);
     };
   }, [actions, names, animIndex])
 
@@ -98,86 +99,127 @@ export default function Model({
 
   const { viewport } = useThree(); // Access the viewport dimensions
 
-  const radius = Math.min(viewport.width, viewport.height) - position[2] * 1.4;
-  const speed = 0.003 /* + Math.abs(position[2]) / 800; */ // Adjust the speed value to control the speed
-  const maxHorizontalDistance = 5; // Set the maximum horizontal distance
-  const rotationSpeed = 0.2; // Adjust the rotation speed for the 180° rotation
-  const gradualRotationSpeed = 0.05; // Adjust the gradual rotation speed
-  const prevPositionRef = useRef([0, 0, 0]); // Keep track of the previous position
+  const maxBoundaryX = viewport.width - position[2] * 1.4
+  const minBoundaryX = -maxBoundaryX
+
+
+  const prevPositionRef = useRef(position); // Keep track of the previous position
+
+
+  let displacementX = (2 + position[0]) / 1000 * (Math.random() >= 0.5 ? 1 : -1)
+  let displacementY = (2 + position[1]) / 1000 * (Math.random() >= 0.5 ? 1 : -1)
 
   useEffect(() => {
-    // Initial setup with random initial angle
-    myMesh.current.userData.theta = Math.random() * Math.PI * 2;
-    myMesh.current.userData.rotating = false;
+    if (movementAnim) {
+      // Initial setup with random initial angle
+      myMesh.current.rotation.y = Math.PI / 2
 
+      // myMesh.current.userData.theta = Math.random() * Math.PI * 2;
+      // myMesh.current.userData.rotating = false;
+      myMesh.current.position.x = prevPositionRef.current[0]
+      myMesh.current.position.y = prevPositionRef.current[1]
+
+      // TODO: use previous position, if any, to initialize the correct salmon position
+    }
     // Cleanup function
     return () => {
       // Stop any ongoing animations or cleanup resources if needed
     };
   }, []); // Empty dependency array ensures that the effect runs only once
 
-  useFrame(() => {
-    // check if speed is greater than 0 to allow movement
-    if (speed > 0 && movementAnim) {
+  const noiseGenerator = new ImprovedNoise(); // Adjust the scale factor for more or less randomness
+
+  useFrame(({ clock }) => {
+    if (movementAnim) {
+      const t = clock.getElapsedTime()
+
+      displacementX = computeChange(
+        myMesh.current.position.x,
+        displacementX,
+        minBoundaryX,
+        maxBoundaryX
+      )
+      displacementY = computeChange(
+        myMesh.current.position.y,
+        displacementY,
+        -2,
+        2
+      )
+      myMesh.current.position.x += (
+        displacementX + computeNoise({ position: myMesh.current.position, time: t, noiseGenerator, strength: 0.001 })
+      )
+      myMesh.current.position.y += (
+        displacementY + computeNoise({ position: myMesh.current.position, time: t, noiseGenerator, strength: 0.001 })
+      )
 
 
-      const theta = myMesh.current.userData.theta;
 
-      // use ImprovedNoise noise to introduce randomness to the path
-      const noise = new ImprovedNoise(theta * 0.1, 0, 0); // Adjust the scale factor for more or less randomness
-
-
-      // parameterized equation for the infinity symbol
-      const x = radius * Math.sin(myMesh.current.userData.theta) + 0.5 /* * noise */;
-      const y = radius * Math.sin(myMesh.current.userData.theta) * Math.cos(myMesh.current.userData.theta) + 0.5 /* * noise */;
-
-      // Update the mesh position with noise
-      myMesh.current.position.x = x;
-      myMesh.current.position.y = y;
-
-      // to make sure the salmon is oriented as the path it follows
-      // calculate the vector between current and previous positions
-      const directionVector = [
-        myMesh.current.position.x - prevPositionRef.current[0],
-        myMesh.current.position.y - prevPositionRef.current[1],
-        myMesh.current.position.z - prevPositionRef.current[2],
-      ];
-      // normalize the vector to get the direction
-      const length = Math.sqrt(
-        directionVector[0] * directionVector[0] +
-        directionVector[1] * directionVector[1] +
-        directionVector[2] * directionVector[2]
-      );
-      const normalizedDirection = [
-        directionVector[0] / length,
-        directionVector[1] / length,
-        directionVector[2] / length,
-      ];
-      // use lookAt to set the rotation based on the direction
-      myMesh.current.lookAt(
-        myMesh.current.position.x + normalizedDirection[0],
-        myMesh.current.position.y + normalizedDirection[1],
-        myMesh.current.position.z + normalizedDirection[2]
-      );
-      // calculate the inclination angle (slope) of the curve
-      const inclinationAngle = Math.atan2(normalizedDirection[1], normalizedDirection[0]);
-      // set the rotation around the z-axis based on the inclination angle
-      myMesh.current.rotation.z = inclinationAngle * 2.4755;
-
-
-      // update the previous position
-      prevPositionRef.current = [myMesh.current.position.x, myMesh.current.position.y, myMesh.current.position.z];
-
-      // Update angle
-      myMesh.current.userData.theta += speed;
-
-      // Reset angle and rotation flag when a full circle is completed
-      if (myMesh.current.userData.theta >= Math.PI * 4) {
-        myMesh.current.userData.theta = 0;
-        myMesh.current.userData.rotating = false;
-      }
+      // TODO: store the current position as previous position
+      prevPositionRef.current = [myMesh.current.position.x, myMesh.current.position.y, myMesh.current.position.z]
     }
-  });
+  })
+  // useFrame(() => {
+  //   // check if speed is greater than 0 to allow movement
+  //   if (movementAnim) {
+  //     const theta = myMesh.current.userData.theta;
+
+  //     // use ImprovedNoise noise to introduce randomness to the path
+
+  //     const noiseX = noiseGenerator.noise(theta * 0.1, 1, 200) * 2
+  //     const noiseY = noiseGenerator.noise(1, theta * 0.1, 200) * 2
+  //     // console.log(noiseX, noiseY)
+
+  //     // parameterized equation for the infinity symbol
+  //     const x = radius * Math.sin(myMesh.current.userData.theta) + noiseX;
+  //     const y = radius * Math.sin(myMesh.current.userData.theta) * Math.cos(myMesh.current.userData.theta) + noiseY;
+
+  //     // Update the mesh position with noise
+  //     myMesh.current.position.x = x;
+  //     myMesh.current.position.y = y;
+
+  //     // to make sure the salmon is oriented as the path it follows
+  //     // calculate the vector between current and previous positions
+  //     const directionVector = [
+  //       myMesh.current.position.x - prevPositionRef.current[0],
+  //       myMesh.current.position.y - prevPositionRef.current[1],
+  //       myMesh.current.position.z - prevPositionRef.current[2],
+  //     ];
+  //     // normalize the vector to get the direction
+  //     const length = Math.sqrt(
+  //       directionVector[0] * directionVector[0] +
+  //       directionVector[1] * directionVector[1] +
+  //       directionVector[2] * directionVector[2]
+  //     );
+  //     const normalizedDirection = [
+  //       directionVector[0] / length,
+  //       directionVector[1] / length,
+  //       directionVector[2] / length,
+  //     ];
+  //     // use lookAt to set the rotation based on the direction
+  //     myMesh.current.lookAt(
+  //       myMesh.current.position.x + normalizedDirection[0],
+  //       myMesh.current.position.y + normalizedDirection[1],
+  //       myMesh.current.position.z + normalizedDirection[2]
+  //     );
+  //     // calculate the inclination angle (slope) of the curve
+  //     const inclinationAngle = Math.atan2(normalizedDirection[1], normalizedDirection[0]);
+  //     // set the rotation around the z-axis based on the inclination angle
+  //     myMesh.current.rotation.z = inclinationAngle * 2.4755;
+
+
+  //     // update the previous position
+  //     prevPositionRef.current = [myMesh.current.position.x, myMesh.current.position.y, myMesh.current.position.z];
+
+  //     // Update angle
+  //     myMesh.current.userData.theta += speed;
+
+  //     // Reset angle and rotation flag when a full circle is completed
+  //     if (myMesh.current.userData.theta >= Math.PI * 4) {
+  //       myMesh.current.userData.theta = 0;
+  //       myMesh.current.userData.rotating = false;
+  //     }
+  //   }
+  // });
 
 
   return (
@@ -239,4 +281,16 @@ function getMaterial(color, image) {
 function extractColor(hue, saturation, lightness) {
   return new Color("hsl(0, 100%, 100%)")
     .setHSL((hue ?? 0) / 360, (saturation ?? 0) / 100, (lightness ?? 0) / 100)
+}
+
+function computeChange(value, displacement, minBoundary, maxBoundary) {
+  if ((value > maxBoundary && displacement > 0) || (value < minBoundary && displacement < 0)) {
+    return displacement * -1
+  }
+
+  return displacement
+}
+
+function computeNoise({ position, time, noiseGenerator, strength }) {
+  return Math.abs(noiseGenerator.noise(position.x * time, position.y * time, position.z)) * strength
 }

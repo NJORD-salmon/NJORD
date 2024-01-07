@@ -1,11 +1,10 @@
-import React, { Suspense, useState, useEffect } from "react"
+import React, { Suspense, useState, useEffect, useRef } from "react"
 import QRCode from "react-qr-code"
 // OrbitControls to move the camera around
 import { OrbitControls, ContactShadows, Stats, Html, useProgress } from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
 import Modal from "@mui/material/Modal"
 import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
 import Lottie from "lottie-react";
 
 import Lights from "../components/light"
@@ -19,7 +18,7 @@ import {
   FixUScale,
   FixVScale
 } from "../components/fixValues"
-import logo from '../assets/video/logo_black.json'
+import logo from '../assets/video/logo.json'
 
 
 // parameters for the url code of the visualizer
@@ -33,7 +32,7 @@ function Loader() {
   return <Html center>{progress} % loaded</Html>
 }
 
-export default function App() {
+export default function App({ initialState = 'WELCOME', maxFishZoom = 10 }) {
   const [hue, setHue] = useState(6);
   const [saturation, setSaturation] = useState(93);
   const [lightness, setLightness] = useState(60);
@@ -45,7 +44,9 @@ export default function App() {
   const [backButton, setbackButton] = useState(0);
 
   const [open, setOpen] = React.useState(false);
-  const [currentState, setCurrentState] = useState("WELCOME");
+  const [currentState, setCurrentState] = useState(initialState);
+
+  const wsConnection = useRef(null)
 
   useEffect(() => {
     // start websocket client + change values
@@ -83,21 +84,21 @@ export default function App() {
       }
     };
 
+    wsConnection.current = arduinoSocket
+
     return () => arduinoSocket.close();
-  }, [currentState]);
+  }, []);
 
   // modal config + saving url parameters
   useEffect(() => {
     switch (currentState) {
       case "WELCOME": {
         setOpen(false)
-        document.getElementById("await").style.display = "block";
         break
       }
       case "CUSTOMIZE": {
         // keep the modal closed
         setOpen(false)
-        document.getElementById("await").style.display = "none";
         // if continue to save the values, when changing status the last saved are the actual of the salmon
         h = Math.floor(hue)
         s = Math.floor(saturation)
@@ -110,18 +111,14 @@ export default function App() {
       }
       case "SAVE": {
         // open the modal to save the salmon
-        setOpen(true)
+        // setOpen(true)
 
         break
       }
       case "DISPLAY": {
         // saved file confirmation
-        document.getElementById("saving-screen").style.display = "none";
-        document.getElementById("saved-screen").style.display = "block";
-        // show qr code
-        document.getElementById("container").style.display = "block";
-
-        // TODO: press next => start animation, next state
+        /* document.getElementById("saving-screen").style.display = "none";
+        document.getElementById("saved-screen").style.display = "flex"; */
 
         break
       }
@@ -131,54 +128,91 @@ export default function App() {
     }
   }, [currentState, hue, saturation, lightness, scaleX, scaleY, texture])
 
+  if (currentState === 'WELCOME') {
+    return (
+      <div id="await">
+        <Lottie animationData={logo} loop={true} style={{ height: "6.5vw" }} />
+        <p>press &lt;enter&gt; to customize your salmon.</p>
+      </div>
+    )
+  }
+
+  if (currentState === 'SAVE') {
+    return (
+      <Box id="box-modal">
+        <div id="saving-screen">
+          <p className="title">
+            press &lt;enter&gt; to add your salmon.
+          </p>
+          <p className="description">
+            press &lt;back&gt; to continue your customization.
+          </p>
+        </div>
+      </Box>
+    )
+  }
+
+  if (currentState === 'DISPLAY') {
+    return (
+      <Box id="box-modal">
+        <div id="saved-screen">
+          <p className="title" >
+            scan your custom order
+          </p>
+
+          <QRCode
+            size={256}
+            id="qr"
+
+            title="NJÖRD Salmon"
+            value={`${QR_CODE_BASE_URL}/visualizer?h=${h}&s=${s}&l=${l}&u=${u}&v=${v}&t=${t} `}
+            viewBox={`0 0 256 256`}
+          />
+
+          <p className="description">
+            press &lt;enter&gt; when you have finished.
+          </p>
+        </div>
+      </Box>
+    )
+  }
+
   return (
     <>
-
-      <div id="await">
-        <Lottie animationData={logo} loop={true} />
-      </div>
-
-      <div>
-        <Modal
-          open={open}
-        // aria-labelledby="modal-modal-title"
-        // aria-describedby="modal-modal-description"
-        >
-          <Box id="box-modal">
+      {/* <div>
+         <Modal open={open}>
+         <Box id="box-modal">
 
             <div id="saving-screen">
-              <Typography className="modal-title">
-                Do you want to save this salmon?
-              </Typography>
-              <div>
-                <Typography className="modal-description" sx={{ mt: 2 }}>
-                  Back
-                </Typography>
-                <Typography className="modal-description" sx={{ mt: 2 }}>
-                  Ok
-                </Typography>
-              </div>
+              <p className="title">
+                press &lt;enter&gt; to add your salmon.
+              </p>
+              <p className="description">
+                press &lt;back&gt; to continue your customization.
+              </p>
             </div>
 
             <div id="saved-screen">
-              <Typography className="modal-title" >
-                Salmon saved!
-              </Typography>
-            </div>
+              <p className="title" >
+                scan your custom order
+              </p>
 
-            <div id="container">
               <QRCode
                 size={256}
-                style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                id="qr"
+
                 title="NJÖRD Salmon"
                 value={`${QR_CODE_BASE_URL}/visualizer?h=${h}&s=${s}&l=${l}&u=${u}&v=${v}&t=${t} `}
                 viewBox={`0 0 256 256`}
               />
-            </div>
 
-          </Box>
-        </Modal>
-      </div>
+              <p className="description">
+                press &lt;enter&gt; when you have finished.
+              </p>
+            </div>
+          </Box> 
+         </Modal> 
+      </div>*/}
 
       <Canvas shadows >
         <Lights />
@@ -202,8 +236,8 @@ export default function App() {
 
         <OrbitControls
           enableZoom={true}
-          minDistance={2.5}
-          maxDistance={10}
+          minDistance={Math.min(2.5, maxFishZoom)}
+          maxDistance={maxFishZoom}
           enablePan={false}
         />
         <Stats />

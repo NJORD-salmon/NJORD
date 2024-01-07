@@ -43,7 +43,7 @@ function main() {
 
   console.log('server started')
 
-  const automa = new StateMachine(STATES.CUSTOMIZE)
+  const automa = new StateMachine(STATES.WELCOME)
 
   // set up serialport for server and arduino communication
   let port
@@ -58,10 +58,13 @@ function main() {
     if (port?.isOpen) {
       port.close()
     }
-    wss.close()
 
-    console.log('server terminated')
+    wss.close()
   })
+}
+
+function heartbeat() {
+  this.isAlive = true;
 }
 
 function setupWSS({ port, fn }) {
@@ -73,13 +76,39 @@ function setupWSS({ port, fn }) {
   const wss = new WebSocketServer({ port: port });
 
   wss.on('connection', function connection(ws) {
+    ws.isAlive = true;
+    ws.on('pong', heartbeat);
     ws.on('error', console.error);
 
     ws.on('message', (data) => fn(ws, data));
+  });
 
-    ws.on('close', () => {
-      console.log(`connection terminated on port ${port}`)
-    })
+  const interval = setInterval(function ping() {
+    wss.clients.forEach(ws => {
+      if (ws.isAlive === false) {
+        console.info('client disconnected')
+        return ws.terminate();
+      }
+
+      ws.isAlive = false;
+      ws.ping();
+    });
+  }, 30000);
+
+  wss.on('error', error => {
+    console.error(`websocket issue: ${error.message}`)
+    this.close()
+  })
+
+  wss.on('close', function close() {
+    clearInterval(interval);
+
+    wss.clients.forEach(ws => {
+      ws.terminate();
+      console.info('client disconnected')
+    });
+
+    console.log(`closing websocket server`)
   });
 
   return wss
@@ -102,12 +131,32 @@ function setupSerialPort(wss, automa) {
     console.log('serial port open')
   })
 
-  port.on('error', console.error)
+  port.on('error', err => {
+    console.error('port - error:', err.message)
+    if (port.isOpen) {
+      port.end()
+    }
+  })
+
+  port.on('close', () => {
+    if (port.isOpen) {
+      port.flush()
+    }
+    console.log('serial port closed')
+    parser.end()
+  })
 
   parser.on('data', async (data) => {
     // if data is the same as before, stop sending until it changes
     if (data !== previousValue) {
-      const payload = JSON.parse(data)
+      let payload
+      try {
+        payload = JSON.parse(data)
+      } catch (error) {
+        console.error('failed to parse message payload', error.message)
+        return
+      }
+
       const {
         currentState,
         notifyClients,
@@ -137,8 +186,12 @@ function setupSerialPort(wss, automa) {
     }
   })
 
+  parser.on('error', err => {
+    console.error(err.message)
+  })
+
   parser.on('close', () => {
-    console.log('serial port closed')
+    console.log('serial port parser closed')
   })
 
   return port

@@ -7,11 +7,11 @@ import { Canvas } from "@react-three/fiber"
 import Lottie from "lottie-react";
 import ReactPlayer from 'react-player'
 
-
+import App from './App.js'
 import WaterLights from "../components/waterlights.js"
 // import Floor from "../components/floor.js" // for lights debugging
 import Model from "../components/model.js"
-import { SERVER_ADDRESS, WS_SERVER } from "../env"
+import { WS_SERVER } from "../env"
 import {
   FixHue,
   FixSaturation,
@@ -53,7 +53,6 @@ function Fish({ fishes }) {
       textureIndex={FixTexture(config.texture)}
       // position={[y, z, x]}
       position={[getRandomY(-3, 3), getRandomZ(idx), -idx / 2]}
-      rotation
       animIndex={0}
       movementAnim={true}
       key={idx}
@@ -83,12 +82,17 @@ export default function Water() {
   const [fishes, setFishes] = useState([])
   const [currentState, setCurrentState] = useState("WELCOME");
 
+  const connection = useRef(null)
+
   useEffect(() => {
     // start websocket client 
     const arduinoSocket = new WebSocket(`ws://${WS_SERVER}:9000`);
     arduinoSocket.onopen = (event) => {
       // send a message to server to request fish parameters
       arduinoSocket.send('gimme-fish')
+
+      // update reference only when the connection is effectively updated
+      connection.current = arduinoSocket
     };
 
     arduinoSocket.onmessage = (event) => {
@@ -108,38 +112,36 @@ export default function Water() {
     };
 
     return () => arduinoSocket.close();
-  }, [currentState]);
+  }, []);
 
-  const [open, setOpen] = React.useState(false);
+  useEffect(() => {
+    if (currentState === "DISPLAY") {
+      connection.current?.send('gimme-fish')
+    }
+  }, [connection, currentState]);
+
+  const [open, setOpen] = useState(false);
   const [configuratorVisible, setConfiguratorVisible] = useState(false);
 
   // read changes to manage modal
   useEffect(() => {
     switch (currentState) {
       case "WELCOME": {
-        setOpen(false)
-        setConfiguratorVisible(false)
-
         break
       }
       case "CUSTOMIZE": {
         setOpen(true)
         setConfiguratorVisible(true);
-        document.getElementById("await-salmon").style.display = "none";
 
         break
       }
       case "SAVE": {
-        setOpen(true)
         setConfiguratorVisible(false);
-        document.getElementById("await-salmon").style.display = "block";
+
         break
       }
       case "DISPLAY": {
         setOpen(false)
-        setConfiguratorVisible(false);
-        document.getElementById("await-salmon").style.display = "none";
-        document.getElementById("await-salmon").style.display = "none";
 
         break
       }
@@ -166,23 +168,27 @@ export default function Water() {
           muted={true}
           playsinline={true}
           onReady={onLoadedData}
-          width={window.innerWidth}
-          height={window.innerHeight}
+          width={'100vw'}
+          height={'100vh'}
         />
       </div>
 
-      <div id="await-salmon">
-        <Lottie animationData={logo} loop={true} />
-      </div>
-
       <div>
-        <Modal open={open}>
+        <Modal open={open} style={{ backgroundColor: 'rgba(30,30,30,0.6)' }}>
           <div>
-            {configuratorVisible ? (
-              <Box id="modal-configurator">
-                <iframe src={`${SERVER_ADDRESS}/configurator`} title="salmon_window" ></iframe>
-              </Box>
-            ) : null}
+            {
+              configuratorVisible
+                ? (
+                  <Box id="modal-configurator">
+                    <App initialState={currentState} maxFishZoom={3} />
+                  </Box>
+                )
+                : (
+                  <div id="await-salmon">
+                    <Lottie animationData={logo} loop={true} />
+                  </div>
+                )
+            }
           </div>
         </Modal>
       </div >
@@ -195,7 +201,8 @@ export default function Water() {
           position: [0, 0, 4],
           rotation: [0, 0, 0],
           zoom: 0.4
-        }} >
+        }}
+      >
 
         {/* to give the impression of something farther away */}
         <fog attach="fog" args={['#cecece', 0.1, 20]} />
