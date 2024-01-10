@@ -32,7 +32,7 @@ function Loader() {
   return <Html center>{progress} % loaded</Html>
 }
 
-export default function App({ initialState = 'WELCOME', maxFishZoom = 10 }) {
+export default function App({ initialState = 'WELCOME', maxFishZoom = 5, instructions = true }) {
   const [hue, setHue] = useState(6);
   const [saturation, setSaturation] = useState(93);
   const [lightness, setLightness] = useState(60);
@@ -40,10 +40,6 @@ export default function App({ initialState = 'WELCOME', maxFishZoom = 10 }) {
   const [scaleX, setScaleX] = useState(1);
   const [scaleY, setScaleY] = useState(1);
 
-  const [nextButton, setNextButton] = useState(0);
-  const [backButton, setbackButton] = useState(0);
-
-  const [open, setOpen] = React.useState(false);
   const [currentState, setCurrentState] = useState(initialState);
 
   const wsConnection = useRef(null)
@@ -71,9 +67,6 @@ export default function App({ initialState = 'WELCOME', maxFishZoom = 10 }) {
         setScaleX(FixUScale(payload.values.scaleX));
         setScaleY(FixVScale(payload.values.scaleY));
 
-        setNextButton(payload.values.next);
-        setbackButton(payload.values.back);
-
         setCurrentState(payload.currentState)
 
         prevTexture = payload.values.texture
@@ -93,12 +86,14 @@ export default function App({ initialState = 'WELCOME', maxFishZoom = 10 }) {
   useEffect(() => {
     switch (currentState) {
       case "WELCOME": {
-        setOpen(false)
+
         break
       }
       case "CUSTOMIZE": {
-        // keep the modal closed
-        setOpen(false)
+        if (instructions) {
+          document.getElementById("instruction").style.display = "flex"
+        }
+
         // if continue to save the values, when changing status the last saved are the actual of the salmon
         h = Math.floor(hue)
         s = Math.floor(saturation)
@@ -110,15 +105,10 @@ export default function App({ initialState = 'WELCOME', maxFishZoom = 10 }) {
         break
       }
       case "SAVE": {
-        // open the modal to save the salmon
-        // setOpen(true)
 
         break
       }
       case "DISPLAY": {
-        // saved file confirmation
-        /* document.getElementById("saving-screen").style.display = "none";
-        document.getElementById("saved-screen").style.display = "flex"; */
 
         break
       }
@@ -139,7 +129,7 @@ export default function App({ initialState = 'WELCOME', maxFishZoom = 10 }) {
 
   if (currentState === 'SAVE') {
     return (
-      <Box id="box-modal">
+      <Box id="box">
         <div id="saving-screen">
           <p className="title">
             press &lt;enter&gt; to add your salmon.
@@ -154,13 +144,9 @@ export default function App({ initialState = 'WELCOME', maxFishZoom = 10 }) {
 
   if (currentState === 'DISPLAY') {
     return (
-      <Box id="box-modal">
+      <Box id="box">
         <div id="saved-screen">
-          <p className="title" >
-            scan your custom order
-          </p>
-
-          <QRCode
+          <div><QRCode
             size={256}
             id="qr"
 
@@ -169,6 +155,10 @@ export default function App({ initialState = 'WELCOME', maxFishZoom = 10 }) {
             viewBox={`0 0 256 256`}
           />
 
+            <p className="title" >
+              scan your custom order.
+            </p>
+          </div>
           <p className="description">
             press &lt;enter&gt; when you have finished.
           </p>
@@ -179,40 +169,10 @@ export default function App({ initialState = 'WELCOME', maxFishZoom = 10 }) {
 
   return (
     <>
-      {/* <div>
-         <Modal open={open}>
-         <Box id="box-modal">
-
-            <div id="saving-screen">
-              <p className="title">
-                press &lt;enter&gt; to add your salmon.
-              </p>
-              <p className="description">
-                press &lt;back&gt; to continue your customization.
-              </p>
-            </div>
-
-            <div id="saved-screen">
-              <p className="title" >
-                scan your custom order
-              </p>
-
-              <QRCode
-                size={256}
-                id="qr"
-
-                title="NJÖRD Salmon"
-                value={`${QR_CODE_BASE_URL}/visualizer?h=${h}&s=${s}&l=${l}&u=${u}&v=${v}&t=${t} `}
-                viewBox={`0 0 256 256`}
-              />
-
-              <p className="description">
-                press &lt;enter&gt; when you have finished.
-              </p>
-            </div>
-          </Box> 
-         </Modal> 
-      </div>*/}
+      <div id="instruction">
+        <p style={{ marginBottom: "0" }}>use the side disks to customize your salmon.</p>
+        <p>press &lt;enter&gt; when you are satisfied.</p>
+      </div >
 
       <Canvas shadows >
         <Lights />
@@ -228,7 +188,6 @@ export default function App({ initialState = 'WELCOME', maxFishZoom = 10 }) {
             modelScale={3.5}
             position={[0.5, 0, 0]}
             rotation={[0, 0.95, 0]}
-            animIndex={0}
           />
         </Suspense>
 
@@ -240,7 +199,7 @@ export default function App({ initialState = 'WELCOME', maxFishZoom = 10 }) {
           maxDistance={maxFishZoom}
           enablePan={false}
         />
-        <Stats />
+        {<Stats />}
       </Canvas>
     </>
   )

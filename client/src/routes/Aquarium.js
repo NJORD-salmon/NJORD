@@ -3,13 +3,12 @@ import Box from "@mui/material/Box"
 import Modal from "@mui/material/Modal"
 import { ErrorBoundary } from 'react-error-boundary'
 import { OrbitControls, Stats, Html, useProgress } from "@react-three/drei"
-import { Canvas } from "@react-three/fiber"
+import { Canvas, useThree } from "@react-three/fiber"
 import Lottie from "lottie-react";
 import ReactPlayer from 'react-player'
 
 import App from './App.js'
 import WaterLights from "../components/waterlights.js"
-// import Floor from "../components/floor.js" // for lights debugging
 import Model from "../components/model.js"
 import { WS_SERVER } from "../env"
 import {
@@ -41,6 +40,8 @@ function getRandomZ(idx) {
 }
 
 function Fish({ fishes }) {
+  const { viewport } = useThree();
+
 
   const models = fishes.map((config, idx) => {
     return <Model
@@ -52,8 +53,7 @@ function Fish({ fishes }) {
       vScale={FixVScale(config.scaleY)}
       textureIndex={FixTexture(config.texture)}
       // position={[y, z, x]}
-      position={[getRandomY(-3, 3), getRandomZ(idx), -idx / 2]}
-      animIndex={0}
+      position={[getRandomY(-viewport.width, viewport.width), getRandomZ(idx), -idx / 2]}
       movementAnim={true}
       key={idx}
     />
@@ -62,18 +62,9 @@ function Fish({ fishes }) {
   return (
     <>
       <WaterLights />
-
-
-      {/* for debugging
-      <Floor sizeY={12} sizeX={22} position={[0, 0, -5]} />
-      <Floor sizeY={6} sizeX={22} position={[0, -2, 0]} rotation-x={-Math.PI / 2} />
-      <Floor sizeY={12} sizeX={6} position={[11, 4, 0]} rotation-y={-Math.PI / 2} />
-      <Floor sizeY={12} sizeX={6} position={[-11, 4, 0]} rotation-y={Math.PI / 2} /> */}
-
       <ErrorBoundary>
         {models}
       </ErrorBoundary>
-
     </>
   )
 }
@@ -179,8 +170,8 @@ export default function Water() {
             {
               configuratorVisible
                 ? (
-                  <Box id="modal-configurator">
-                    <App initialState={currentState} maxFishZoom={3} />
+                  <Box id="configurator">
+                    <App initialState={currentState} maxFishZoom={3} instructions={false} />
                   </Box>
                 )
                 : (

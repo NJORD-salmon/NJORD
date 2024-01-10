@@ -25,22 +25,25 @@ body {
   font-family: "TWKLausanne", 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   color: #000;
 }
-
 canvas { 
   display:block
 }
 
-/* video - aqua */
+/* ------------------------------------------------------------------------------ */
+/* AQUARIUM */
+
+/* video */
 #bkg {
   display: block;
   position: absolute;
   margin: 0px;
   z-index: 0;
+  background-color:black;
+  width:100%
 }
 
-
-/* modal - aqua */
-#modal-configurator {
+/* modal */
+#configurator {
   display: block;
   position: absolute;
   top: 50vh;
@@ -50,82 +53,89 @@ canvas {
   height: 75vh;
 }
 
-/* saving state - aqua */
+/* saving state */
 #await-salmon{
-  margin: 0;
-  position: fixed;
-  left: 0%;
+  position: absolute;
   z-index: 2000;
-}
-
-/* welcome - conf */
-#await {
-  display: flex;
-  flex-direction: column;
-  align-content: center;
-  position: absolute;
-  width: 100%;
-  top:45%
-}
-#await p{
-  margin: 0;
-  text-align: center;
-  font-size: 2vw;
-  padding-top: 5rem;
-}
-
-/* box inside modal - conf */
-#box-modal {
-  position: absolute;
-  text-align: center;
   height: 100%;
   width: 100%;
-  background-color: white;
+  display: flex;
+  align-items: center;
 }
 
-/* saving screen - conf */
-#saving-screen {
+/* ------------------------------------------------------------------------------ */
+/* CONFIGURATOR */
+
+#await,
+#saving-screen,
+#instruction,
+#saved-screen{
   display: flex;
   flex-direction: column;
   position: relative;
   width: 100%;
-  height: 100%; 
+  font-size: 1vw;
+  text-align: center;
   padding: 13vh;
-  padding-top: 46vh;
-  justify-content: space-between;
-}
-
-/* title used in modals - conf */
-.title {
-  font-size: 4vw;
-}
-
-/* saving buttons back and next - conf */
-.description {
-  font-size: 2vw;
-}
-
-.title, .description{
   margin: 0;
+}
+
+/* welcome state */
+#await {
+  position: absolute;
+  justify-content: space-between;
+  top:45%;
+  height: 55%;
+  padding-top: 0%;
+}
+
+/* box for texts */
+#box {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  background-color: white;
+}
+
+/* saving screen */
+#saving-screen {
+  justify-content: space-between;
+  height: 100%; 
+  padding-top: 46vh;
+}
+
+/* titles */
+.title {
+  font-size: 3vw;
+   margin: 0;
+}
+
+/* configurator text */
+#instruction{
+  display: none;
+  justify-content: end;  
+  position: absolute;
+  bottom:0;
+  padding-top: 0;
+}
+#instruction p,
+.description p{
+  margin-top: 0.5rem;
 }
 
 /* qr code screen - conf */
 #saved-screen {
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  width: 100%;
-  height: 100%; 
-  padding: 13vh;
-  padding-top: 17vh;
   justify-content: space-between;
+  height: 100%; 
+  padding-top: 20vh;
 }
-
 #qr{
-  margin: auto;
+  margin: 4vh auto;
   height: 25vh;
   width: 25vh;
-
   padding: 4vh;
-  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='black' stroke-width='4vh' stroke-dasharray='60vh%2c 40vh' stroke-dashoffset='30vh' stroke-linecap='square'/%3e%3c/svg%3e");
+  /*  stroke-dasharray='60vh%2c 40vh' stroke-dashoffset='30vh' for pc */
+  /*  stroke-dasharray='85%2c 90' stroke-dashoffset='40'  for iPad */
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='black' stroke-width='4vh' stroke-dasharray='85%2c 90' stroke-dashoffset='40' stroke-linecap='square'/%3e%3c/svg%3e");
 }

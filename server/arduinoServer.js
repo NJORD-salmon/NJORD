@@ -32,7 +32,7 @@ function main() {
       if (data.toString() === 'gimme-fish') {
         console.log('catch them')
         const response = {
-          fishes: await readSalmonParameters(0, 9),
+          fishes: await readSalmonParameters(0, 15),
           currentState: automa.currentState  // include current state in the response
         }
         ws.send(JSON.stringify(response))
