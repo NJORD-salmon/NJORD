@@ -13,7 +13,7 @@ export function FixLightness(lit) {
 }
 
 export function FixTexture(texture) {
-  const numberOfTextures = 8
+  const numberOfTextures = 9
   const textureRangeSize = 256 / numberOfTextures
 
   return Math.floor(texture / textureRangeSize)

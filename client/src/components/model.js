@@ -10,15 +10,18 @@ import { useFrame, useGraph, useThree } from "@react-three/fiber"
 import { TextureLoader } from 'three/src/loaders/TextureLoader'
 
 import * as skeletonUtils from "three/examples/jsm/utils/SkeletonUtils.js"
+import { degToRad } from 'three/src/math/MathUtils';
 
 const MODELS_BASEPATH = './models/salmon/'
 
 // load textures
 const textureVector = []
-for (let j = 0; j < 8; j++) {
-  textureVector.push(new TextureLoader().load(`${MODELS_BASEPATH}meat_textures/${j}.jpeg`))
+for (let j = 0; j < 9; j++) {
+  textureVector.push(new TextureLoader().load(`${MODELS_BASEPATH}meat_textures/${j}.png`))
 }
-const bumpMap = new TextureLoader().load(`${MODELS_BASEPATH}salmon_textures/Chinook_salmon_bump.png`)
+const skinBumpMap = new TextureLoader().load(`${MODELS_BASEPATH}salmon_textures/salmon_skin_bump.png`)
+const finBumpMap = new TextureLoader().load(`${MODELS_BASEPATH}salmon_textures/salmon_fin_bump.png`)
+
 
 export default function Model({
   hue,
@@ -39,11 +42,19 @@ export default function Model({
     roughness: 0.3
   })
   // fish face material
-  const constantMaterial = new MeshStandardMaterial({
+  const skinMaterial = new MeshStandardMaterial({
     color: extractColor(6, 93, 60),
-    bumpMap: bumpMap,
-    bumpScale: 0.5,
+    bumpMap: skinBumpMap,
+    bumpScale: 0.4,
   })
+  // fins material
+  const finsMaterial = new MeshStandardMaterial({
+    color: extractColor(6, 93, 60),
+    bumpMap: finBumpMap,
+    bumpScale: 0.9,
+  })
+  finsMaterial.bumpMap.rotation = degToRad(-8)
+  finsMaterial.bumpMap.repeat.set(0.5, 0.5)
   // fish meat
   const material = new MeshStandardMaterial({
     color: extractColor(6, 93, 60),
@@ -53,7 +64,8 @@ export default function Model({
 
   const hslColor = extractColor(hue, saturation, lightness)
   // set color of materials
-  constantMaterial.color = hslColor
+  skinMaterial.color = hslColor
+  finsMaterial.color = hslColor
   material.color = hslColor
 
   // change the scale of the texture
@@ -106,19 +118,44 @@ export default function Model({
         (myMesh.current.position.x <= minBoundaryX + 0.5 && myMesh.current.position.x >= minBoundaryX)) {
         setAnimIndex(5)
       }
-      else  */setAnimIndex(0)
+      else  */
+      setAnimIndex(0)
       // TODO: fix salmon movements and animation
     }
   })
 
+  let lookAtX = 0
+  let lookAtY = 0
+  let changeX = 0.01
+  let changeLookAtX = 0.01
+  let salmonDirection = 1
+  let lookAtDirection = 1
+  let moveSalmon = true
+
+
   // initial movement setup
   useEffect(() => {
     if (movementAnim) {
-      myMesh.current.rotation.y = Math.PI / 2
+
+      // myMesh.current.rotation.y = Math.PI / 2
+      // myMesh.current.rotation.x = Math.PI 
+      // myMesh.current.rotation.x = Math.PI
+
 
       // TODO: use previous position, if any, to initialize the correct salmon position
-      myMesh.current.position.x = prevPositionRef.current[0]
+      myMesh.current.position.x = prevPositionRef.current[0] + changeX
       myMesh.current.position.y = prevPositionRef.current[1]
+
+      let normalizedDirection = -computeNormalizedDirection(myMesh.current.position, prevPositionRef)
+      salmonDirection = (normalizedDirection > 0) ? -1 : 1
+
+      myMesh.current.lookAt(
+        // myMesh.current.position.x + 1,
+        lookAtX + normalizedDirection[0] / 1000,
+        // myMesh.current.position.x + 0.001,
+        lookAtY,
+        myMesh.current.position.z
+      )
     }
   }, []);
 
@@ -137,60 +174,55 @@ export default function Model({
 
   useFrame(({ clock }) => {
     if (movementAnim) {
-      const t = clock.getElapsedTime()
-      /*  speedX = Math.max(maxBoundaryX - myMesh.current.position.x, 0)
-       speedY = Math.max(maxBoundaryY - myMesh.current.position.y, 0) */
-      /* displacementX = Math.sin()
-      displacementY = */
 
-      displacementX = computeChange(
-        myMesh.current.position.x,
-        displacementX,
-        minBoundaryX,
-        maxBoundaryX
-      )
-      displacementY = computeChange(
-        myMesh.current.position.y,
-        displacementY,
-        minBoundaryY,
-        maxBoundaryY
-      )
+      // speed is almost 0
+      if (moveSalmon) {
+        if (myMesh.current.position.x >= maxBoundaryX) {
+          salmonDirection *= -1
+          moveSalmon = false
+        }
+        if (myMesh.current.position.x <= minBoundaryX) {
+          moveSalmon = false
+          salmonDirection *= -1
+        }
 
-      // TODO: find a way to implement rotation at the end
+        myMesh.current.position.x += salmonDirection * changeX
+      } else {
+        // myMesh.current.position.set(0, 0, 0);
+        if (lookAtX >= maxBoundaryX) {
+          moveSalmon = true
+          lookAtDirection *= -1
+          myMesh.current.position.x += salmonDirection * changeX
+        }
+        if (lookAtX <= minBoundaryX) {
+          moveSalmon = true
+          lookAtDirection *= -1
+          myMesh.current.position.x += salmonDirection * changeX
+        }
 
-
-      // normal walk movements
-      myMesh.current.position.x += /* directionX *  */displacementX
-      myMesh.current.position.y += /* directionY  **/ displacementY
-
-
-      // to make sure the salmon is oriented as the path it follows
-      // calculate the vector between current and previous positions
-      const directionVector = [
-        myMesh.current.position.x - prevPositionRef.current[0],
-        myMesh.current.position.y - prevPositionRef.current[1],
-        myMesh.current.position.z - prevPositionRef.current[2],
-      ];
-      // normalize the vector to get the direction
-      const length = Math.sqrt(
-        directionVector[0] * directionVector[0] +
-        directionVector[1] * directionVector[1] +
-        directionVector[2] * directionVector[2]
-      );
-      const normalizedDirection = [
-        directionVector[0] / length,
-        directionVector[1] / length,
-        directionVector[2] / length,
-      ];
-      // use lookAt to set the rotation based on the direction
+        lookAtX += changeLookAtX * lookAtDirection
+        lookAtY = -Math.sqrt(4 - lookAtDirection * Math.pow(changeX, 2))
+      }
+      // myMesh.current.position.x = lookAtX
       myMesh.current.lookAt(
-        myMesh.current.position.x + normalizedDirection[0] / 1000,
-        myMesh.current.position.y + normalizedDirection[1] / 1000,
-        myMesh.current.position.z + normalizedDirection[2] / 1000
-      );
+        // myMesh.current.position.x + 1,
+        lookAtX,
+        // myMesh.current.position.x + 0.001,
+        lookAtY,
+        myMesh.current.position.z
+      )
 
-      // TODO: store the current position as previous position
-      prevPositionRef.current = [myMesh.current.position.x, myMesh.current.position.y, myMesh.current.position.z]
+
+      // randomWalk({
+      //   myMesh,
+      //   prevPositionRef,
+      //   displacementX,
+      //   displacementY,
+      //   minBoundaryX,
+      //   maxBoundaryX,
+      //   minBoundaryY,
+      //   maxBoundaryY,
+      // })
     }
   })
 
@@ -270,30 +302,36 @@ export default function Model({
           material={material}
           skeleton={nodes.Salmon_Meat.skeleton}
         />
+        <group name="Salmon_Fins">
+          <skinnedMesh
+            name="Salmon_Mesh001"
+            geometry={nodes.Salmon_Mesh001.geometry}
+            material={finsMaterial}
+            skeleton={nodes.Salmon_Mesh001.skeleton}
+          />
+          <skinnedMesh
+            name="Salmon_Mesh001_1"
+            geometry={nodes.Salmon_Mesh001_1.geometry}
+            material={finsMaterial}
+            skeleton={nodes.Salmon_Mesh001_1.skeleton}
+          />
+        </group>
         <group name="Salmon_Skin">
           {/* face */}
           <skinnedMesh
             name="Salmon_Mesh"
             object={nodes.Salmon_Mesh}
             geometry={nodes.Salmon_Mesh.geometry}
-            material={constantMaterial}
+            material={skinMaterial}
             skeleton={nodes.Salmon_Mesh.skeleton}
           />
-          {/* fins */}
+          {/* eyes */}
           <skinnedMesh
             name="Salmon_Mesh_1"
             object={nodes.Salmon_Mesh_1}
             geometry={nodes.Salmon_Mesh_1.geometry}
-            material={constantMaterial}
-            skeleton={nodes.Salmon_Mesh_1.skeleton}
-          />
-          {/* eyes */}
-          <skinnedMesh
-            name="Salmon_Mesh_2"
-            object={nodes.Salmon_Mesh_2}
-            geometry={nodes.Salmon_Mesh_2.geometry}
             material={eyeMaterial}
-            skeleton={nodes.Salmon_Mesh_2.skeleton}
+            skeleton={nodes.Salmon_Mesh_1.skeleton}
           />
         </group>
         <primitive object={nodes.Root} />
@@ -316,4 +354,76 @@ function computeChange(value, displacement, minBoundary, maxBoundary) {
   }
 
   return displacement
+}
+
+function computeNormalizedDirection(position, previousPosition) {
+  // to make sure the salmon is oriented as the path it follows
+  // calculate the vector between current and previous positions
+  const directionVector = [
+    position.x - previousPosition.current[0],
+    position.y - previousPosition.current[1],
+    position.z - previousPosition.current[2],
+  ];
+  // normalize the vector to get the direction
+  const length = Math.sqrt(
+    directionVector[0] * directionVector[0] +
+    directionVector[1] * directionVector[1] +
+    directionVector[2] * directionVector[2]
+  );
+  const normalizedDirection = [
+    directionVector[0] / length,
+    directionVector[1] / length,
+    directionVector[2] / length,
+  ];
+
+  return normalizedDirection
+}
+
+function randomWalk({
+  myMesh,
+  prevPositionRef,
+  displacementX,
+  displacementY,
+  minBoundaryX,
+  maxBoundaryX,
+  minBoundaryY,
+  maxBoundaryY,
+}) {
+  // const t = clock.getElapsedTime()
+  /*  speedX = Math.max(maxBoundaryX - myMesh.current.position.x, 0)
+   speedY = Math.max(maxBoundaryY - myMesh.current.position.y, 0) */
+  /* displacementX = Math.sin()
+  displacementY = */
+
+  displacementX = computeChange(
+    myMesh.current.position.x,
+    displacementX,
+    minBoundaryX,
+    maxBoundaryX,
+  )
+  displacementY = computeChange(
+    myMesh.current.position.y,
+    displacementY,
+    minBoundaryY,
+    maxBoundaryY
+  )
+
+  // TODO: find a way to implement rotation at the end
+
+
+  // normal walk movements
+  myMesh.current.position.x += /* directionX *  */displacementX
+  myMesh.current.position.y += /* directionY  **/ displacementY
+
+  const normalizedDirection = computeNormalizedDirection(myMesh.current.position, prevPositionRef)
+
+  // use lookAt to set the rotation based on the direction
+  myMesh.current.lookAt(
+    myMesh.current.position.x + normalizedDirection[0] / 1000,
+    myMesh.current.position.y + normalizedDirection[1] / 1000,
+    myMesh.current.position.z + normalizedDirection[2] / 1000
+  );
+
+  // TODO: store the current position as previous position
+  prevPositionRef.current = [myMesh.current.position.x, myMesh.current.position.y, myMesh.current.position.z]
 }

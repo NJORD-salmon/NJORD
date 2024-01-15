@@ -118,6 +118,7 @@ export default function Water() {
   useEffect(() => {
     switch (currentState) {
       case "WELCOME": {
+
         break
       }
       case "CUSTOMIZE": {
@@ -165,7 +166,12 @@ export default function Water() {
       </div>
 
       <div>
-        <Modal open={open} style={{ backgroundColor: 'rgba(30,30,30,0.6)' }}>
+        <Modal
+          open={open}
+          sx={{
+            backgroundColor: "rgb(255, 255, 255, 0.2)",
+            backdropFilter: "blur(3px)"
+          }}>
           <div>
             {
               configuratorVisible
@@ -185,6 +191,7 @@ export default function Water() {
       </div >
 
       <Canvas
+        id="canvas"
         // shadows
         camera={{
           // less fov, less perspective distortion

@@ -1,7 +1,7 @@
 import React, { Suspense, useState, useEffect, useRef } from "react"
 import QRCode from "react-qr-code"
 // OrbitControls to move the camera around
-import { OrbitControls, ContactShadows, Stats, Html, useProgress } from "@react-three/drei"
+import { OrbitControls, ContactShadows, Html, useProgress } from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
 import Modal from "@mui/material/Modal"
 import Box from '@mui/material/Box'
@@ -199,7 +199,6 @@ export default function App({ initialState = 'WELCOME', maxFishZoom = 5, instruc
           maxDistance={maxFishZoom}
           enablePan={false}
         />
-        {<Stats />}
       </Canvas>
     </>
   )
