@@ -36,7 +36,7 @@ export default function App({ initialState = 'WELCOME', maxFishZoom = 5, instruc
   const [hue, setHue] = useState(6);
   const [saturation, setSaturation] = useState(93);
   const [lightness, setLightness] = useState(60);
-  const [texture, setTexture] = useState(0);
+  const [texture, setTexture] = useState(4);
   const [scaleX, setScaleX] = useState(1);
   const [scaleY, setScaleY] = useState(1);
 
@@ -59,11 +59,7 @@ export default function App({ initialState = 'WELCOME', maxFishZoom = 5, instruc
         setHue(FixHue(payload.values.hue));
         setSaturation(FixSaturation(payload.values.saturation));
         setLightness(FixLightness(payload.values.lightness));
-        // if texture changes
-        if (prevTexture !== payload.values.texture) {
-          setTexture(FixTexture(payload.values.texture));
-        }
-
+        setTexture(FixTexture(payload.values.texture));
         setScaleX(FixUScale(payload.values.scaleX));
         setScaleY(FixVScale(payload.values.scaleY));
 

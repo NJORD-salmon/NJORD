@@ -58,7 +58,7 @@ export default function Model({
   // fish meat
   const material = new MeshStandardMaterial({
     color: extractColor(6, 93, 60),
-    map: textureVector[0],
+    map: textureVector[4],
   })
   material.map = textureVector[textureIndex]
 
@@ -159,77 +159,55 @@ export default function Model({
     }
   }, []);
 
-  const [slow, setSlow] = useState(false)
   const speed = 2.7
   let displacementX = (speed - position[2]) / 1000 * (Math.random() >= 0.5 ? 1 : -1)
   let displacementY = (speed + position[2]) / 1000 * (Math.random() >= 0.5 ? 1 : -1)
 
-  // let directionX = (Math.random() >= 0.5 ? 1 : -1)
-  // let directionY = (Math.random() >= 0.5 ? 1 : -1)
-
-  //   let displacementX = (speed - position[2]) / 1000 * (Math.random() >= 0.5 ? 1 : -1)
-  //   let displacementY = (speed + position[2]) / 1000 * (Math.random() >= 0.5 ? 1 : -1)
-  // let speedX = Math.max(maxBoundaryX - position[0], 0)
-  // let speedY = Math.max(maxBoundaryY - position[1], 0)
-
-  // TODO: find a way to implement rotation at the end
-
-  // useFrame(({ clock }) => {
-  //   if (movementAnim) {
-  //     // if (moveSalmon) {
-  //     //   if (myMesh.current.position.x >= maxBoundaryX) {
-  //     //     salmonDirection *= -1
-  //     //     moveSalmon = false
-  //     //   }
-  //     //   if (myMesh.current.position.x <= minBoundaryX) {
-  //     //     moveSalmon = false
-  //     //     salmonDirection *= -1
-  //     //   }
-
-
-  //     //   myMesh.current.position.x += salmonDirection * changeX
-  //     // } else {
-  //     //   console.log("aiuutooo")
-  //     //   // myMesh.current.position.set(0, 0, 0);
-  //     //   if (lookAtX >= maxBoundaryX) {
-  //     //     moveSalmon = true
-  //     //     lookAtDirection *= -1
-  //     //     myMesh.current.position.x += salmonDirection * changeX
-  //     //   }
-  //     //   if (lookAtX <= minBoundaryX) {
-  //     //     moveSalmon = true
-  //     //     lookAtDirection *= -1
-  //     //     myMesh.current.position.x += salmonDirection * changeX
-  //     //   }
-
-  //     //   lookAtX += changeLookAtX * lookAtDirection
-  //     //   lookAtY = -Math.sqrt(4 - lookAtDirection * Math.pow(changeX, 2))
-  //     // }
-  //     // // myMesh.current.position.x = lookAtX
-  //     // myMesh.current.lookAt(
-  //     //   // myMesh.current.position.x + 1,
-  //     //   lookAtX,
-  //     //   // myMesh.current.position.x + 0.001,
-  //     //   lookAtY,
-  //     //   myMesh.current.position.z
-  //     // )
-
-  //     // const normalizedDirection = computeNormalizedDirection(myMesh.current.position, prevPositionRef)
-  //     // // calculate the inclination angle (slope) of the curve
-  //     // const inclinationAngle = Math.atan2(normalizedDirection[1], normalizedDirection[0]);
-  //     // // set the rotation around the z-axis based on the inclination angle
-  //     // myMesh.current.rotation.z = inclinationAngle * 2.4755;
-  //   }
-  // })
+  let lastPosition
+  const threshold = 2
 
   useFrame(({ clock }) => {
     if (movementAnim) {
-      const t = clock.getElapsedTime()
+      // const t = clock.getElapsedTime()
       /*  speedX = Math.max(maxBoundaryX - myMesh.current.position.x, 0)
        speedY = Math.max(maxBoundaryY - myMesh.current.position.y, 0) */
       /* displacementX = Math.sin()
       displacementY = */
 
+
+      /* displacementX = computeChange(
+        myMesh.current.position.x,
+        displacementX,
+        minBoundaryX,
+        maxBoundaryX
+      )
+      displacementY = computeChange(
+        myMesh.current.position.y,
+        displacementY,
+        minBoundaryY,
+        maxBoundaryY
+      ) */
+      // normal walk movements
+      myMesh.current.position.x += /* directionX *  */displacementX
+      myMesh.current.position.y += /* directionY  **/ displacementY
+
+
+      // TODO: find a way to implement rotation at the end
+
+
+      const normalizedDirection = calculateNormalVector(myMesh.current.position, prevPositionRef)
+      if (myMesh.current.position.y >= minBoundaryY + 2) {
+        lastPosition = myMesh.current.position.x
+      }
+
+      // if (myMesh.current.position.y <= minBoundaryY + 2) {
+      //   const theta = calculateAngle(normalizedDirection, [1, 0, 1])
+
+      //   console.log(myMesh.current.position.y)
+      //   // myMesh.current.position.y = parabola(threshold, myMesh.current.position.x, lastPosition, theta, minBoundaryY)
+      //   console.log(myMesh.current.position.y)
+      // } else {
+      console.log("ok")
       displacementX = computeChange(
         myMesh.current.position.x,
         displacementX,
@@ -242,33 +220,9 @@ export default function Model({
         minBoundaryY,
         maxBoundaryY
       )
+      // }
 
-      // TODO: find a way to implement rotation at the end
-
-
-      // normal walk movements
-      myMesh.current.position.x += /* directionX *  */displacementX
-      myMesh.current.position.y += /* directionY  **/ displacementY
-
-
-      // to make sure the salmon is oriented as the path it follows
-      // calculate the vector between current and previous positions
-      const directionVector = [
-        myMesh.current.position.x - prevPositionRef.current[0],
-        myMesh.current.position.y - prevPositionRef.current[1],
-        myMesh.current.position.z - prevPositionRef.current[2],
-      ];
-      // normalize the vector to get the direction
-      const length = Math.sqrt(
-        directionVector[0] * directionVector[0] +
-        directionVector[1] * directionVector[1] +
-        directionVector[2] * directionVector[2]
-      );
-      const normalizedDirection = [
-        directionVector[0] / length,
-        directionVector[1] / length,
-        directionVector[2] / length,
-      ];
+      // to make sure the salmon is oriented as the path it follows    
       // use lookAt to set the rotation based on the direction
       myMesh.current.lookAt(
         myMesh.current.position.x + normalizedDirection[0] / 1000,
@@ -280,7 +234,6 @@ export default function Model({
       prevPositionRef.current = [myMesh.current.position.x, myMesh.current.position.y, myMesh.current.position.z]
     }
   })
-
 
 
   return (
@@ -347,4 +300,57 @@ function computeChange(value, displacement, minBoundary, maxBoundary) {
   }
 
   return displacement
+}
+
+function parabola(threshold, position, lastPosition, theta, boundary) {
+  /*   let a = 2 * Math.sin(theta) / (threshold * Math.cos(theta))
+    let b = -2 * Math.cos(theta) / Math.sin(theta)
+    let c = threshold - a * Math.pow(lastPosition, 2) - b * lastPosition */
+
+  let vx = threshold * Math.tan(theta) + lastPosition
+
+  let a = (1 - vx) / Math.pow(boundary - 1, 2)
+  let b = 2 * (vx - 1) / boundary - 1
+  let c = vx * Math.pow(boundary - 1, 2) * (Math.pow(vx, 2) - 3 * vx + 2 * boundary - 1)
+
+  let displacement = a * Math.pow(position, 2) + b * position + c
+
+  return displacement
+}
+
+function calculateNormalVector(position, prevPositionRef) {
+  // calculate the vector between current and previous positions
+  const directionVector = [
+    position.x - prevPositionRef.current[0],
+    position.y - prevPositionRef.current[1],
+    position.z - prevPositionRef.current[2],
+  ];
+  // normalize the vector to get the direction
+  const length = Math.sqrt(
+    directionVector[0] * directionVector[0] +
+    directionVector[1] * directionVector[1] +
+    directionVector[2] * directionVector[2]
+  );
+  const normalizedDirection = [
+    directionVector[0] / length,
+    directionVector[1] / length,
+    directionVector[2] / length,
+  ];
+  return normalizedDirection
+}
+
+function calculateAngle(a, b) {
+  // dot product with vertical vector  b [0, 1, 0]
+  const dot = dotProduct(a, b)
+  const angle = Math.acos(dot);
+
+  return angle;
+}
+
+function dotProduct(vector1, vector2) {
+  let result = 0;
+  for (let i = 0; i < vector1.length; i++) {
+    result += vector1[i] * vector2[i];
+  }
+  return result;
 }
