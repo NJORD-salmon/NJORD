@@ -11,7 +11,7 @@ import { useSpring, useSprings, useTransition, animated, config, to } from 'reac
 import Lights from "../components/light"
 import Model from "../components/model"
 import logo from '../assets/video/logo.json'
-import summary from '../assets/img/prova2.png'
+import summary from '../assets/img/vn.jpeg'
 
 
 // view the load progress
@@ -27,68 +27,6 @@ export default function Visualizer() {
   // here it is not necessary to fix the values since they don't change 
   // and they have already been managed before
   const { h, s, l, u, v, t } = Object.fromEntries(searchParams.entries())
-
-  // max height
-  // const height = Math.round(window.innerHeight * 0.9)
-
-  // const draggingYRef = useRef(false)
-  // const lockYRef = useRef(false)
-
-  // sheet position by y axis
-  // const [{ y }, setY] = useSpring(() => ({ y: height }))
-
-
-
-
-  // const open = ({ canceled }) => {
-  //   // when cancel is true, it means that the user passed the upwards threshold
-  //   // so we change the spring config to create a nice wobbly effect
-  //   setY({ y: 0, config: canceled ? config.wobbly : config.stiff })
-  // }
-  // const close = (velocity = 0) => {
-  //   setY({ y: height, config: { ...config.stiff, velocity } })
-  // }
-
-  // const bindY = useDrag(
-  //   ({ first, last, vxvy: [, vy], movement: [, my], cancel, canceled }) => {
-  //     if (first) {
-  //       draggingYRef.current = true
-  //     } else if (last) {
-  //       // If this is not the first or last frame, it's a moving frame
-  //       // then it means the user is dragging
-  //       draggingYRef.current = false
-  //     }
-
-  //     // Cancel drag if already dragging in other direction
-  //     if (lockYRef.current) {
-  //       cancel()
-  //       return
-  //     }
-
-  //     // If the user drags up passed a threshold, then we cancel
-  //     // the drag so that the sheet resets to its open position
-  //     if (my < -70) {
-  //       cancel()
-  //     }
-
-  //     // When the user releases the sheet, we check whether it passed
-  //     // the threshold for it to close, or if we reset it to its open positino
-  //     if (last) {
-  //       if (my > height * 0.75 || vy > 0.5) {
-  //         close(vy)
-  //       } else {
-  //         open({ canceled })
-  //       }
-  //     } else {
-  //       // When the user keeps dragging, we just move the sheet according to
-  //       // the cursor position
-  //       setY({ y: my, immediate: true, config: config.stiff })
-  //     }
-  //   },
-  //   { from: () => [0, y.get()], bounds: { top: 0 }, rubberband: true, axis: 'y' }
-  // )
-
-  // const display = y.to(py => (py < height ? 'block' : 'none'))
 
   const posHandle = useSpring({ y: BOTTOM_POINT })
   const bindHandle = useDrag((params) => {
@@ -113,15 +51,6 @@ export default function Visualizer() {
         <Lottie animationData={logo} loop={true} id="lottie" />
       </div>
 
-      {/*      <animated.div id="summary" {...bindY()} style={{
-        touchAction: "none",
-        MozUserSelect: "none",
-        WebkitUserSelect: "none",
-        userSelect: "none"
-      }}>
-        <img src={summary} alt="order summary" />
-      </animated.div> */}
-
       <animated.div {...bindHandle()} style={{
         touchAction: "none",
         y: posHandle.y
@@ -132,9 +61,27 @@ export default function Visualizer() {
       <animated.div id="overlay" style={{
         y: posHandle.y,
         opacity: posHandle.y.to([0, BOTTOM_POINT], [1, 0.8])
-      }} />
+      }} >
+        <div>
+          <p>thank you for your order</p>
+          <p>here are your choices:</p>
+          <div id="param-list">
+            <ul >
+              <li>hue: {h}</li>
+              <li>saturation: {s}</li>
+              <li>lightness: {l}</li>
+            </ul>
+            <ul>
+              <li>texture: {t}</li>
+              <li>scale x: {u}</li>
+              <li>scale y: {v}</li>
+            </ul>
+          </div>
+        </div>
+        <div><img src={summary} alt="nutritional values" style={{ width: "90vw" }} /></div>
+      </animated.div>
 
-      <Canvas shadows >
+      <Canvas shadows style={{ height: "95%" }} >
         <Lights />
 
         <Suspense fallback={<Loader />}>

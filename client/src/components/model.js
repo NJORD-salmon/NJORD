@@ -164,7 +164,7 @@ export default function Model({
   let displacementY = (speed + position[2]) / 1000 * (Math.random() >= 0.5 ? 1 : -1)
 
   let lastPosition
-  const threshold = 2
+  const n = 0.5
 
   useFrame(({ clock }) => {
     if (movementAnim) {
@@ -186,14 +186,14 @@ export default function Model({
       if (myMesh.current.position.y >= minBoundaryY + 2) {
         lastPosition = myMesh.current.position.x
       }
-
-      // if (myMesh.current.position.y <= minBoundaryY + 2) {
-      //   const theta = calculateAngle(normalizedDirection, [1, 0, 1])
-
-      //   console.log(myMesh.current.position.y)
-      //   // myMesh.current.position.y = parabola(threshold, myMesh.current.position.x, lastPosition, theta, minBoundaryY)
-      //   console.log(myMesh.current.position.y)
-      // } else {
+      /* 
+            if (myMesh.current.position.y < minBoundaryY + 2) {
+              const theta = calculateAngle(normalizedDirection, [1, 0, 1])
+      
+              console.log(myMesh.current.position.y)
+              myMesh.current.position.y = parabola(n, myMesh.current.position.x, lastPosition, theta, -viewport.height + n)
+              console.log(myMesh.current.position.y)
+            } else { */
       console.log("ok")
       displacementX = computeChange(
         myMesh.current.position.x,
@@ -289,16 +289,20 @@ function computeChange(value, displacement, minBoundary, maxBoundary) {
   return displacement
 }
 
-function parabola(threshold, position, lastPosition, theta, boundary) {
+function parabola(n, position, lastPosition, theta, h) {
   /*   let a = 2 * Math.sin(theta) / (threshold * Math.cos(theta))
     let b = -2 * Math.cos(theta) / Math.sin(theta)
     let c = threshold - a * Math.pow(lastPosition, 2) - b * lastPosition */
 
-  let vx = threshold * Math.tan(theta) + lastPosition
+  // let vx = threshold * Math.tan(theta) + lastPosition
 
-  let a = (1 - vx) / Math.pow(boundary - 1, 2)
-  let b = 2 * (vx - 1) / boundary - 1
-  let c = vx * Math.pow(boundary - 1, 2) * (Math.pow(vx, 2) - 3 * vx + 2 * boundary - 1)
+  /*   let a = (1 - vx) / Math.pow(boundary - 1, 2)
+    let b = 2 * (vx - 1) / boundary - 1
+    let c = vx * Math.pow(boundary - 1, 2) * (Math.pow(vx, 2) - 3 * vx + 2 * boundary - 1) */
+
+  let a = Math.pow(Math.cos(theta), 2) / (2 * n * Math.pow(Math.sin(theta), 2))
+  let b = - (Math.cos(theta) / Math.sin(theta)) * (((lastPosition * Math.cos(theta)) / (n * Math.sin(theta))) + 1)
+  let c = h - a * Math.pow(lastPosition, 2) - b * lastPosition
 
   let displacement = a * Math.pow(position, 2) + b * position + c
 
