@@ -174,19 +174,6 @@ export default function Model({
       /* displacementX = Math.sin()
       displacementY = */
 
-
-      /* displacementX = computeChange(
-        myMesh.current.position.x,
-        displacementX,
-        minBoundaryX,
-        maxBoundaryX
-      )
-      displacementY = computeChange(
-        myMesh.current.position.y,
-        displacementY,
-        minBoundaryY,
-        maxBoundaryY
-      ) */
       // normal walk movements
       myMesh.current.position.x += /* directionX *  */displacementX
       myMesh.current.position.y += /* directionY  **/ displacementY

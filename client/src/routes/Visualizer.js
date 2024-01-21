@@ -20,8 +20,7 @@ function Loader() {
   return <Html center>{progress} % loaded</Html>
 }
 
-const BOTTOM_POINT = window.innerHeight - 30;
-const TOP_POINT = 0
+const BOTTOM_POINT = window.innerHeight - 40;
 
 export default function Visualizer() {
   const [searchParams] = useSearchParams();
