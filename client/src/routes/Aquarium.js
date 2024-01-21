@@ -210,7 +210,7 @@ export default function Water() {
         </Suspense>
         <OrbitControls />
 
-        {<Stats />}
+        {/* {<Stats />} */}
       </Canvas>
     </>
   )
