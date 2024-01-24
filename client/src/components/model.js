@@ -34,15 +34,16 @@ export default function Model({
   rotation,
   animIndex = 0,
   isAnimChanging = false,
-
   currentState,
   movementAnim = false,
-  aquarium = false,
+  idx,
 }) {
   const myMesh = useRef()
   // keep track of the previous position
   const prevPositionRef = useRef(position)
+  const [isFirstFrame, setIsFirstFrame] = useState(true)
   let startMoving = movementAnim
+  let isEntering = false
 
   // eye material
   const eyeMaterial = new MeshStandardMaterial({
@@ -88,6 +89,13 @@ export default function Model({
   const { nodes } = useGraph(clone)
   const { actions, names } = useAnimations(animations, myMesh)
 
+  // access the viewport dimensions
+  const { viewport } = useThree()
+  const maxBoundaryX = viewport.width - position[2]
+  const minBoundaryX = -maxBoundaryX
+  const maxBoundaryY = viewport.height - position[2] / 2
+  const minBoundaryY = -maxBoundaryY
+
   useEffect(() => {
     // reset and fade in animation after an index has been changed
     actions[names[animIndex]].reset().fadeIn(0.5).play()
@@ -98,26 +106,20 @@ export default function Model({
   }, [animIndex, isAnimChanging])
 
   // TODO?: check the position along the path and trigger animations accordingly
-  // useFrame(() => {
-  //   if (movementAnim) {
-  //     if ((myMesh.current.position.x >= maxBoundaryX - 1 && myMesh.current.position.x <= maxBoundaryX - 0.5) ||
-  //       (myMesh.current.position.x <= minBoundaryX + 1 && myMesh.current.position.x >= minBoundaryX + 0.5)) {
-  //       setAnimIndex(6)
-  //     } else if ((myMesh.current.position.x >= maxBoundaryX - 0.5 && myMesh.current.position.x <= maxBoundaryX) ||
-  //       (myMesh.current.position.x <= minBoundaryX + 0.5 && myMesh.current.position.x >= minBoundaryX)) {
-  //       setAnimIndex(5)
-  //     }
-  //     else 
-  //     setAnimIndex(0)
-  //   }
-  // })
+  useFrame(() => {
+    if (movementAnim) {
+      //     if ((myMesh.current.position.x >= maxBoundaryX - 1 && myMesh.current.position.x <= maxBoundaryX - 0.5) ||
+      //       (myMesh.current.position.x <= minBoundaryX + 1 && myMesh.current.position.x >= minBoundaryX + 0.5)) {
+      //       setAnimIndex(6)
+      //     } else if ((myMesh.current.position.x >= maxBoundaryX - 0.5 && myMesh.current.position.x <= maxBoundaryX) ||
+      //       (myMesh.current.position.x <= minBoundaryX + 0.5 && myMesh.current.position.x >= minBoundaryX)) {
+      //       setAnimIndex(5)
+      //     }
+      //     else 
+      //     setAnimIndex(0)
+    }
+  })
 
-  // access the viewport dimensions
-  const { viewport } = useThree()
-  const maxBoundaryX = viewport.width - position[2]
-  const minBoundaryX = -maxBoundaryX
-  const maxBoundaryY = viewport.height - position[2] / 2
-  const minBoundaryY = -maxBoundaryY
 
   // let lookAtX = 0
   // let lookAtY = 0
@@ -130,16 +132,7 @@ export default function Model({
   // initial movement setup
   useEffect(() => {
     if (startMoving) {
-      if (currentState == "DISPLAY") {
-        startMoving = false
-        setTimeout(() => {
-          startMoving = true
-          console.log(currentState)
-        }, 2000);
-      }
       myMesh.current.rotation.y = Math.PI / 2
-      // myMesh.current.rotation.x = Math.PI 
-      // myMesh.current.rotation.x = Math.PI
 
       // TODO: use previous position, if any, to initialize the correct salmon position
       myMesh.current.position.x = prevPositionRef.current[0] /* + changeX */
@@ -156,6 +149,26 @@ export default function Model({
       //   myMesh.current.position.z
       // )
 
+
+      // delay to add new salmon in aquarium
+      if (currentState == "DISPLAY") {
+        if (idx !== 0) {
+          startMoving = false
+          setTimeout(() => {
+            startMoving = true
+          }, 3300);
+        } else {
+          isEntering = true
+          //   startMoving = false
+          //   setTimeout(() => {
+          //     isEntering = false
+          //   }, 2500);
+          setTimeout(() => {
+            // startMoving = true
+            isEntering = false
+          }, 3300)
+        }
+      }
     }
   }, [currentState, startMoving]);
 
@@ -166,8 +179,15 @@ export default function Model({
   let lastPosition
   const n = 0.5
 
-  useFrame(() => {
-    if (startMoving) {
+  useFrame(({ clock }) => {
+    let t = clock.elapsedTime
+    if (isEntering) {
+      // myMesh.current.position.y -= 0.01
+      //myMesh.current.position.y += 
+    }
+    // first frame to orient the fishes (then wait before starting moving)
+    if (startMoving || (isFirstFrame && currentState === 'DISPLAY')) {
+      setIsFirstFrame(false)
 
       /*  speedX = Math.max(maxBoundaryX - myMesh.current.position.x, 0)
        speedY = Math.max(maxBoundaryY - myMesh.current.position.y, 0) */

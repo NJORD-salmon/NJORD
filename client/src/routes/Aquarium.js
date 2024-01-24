@@ -2,7 +2,7 @@ import React, { useEffect, Suspense, useState, useRef } from "react"
 import Box from "@mui/material/Box"
 import Modal from "@mui/material/Modal"
 import { ErrorBoundary } from 'react-error-boundary'
-import { OrbitControls, Html, useProgress } from "@react-three/drei"
+import { OrbitControls, Html, useProgress, Stats } from "@react-three/drei"
 import { Canvas, useThree } from "@react-three/fiber"
 import Lottie from "lottie-react";
 import ReactPlayer from 'react-player'
@@ -29,12 +29,17 @@ function Loader() {
   return <Html center>{progress} % loaded</Html>
 }
 
-function getRandomX(min, max) {
+function getRandomX(min, max, idx) {
+  if (idx === 0) {
+    return 0
+  }
   return Math.random() * (max - min) + min
-
 }
 
-function getRandomY(idx) {
+function getRandomY(idx, currentState, viewport) {
+  if (currentState === "DISPLAY" && idx === 0) {
+    return viewport.height * 1.35
+  }
   const min = -1.4 - idx / 4
   const max = 1.4 + idx / 4
   return Math.random() * (max - min) + min
@@ -44,10 +49,7 @@ function getZ(idx) {
   return -idx / 2
 }
 
-let isEntering = false
-
-
-function Fish({ fishes, currentState }) {
+function Fish({ fishes, currentState, animIndex }) {
   const { viewport } = useThree();
 
   const models = fishes.map((config, idx) => {
@@ -60,14 +62,34 @@ function Fish({ fishes, currentState }) {
       vScale={FixVScale(config.scaleY)}
       textureIndex={FixTexture(config.texture)}
       // position={[y, z, x]}
-      position={[getRandomX(-viewport.width, viewport.width), getRandomY(idx), getZ(idx)]}
+      position={[getRandomX(-viewport.width, viewport.width, idx), getRandomY(idx, currentState, viewport), getZ(idx)]}
+      animIndex={animIndex}
+      isAnimChanging={true}
 
       currentState={currentState}
       movementAnim={true}
       aquarium={true}
+      idx={idx}
       key={idx}
     />
+
   })
+
+  // console.log(models[1].props.position[2])
+  // const maxBoundaryX = []
+
+  // for (let i = 0; i < models.length; i++) {
+  //   maxBoundaryX.push(viewport.width - models[i].props.position[2])
+  // }
+
+  /* for (let i = 0; i < models.length; i++) {
+    if (models[i].props.position[0] >= maxBoundaryX) {
+      //   animIndex = 2
+      console.log("yeppi")
+    }
+  } */
+
+
 
   return (
     <>
@@ -79,9 +101,13 @@ function Fish({ fishes, currentState }) {
   )
 }
 
+let reload = false
+
 export default function Water() {
   const [fishes, setFishes] = useState([])
-  const [currentState, setCurrentState] = useState("WELCOME");
+  const [currentState, setCurrentState] = useState("WELCOME")
+
+  const [animIndex, setAnimIndex] = useState(0)
 
   const connection = useRef(null)
 
@@ -125,29 +151,31 @@ export default function Water() {
   const [configuratorVisible, setConfiguratorVisible] = useState(false);
 
 
+
   // read changes to manage modal
   useEffect(() => {
     switch (currentState) {
       case "WELCOME": {
-        isEntering = false
+        reload = false
         break
       }
       case "CUSTOMIZE": {
-        isEntering = false
+
         setOpen(true)
         setConfiguratorVisible(true);
 
         break
       }
       case "SAVE": {
-        isEntering = false
+
         setConfiguratorVisible(false);
 
         break
       }
       case "DISPLAY": {
-        isEntering = true
+        reload = true
         setOpen(false)
+        console.log(reload)
 
         break
       }
@@ -156,6 +184,12 @@ export default function Water() {
       }
     }
   }, [currentState])
+
+  useEffect(() => {
+    if (reload) {
+      window.location.reload(false)
+    }
+  }, [reload])
 
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const onLoadedData = () => {
@@ -219,7 +253,7 @@ export default function Water() {
         <fog attach="fog" args={['#cecece', 0.1, 20]} />
 
         <Suspense fallback={<Loader />}>
-          <Fish fishes={fishes} currentState={currentState} />
+          <Fish fishes={fishes} currentState={currentState} animIndex={animIndex} />
         </Suspense>
         <OrbitControls />
 

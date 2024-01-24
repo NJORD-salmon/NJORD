@@ -15,8 +15,6 @@ import swim3 from '../assets/video/swim3.json'
 import summary from '../assets/img/vn.jpeg'
 
 
-const logo = [swim1, swim2, swim3]
-
 // view the load progress
 function Loader() {
   const { progress } = useProgress()
@@ -24,6 +22,7 @@ function Loader() {
 }
 
 const BOTTOM_POINT = window.innerHeight - 40;
+const logo = [swim1, swim2, swim3]
 
 export default function Visualizer() {
   const [searchParams] = useSearchParams();

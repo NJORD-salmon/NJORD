@@ -21,8 +21,7 @@ const PAGES = {
 
 const BASEPATH = './customizedSalmons'
 
-// TODO: set last fish file number
-let fishNumber = 0
+let fishNumber = await loadInitialSalmonId(BASEPATH)
 
 function main() {
   // set up websocket for client (webpage) and server communication
@@ -32,7 +31,7 @@ function main() {
       if (data.toString() === 'gimme-fish') {
         console.log('catch them')
         const response = {
-          fishes: await readSalmonParameters(0, 15),
+          fishes: await readSalmonParameters(0, 25),
           currentState: automa.currentState  // include current state in the response
         }
         ws.send(JSON.stringify(response))
@@ -293,6 +292,29 @@ async function readSalmonParameters(min, max) {
   return (
     fishes.slice(min, max)
   )
+}
+
+async function loadInitialSalmonId(directoryPath) {
+  if (!directoryPath) {
+    return 0
+  }
+
+  try {
+    const salmonFiles = (await readdir(directoryPath)).filter(fname => fname.startsWith('fish_'))
+    const salmonFileName = salmonFiles[salmonFiles.length - 1]
+    const index = Number.parseInt(
+      salmonFileName.slice(salmonFileName.indexOf('_') + 1, salmonFileName.indexOf('.'))
+    )
+    // in case we fail into parsing the salmon filename
+    if (Number.isNaN(index)) {
+      return 0
+    }
+
+    return index
+  } catch (error) {
+    // just ignore the error and return the first
+    return 0
+  }
 }
 
 async function sortFishFiles(fishFiles) {
