@@ -22,7 +22,6 @@ for (let j = 0; j < 9; j++) {
 const skinBumpMap = new TextureLoader().load(`${MODELS_BASEPATH}salmon_textures/salmon_skin_bump.png`)
 const finBumpMap = new TextureLoader().load(`${MODELS_BASEPATH}salmon_textures/salmon_fin_bump.png`)
 
-
 export default function Model({
   hue,
   saturation,
@@ -33,8 +32,18 @@ export default function Model({
   position = [0, 0, 0],
   modelScale,
   rotation,
+  animIndex = 0,
+  isAnimChanging = false,
+
+  currentState,
   movementAnim = false,
+  aquarium = false,
 }) {
+  const myMesh = useRef()
+  // keep track of the previous position
+  const prevPositionRef = useRef(position)
+  let startMoving = movementAnim
+
   // eye material
   const eyeMaterial = new MeshStandardMaterial({
     color: 0x000000,
@@ -73,17 +82,35 @@ export default function Model({
   material.map.wrapT = RepeatWrapping;
   material.map.repeat.set(uScale, vScale)
 
-
-  const myMesh = useRef()
-  // keep track of the previous position
-  const prevPositionRef = useRef(position)
-
   // select which gltf model to load
   const { scene, animations } = useGLTF(`${MODELS_BASEPATH}salmon.gltf`)
   const clone = useMemo(() => skeletonUtils.clone(scene), [scene])
   const { nodes } = useGraph(clone)
   const { actions, names } = useAnimations(animations, myMesh)
-  // console.log(actions)
+
+  useEffect(() => {
+    // reset and fade in animation after an index has been changed
+    actions[names[animIndex]].reset().fadeIn(0.5).play()
+    if (isAnimChanging) {
+      // in the clean-up phase, fade it out
+      return () => actions[names[animIndex]].fadeOut(0.5)
+    }
+  }, [animIndex, isAnimChanging])
+
+  // TODO?: check the position along the path and trigger animations accordingly
+  // useFrame(() => {
+  //   if (movementAnim) {
+  //     if ((myMesh.current.position.x >= maxBoundaryX - 1 && myMesh.current.position.x <= maxBoundaryX - 0.5) ||
+  //       (myMesh.current.position.x <= minBoundaryX + 1 && myMesh.current.position.x >= minBoundaryX + 0.5)) {
+  //       setAnimIndex(6)
+  //     } else if ((myMesh.current.position.x >= maxBoundaryX - 0.5 && myMesh.current.position.x <= maxBoundaryX) ||
+  //       (myMesh.current.position.x <= minBoundaryX + 0.5 && myMesh.current.position.x >= minBoundaryX)) {
+  //       setAnimIndex(5)
+  //     }
+  //     else 
+  //     setAnimIndex(0)
+  //   }
+  // })
 
   // access the viewport dimensions
   const { viewport } = useThree()
@@ -91,38 +118,6 @@ export default function Model({
   const minBoundaryX = -maxBoundaryX
   const maxBoundaryY = viewport.height - position[2] / 2
   const minBoundaryY = -maxBoundaryY
-
-  const [animIndex, setAnimIndex] = useState(0);
-
-
-  useEffect(() => {
-    // reset and fade in animation after an index has been changed
-    actions[names[animIndex]].reset().fadeIn(0.2).play();
-
-    // TODO change animation when turning
-
-    return () => {
-      /* if (actions) {
-        actions[names[animIndex]].fadeOut(0.2);
-      } */
-    };
-  }, [actions, names, animIndex])
-
-  // check the position along the path and trigger animations accordingly
-  useFrame(() => {
-    if (movementAnim) {
-      /* if ((myMesh.current.position.x >= maxBoundaryX - 1 && myMesh.current.position.x <= maxBoundaryX - 0.5) ||
-        (myMesh.current.position.x <= minBoundaryX + 1 && myMesh.current.position.x >= minBoundaryX + 0.5)) {
-        setAnimIndex(6)
-      } else if ((myMesh.current.position.x >= maxBoundaryX - 0.5 && myMesh.current.position.x <= maxBoundaryX) ||
-        (myMesh.current.position.x <= minBoundaryX + 0.5 && myMesh.current.position.x >= minBoundaryX)) {
-        setAnimIndex(5)
-      }
-      else  */
-      setAnimIndex(0)
-      // TODO: fix salmon movements and animation
-    }
-  })
 
   // let lookAtX = 0
   // let lookAtY = 0
@@ -132,15 +127,19 @@ export default function Model({
   // let lookAtDirection = 1
   // let moveSalmon = true
 
-
   // initial movement setup
   useEffect(() => {
-    if (movementAnim) {
-
+    if (startMoving) {
+      if (currentState == "DISPLAY") {
+        startMoving = false
+        setTimeout(() => {
+          startMoving = true
+          console.log(currentState)
+        }, 2000);
+      }
       myMesh.current.rotation.y = Math.PI / 2
       // myMesh.current.rotation.x = Math.PI 
       // myMesh.current.rotation.x = Math.PI
-
 
       // TODO: use previous position, if any, to initialize the correct salmon position
       myMesh.current.position.x = prevPositionRef.current[0] /* + changeX */
@@ -156,8 +155,9 @@ export default function Model({
       //   lookAtY + normalizedDirection[1] / 1000,
       //   myMesh.current.position.z
       // )
+
     }
-  }, []);
+  }, [currentState, startMoving]);
 
   const speed = 2.7
   let displacementX = (speed - position[2]) / 1000 * (Math.random() >= 0.5 ? 1 : -1)
@@ -166,9 +166,9 @@ export default function Model({
   let lastPosition
   const n = 0.5
 
-  useFrame(({ clock }) => {
-    if (movementAnim) {
-      // const t = clock.getElapsedTime()
+  useFrame(() => {
+    if (startMoving) {
+
       /*  speedX = Math.max(maxBoundaryX - myMesh.current.position.x, 0)
        speedY = Math.max(maxBoundaryY - myMesh.current.position.y, 0) */
       /* displacementX = Math.sin()
@@ -186,15 +186,15 @@ export default function Model({
       if (myMesh.current.position.y >= minBoundaryY + 2) {
         lastPosition = myMesh.current.position.x
       }
-      /* 
-            if (myMesh.current.position.y < minBoundaryY + 2) {
-              const theta = calculateAngle(normalizedDirection, [1, 0, 1])
-      
-              console.log(myMesh.current.position.y)
-              myMesh.current.position.y = parabola(n, myMesh.current.position.x, lastPosition, theta, -viewport.height + n)
-              console.log(myMesh.current.position.y)
-            } else { */
-      console.log("ok")
+
+      /* if (myMesh.current.position.y < minBoundaryY + 2) {
+        const theta = calculateAngle(normalizedDirection, [1, 0, 1])
+
+        console.log(myMesh.current.position.y)
+        myMesh.current.position.y = parabola(n, myMesh.current.position.x, lastPosition, theta, -viewport.height + n)
+        console.log(myMesh.current.position.y)
+      } else { */
+
       displacementX = computeChange(
         myMesh.current.position.x,
         displacementX,
@@ -219,20 +219,25 @@ export default function Model({
 
       // TODO: store the current position as previous position
       prevPositionRef.current = [myMesh.current.position.x, myMesh.current.position.y, myMesh.current.position.z]
+
     }
   })
 
-
   return (
-    <group ref={myMesh} dispose={null} scale={modelScale} position={position} rotation={rotation} animIndex={animIndex}>
+    <group ref={myMesh}
+      dispose={null}
+      scale={modelScale}
+      position={position}
+      rotation={rotation}
+      animIndex={animIndex}
+    >
       <group name="Salmon">
-        {/* meat, the one which changes texture */}
+        {/* eyes */}
         <skinnedMesh
-          name="Salmon_Meat"
-          object={nodes.Salmon_Meat}
-          geometry={nodes.Salmon_Meat.geometry}
-          material={material}
-          skeleton={nodes.Salmon_Meat.skeleton}
+          name="Salmon_Eye"
+          geometry={nodes.Salmon_Eye.geometry}
+          material={eyeMaterial}
+          skeleton={nodes.Salmon_Eye.skeleton}
         />
         {/* fins */}
         <group name="Salmon_Fins">
@@ -249,24 +254,20 @@ export default function Model({
             skeleton={nodes.Salmon_Mesh001_1.skeleton}
           />
         </group>
-        <group name="Salmon_Skin">
-          {/* face */}
-          <skinnedMesh
-            name="Salmon_Mesh"
-            object={nodes.Salmon_Mesh}
-            geometry={nodes.Salmon_Mesh.geometry}
-            material={skinMaterial}
-            skeleton={nodes.Salmon_Mesh.skeleton}
-          />
-          {/* eyes */}
-          <skinnedMesh
-            name="Salmon_Mesh_1"
-            object={nodes.Salmon_Mesh_1}
-            geometry={nodes.Salmon_Mesh_1.geometry}
-            material={eyeMaterial}
-            skeleton={nodes.Salmon_Mesh_1.skeleton}
-          />
-        </group>
+        {/* meat, the one which changes texture */}
+        <skinnedMesh
+          name="Salmon_Meat"
+          geometry={nodes.Salmon_Meat.geometry}
+          material={material}
+          skeleton={nodes.Salmon_Meat.skeleton}
+        />
+        {/* face */}
+        <skinnedMesh
+          name="Salmon_Skin"
+          geometry={nodes.Salmon_Skin.geometry}
+          material={skinMaterial}
+          skeleton={nodes.Salmon_Skin.skeleton}
+        />
         <primitive object={nodes.Root} />
       </group>
     </group>
@@ -290,16 +291,6 @@ function computeChange(value, displacement, minBoundary, maxBoundary) {
 }
 
 function parabola(n, position, lastPosition, theta, h) {
-  /*   let a = 2 * Math.sin(theta) / (threshold * Math.cos(theta))
-    let b = -2 * Math.cos(theta) / Math.sin(theta)
-    let c = threshold - a * Math.pow(lastPosition, 2) - b * lastPosition */
-
-  // let vx = threshold * Math.tan(theta) + lastPosition
-
-  /*   let a = (1 - vx) / Math.pow(boundary - 1, 2)
-    let b = 2 * (vx - 1) / boundary - 1
-    let c = vx * Math.pow(boundary - 1, 2) * (Math.pow(vx, 2) - 3 * vx + 2 * boundary - 1) */
-
   let a = Math.pow(Math.cos(theta), 2) / (2 * n * Math.pow(Math.sin(theta), 2))
   let b = - (Math.cos(theta) / Math.sin(theta)) * (((lastPosition * Math.cos(theta)) / (n * Math.sin(theta))) + 1)
   let c = h - a * Math.pow(lastPosition, 2) - b * lastPosition
@@ -307,6 +298,22 @@ function parabola(n, position, lastPosition, theta, h) {
   let displacement = a * Math.pow(position, 2) + b * position + c
 
   return displacement
+}
+
+function calculateAngle(a, b) {
+  // dot product with vertical vector  b [0, 1, 0]
+  const dot = dotProduct(a, b)
+  const angle = Math.acos(dot);
+
+  return angle;
+}
+
+function dotProduct(vector1, vector2) {
+  let result = 0;
+  for (let i = 0; i < vector1.length; i++) {
+    result += vector1[i] * vector2[i];
+  }
+  return result;
 }
 
 function calculateNormalVector(position, prevPositionRef) {
@@ -328,20 +335,4 @@ function calculateNormalVector(position, prevPositionRef) {
     directionVector[2] / length,
   ];
   return normalizedDirection
-}
-
-function calculateAngle(a, b) {
-  // dot product with vertical vector  b [0, 1, 0]
-  const dot = dotProduct(a, b)
-  const angle = Math.acos(dot);
-
-  return angle;
-}
-
-function dotProduct(vector1, vector2) {
-  let result = 0;
-  for (let i = 0; i < vector1.length; i++) {
-    result += vector1[i] * vector2[i];
-  }
-  return result;
 }

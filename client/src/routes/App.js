@@ -1,9 +1,8 @@
 import React, { Suspense, useState, useEffect, useRef } from "react"
 import QRCode from "react-qr-code"
 // OrbitControls to move the camera around
-import { OrbitControls, ContactShadows, Html, useProgress } from "@react-three/drei"
+import { OrbitControls, Html, useProgress } from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
-import Modal from "@mui/material/Modal"
 import Box from '@mui/material/Box'
 import Lottie from "lottie-react";
 
@@ -18,13 +17,11 @@ import {
   FixUScale,
   FixVScale
 } from "../components/fixValues"
-import logo from '../assets/video/logo.json'
+import logo from '../assets/video/logo_black.json'
 
 
 // parameters for the url code of the visualizer
-let h, s, l, u, v, t
-
-let prevTexture = 0
+let h, s, l, u, v, t = 0
 
 // view the load progress
 function Loader() {
@@ -64,8 +61,6 @@ export default function App({ initialState = 'WELCOME', maxFishZoom = 5, instruc
         setScaleY(FixVScale(payload.values.scaleY));
 
         setCurrentState(payload.currentState)
-
-        prevTexture = payload.values.texture
       }
       catch (error) {
         // Friendly message for debugging
@@ -78,7 +73,7 @@ export default function App({ initialState = 'WELCOME', maxFishZoom = 5, instruc
     return () => arduinoSocket.close();
   }, []);
 
-  // modal config + saving url parameters
+  // saving url parameters
   useEffect(() => {
     switch (currentState) {
       case "WELCOME": {
@@ -187,14 +182,13 @@ export default function App({ initialState = 'WELCOME', maxFishZoom = 5, instruc
           />
         </Suspense>
 
-        {/* <ContactShadows position={[0, -2, 0]} opacity={0.7} scale={10} blur={1.5} far={2} /> */}
-
         <OrbitControls
           enableZoom={true}
           minDistance={Math.min(2.5, maxFishZoom)}
           maxDistance={maxFishZoom}
           enablePan={false}
         />
+
       </Canvas>
     </>
   )

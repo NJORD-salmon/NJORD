@@ -1,18 +1,21 @@
-import React, { Suspense, useRef } from "react"
+import React, { Suspense, useState } from "react"
 // OrbitControls to move the camera around
-import { OrbitControls, ContactShadows, Html, useProgress } from "@react-three/drei"
+import { OrbitControls, Html, useProgress } from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
-import { useSearchParams } from "react-router-dom";
-import Lottie from "lottie-react";
-import { useDrag, useGesture } from "@use-gesture/react"
-import { useSpring, useSprings, useTransition, animated, config, to } from 'react-spring'
-
+import { useSearchParams } from "react-router-dom"
+import Lottie from "lottie-react"
+import { useDrag } from "@use-gesture/react"
+import { useSpring, animated } from 'react-spring'
 
 import Lights from "../components/light"
 import Model from "../components/model"
-import logo from '../assets/video/logo.json'
+import swim1 from '../assets/video/swim1.json'
+import swim2 from '../assets/video/swim2.json'
+import swim3 from '../assets/video/swim3.json'
 import summary from '../assets/img/vn.jpeg'
 
+
+const logo = [swim1, swim2, swim3]
 
 // view the load progress
 function Loader() {
@@ -45,10 +48,12 @@ export default function Visualizer() {
     bounds: { top: 0, bottom: BOTTOM_POINT },
   });
 
+  const [animIndex, setAnimIndex] = useState(0)
+
   return (
     <>
       <div id="logo">
-        <Lottie animationData={logo} loop={true} id="lottie" />
+        <Lottie animationData={logo[animIndex]} loop={true} id="lottie" />
       </div>
 
       <animated.div {...bindHandle()} style={{
@@ -78,10 +83,34 @@ export default function Visualizer() {
             </ul>
           </div>
         </div>
-        <div><img src={summary} alt="nutritional values" style={{ width: "90vw" }} /></div>
-      </animated.div>
+        <div>
+          <img src={summary} alt="nutritional values" style={{ width: "90vw" }} />
+          <button
+            onClick={() => {
+              setAnimIndex(0)
+              console.log(animIndex)
+            }}>
+            swim 1
+          </button>
+          <button
+            onClick={() => {
+              setAnimIndex(1)
+              console.log(animIndex)
+            }}>
+            swim 2
+          </button>
+          <button
+            onClick={() => {
+              setAnimIndex(2)
+              console.log(animIndex)
+            }}>
+            swim 3
+          </button>
 
-      <Canvas shadows style={{ height: "95%" }} >
+        </div>
+      </animated.div >
+
+      <Canvas shadows style={{ height: "93%" }} >
         <Lights />
 
         <Suspense fallback={<Loader />}>
@@ -95,11 +124,10 @@ export default function Visualizer() {
             modelScale={3.5}
             position={[0.5, 0, 0]}
             rotation={[0, 0.95, 0]}
-            animIndex={0}
+            isAnimChanging={true}
+            animIndex={animIndex}
           />
         </Suspense>
-
-        {/* <ContactShadows position={[0, -2, 0]} opacity={0.7} scale={10} blur={1.5} far={2} /> */}
 
         <OrbitControls
           enableZoom={true}

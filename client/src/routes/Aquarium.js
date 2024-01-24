@@ -2,7 +2,7 @@ import React, { useEffect, Suspense, useState, useRef } from "react"
 import Box from "@mui/material/Box"
 import Modal from "@mui/material/Modal"
 import { ErrorBoundary } from 'react-error-boundary'
-import { OrbitControls, Stats, Html, useProgress } from "@react-three/drei"
+import { OrbitControls, Html, useProgress } from "@react-three/drei"
 import { Canvas, useThree } from "@react-three/fiber"
 import Lottie from "lottie-react";
 import ReactPlayer from 'react-player'
@@ -29,19 +29,26 @@ function Loader() {
   return <Html center>{progress} % loaded</Html>
 }
 
-function getRandomY(min, max) {
-  return Math.random() * (max - min) + min;
+function getRandomX(min, max) {
+  return Math.random() * (max - min) + min
+
 }
 
-function getRandomZ(idx) {
+function getRandomY(idx) {
   const min = -1.4 - idx / 4
   const max = 1.4 + idx / 4
-  return Math.random() * (max - min) + min;
+  return Math.random() * (max - min) + min
 }
 
-function Fish({ fishes }) {
-  const { viewport } = useThree();
+function getZ(idx) {
+  return -idx / 2
+}
 
+let isEntering = false
+
+
+function Fish({ fishes, currentState }) {
+  const { viewport } = useThree();
 
   const models = fishes.map((config, idx) => {
     return <Model
@@ -53,8 +60,11 @@ function Fish({ fishes }) {
       vScale={FixVScale(config.scaleY)}
       textureIndex={FixTexture(config.texture)}
       // position={[y, z, x]}
-      position={[getRandomY(-viewport.width, viewport.width), getRandomZ(idx), -idx / 2]}
+      position={[getRandomX(-viewport.width, viewport.width), getRandomY(idx), getZ(idx)]}
+
+      currentState={currentState}
       movementAnim={true}
+      aquarium={true}
       key={idx}
     />
   })
@@ -114,25 +124,29 @@ export default function Water() {
   const [open, setOpen] = useState(false);
   const [configuratorVisible, setConfiguratorVisible] = useState(false);
 
+
   // read changes to manage modal
   useEffect(() => {
     switch (currentState) {
       case "WELCOME": {
-
+        isEntering = false
         break
       }
       case "CUSTOMIZE": {
+        isEntering = false
         setOpen(true)
         setConfiguratorVisible(true);
 
         break
       }
       case "SAVE": {
+        isEntering = false
         setConfiguratorVisible(false);
 
         break
       }
       case "DISPLAY": {
+        isEntering = true
         setOpen(false)
 
         break
@@ -142,7 +156,6 @@ export default function Water() {
       }
     }
   }, [currentState])
-
 
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const onLoadedData = () => {
@@ -206,11 +219,10 @@ export default function Water() {
         <fog attach="fog" args={['#cecece', 0.1, 20]} />
 
         <Suspense fallback={<Loader />}>
-          <Fish fishes={fishes} />
+          <Fish fishes={fishes} currentState={currentState} />
         </Suspense>
         <OrbitControls />
 
-        {/* {<Stats />} */}
       </Canvas>
     </>
   )
