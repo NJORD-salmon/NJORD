@@ -8,7 +8,7 @@ import Lottie from "lottie-react";
 import ReactPlayer from 'react-player'
 
 import App from './App.js'
-import WaterLights from "../components/waterlights.js"
+import WaterLights from "../components/waterLights.js"
 import Model from "../components/model.js"
 import { WS_SERVER } from "../env"
 import {
@@ -61,35 +61,17 @@ function Fish({ fishes, currentState, animIndex }) {
       uScale={FixUScale(config.scaleX)}
       vScale={FixVScale(config.scaleY)}
       textureIndex={FixTexture(config.texture)}
-      // position={[y, z, x]}
       position={[getRandomX(-viewport.width, viewport.width, idx), getRandomY(idx, currentState, viewport), getZ(idx)]}
       animIndex={animIndex}
       isAnimChanging={true}
 
       currentState={currentState}
       movementAnim={true}
-      aquarium={true}
       idx={idx}
       key={idx}
     />
 
   })
-
-  // console.log(models[1].props.position[2])
-  // const maxBoundaryX = []
-
-  // for (let i = 0; i < models.length; i++) {
-  //   maxBoundaryX.push(viewport.width - models[i].props.position[2])
-  // }
-
-  /* for (let i = 0; i < models.length; i++) {
-    if (models[i].props.position[0] >= maxBoundaryX) {
-      //   animIndex = 2
-      console.log("yeppi")
-    }
-  } */
-
-
 
   return (
     <>
@@ -110,7 +92,6 @@ export default function Water() {
   const [animIndex, setAnimIndex] = useState(0)
 
   const connection = useRef(null)
-
   useEffect(() => {
     // start websocket client 
     const arduinoSocket = new WebSocket(`ws://${WS_SERVER}:9000`);
@@ -140,7 +121,7 @@ export default function Water() {
 
     return () => arduinoSocket.close();
   }, []);
-
+  // send fishes when new fish
   useEffect(() => {
     if (currentState === "DISPLAY") {
       connection.current?.send('gimme-fish')
@@ -148,11 +129,9 @@ export default function Water() {
   }, [connection, currentState]);
 
   const [open, setOpen] = useState(false);
-  const [configuratorVisible, setConfiguratorVisible] = useState(false);
+  const [configuratorVisible, setConfiguratorVisible] = useState(false)
 
-
-
-  // read changes to manage modal
+  // read changes in state
   useEffect(() => {
     switch (currentState) {
       case "WELCOME": {

@@ -43,7 +43,7 @@ export default function Model({
   const prevPositionRef = useRef(position)
   const [isFirstFrame, setIsFirstFrame] = useState(true)
   let startMoving = movementAnim
-  let isEntering = false
+
 
   // eye material
   const eyeMaterial = new MeshStandardMaterial({
@@ -151,22 +151,14 @@ export default function Model({
 
 
       // delay to add new salmon in aquarium
-      if (currentState == "DISPLAY") {
+      if (currentState === "DISPLAY") {
+
         if (idx !== 0) {
           startMoving = false
           setTimeout(() => {
+            console.log("timeout")
             startMoving = true
           }, 3300);
-        } else {
-          isEntering = true
-          //   startMoving = false
-          //   setTimeout(() => {
-          //     isEntering = false
-          //   }, 2500);
-          setTimeout(() => {
-            // startMoving = true
-            isEntering = false
-          }, 3300)
         }
       }
     }
@@ -181,10 +173,6 @@ export default function Model({
 
   useFrame(({ clock }) => {
     let t = clock.elapsedTime
-    if (isEntering) {
-      // myMesh.current.position.y -= 0.01
-      //myMesh.current.position.y += 
-    }
     // first frame to orient the fishes (then wait before starting moving)
     if (startMoving || (isFirstFrame && currentState === 'DISPLAY')) {
       setIsFirstFrame(false)

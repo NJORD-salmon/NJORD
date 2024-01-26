@@ -55,17 +55,57 @@ export default function Visualizer() {
         <Lottie animationData={logo[animIndex]} loop={true} id="lottie" />
       </div>
 
-      <animated.div {...bindHandle()} style={{
-        touchAction: "none",
-        y: posHandle.y
-      }}
-        className="handle-container" >
-        <div className="handle" />
-      </animated.div>
-      <animated.div id="overlay" style={{
-        y: posHandle.y,
-        opacity: posHandle.y.to([0, BOTTOM_POINT], [1, 0.8])
-      }} >
+      <div id="buttons">
+        <div className="hr"></div>
+        <div id="swims">
+          <div
+            className="change-swim"
+            onClick={() => {
+              setAnimIndex(0)
+            }}>
+            swim 1
+          </div>
+          <div className="vl"></div>
+          <div
+            className="change-swim"
+            onClick={() => {
+              setAnimIndex(1)
+            }}>
+            swim 2
+          </div>
+          <div className="vl"></div>
+          <div
+            className="change-swim"
+            onClick={() => {
+              setAnimIndex(2)
+              console.log(animIndex)
+            }}>
+            swim 3
+          </div>
+        </div>
+        <div className="hr"></div>
+        <div id={"info"}>
+          <div id={"change-info"}
+            onClick={() => {
+
+              if (document.getElementById("change-info").innerHTML === "click to view your salmon") {
+
+                document.getElementById("change-info").innerHTML = "click to view your salmon data";
+                document.getElementById("overlay").style.display = "none";
+
+              }
+              else if (document.getElementById("change-info").innerHTML === "click to view your salmon data") {
+
+                document.getElementById("change-info").innerHTML = "click to view your salmon";
+                document.getElementById("overlay").style.display = "flex";
+              }
+            }}>
+            click to view your salmon data
+          </div>
+        </div>
+      </div>
+
+      <div id="overlay">
         <div>
           <p>thank you for your order</p>
           <p>here are your choices:</p>
@@ -82,34 +122,10 @@ export default function Visualizer() {
             </ul>
           </div>
         </div>
-        <div>
-          <img src={summary} alt="nutritional values" style={{ width: "90vw" }} />
-          <button
-            onClick={() => {
-              setAnimIndex(0)
-              console.log(animIndex)
-            }}>
-            swim 1
-          </button>
-          <button
-            onClick={() => {
-              setAnimIndex(1)
-              console.log(animIndex)
-            }}>
-            swim 2
-          </button>
-          <button
-            onClick={() => {
-              setAnimIndex(2)
-              console.log(animIndex)
-            }}>
-            swim 3
-          </button>
+      </div >
 
-        </div>
-      </animated.div >
 
-      <Canvas shadows style={{ height: "93%" }} >
+      <Canvas shadows>
         <Lights />
 
         <Suspense fallback={<Loader />}>

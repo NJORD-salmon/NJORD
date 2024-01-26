@@ -147,32 +147,68 @@ canvas {
 /* ------------------------------------------------------------------------------ */
 /* VISUALIZER */
 
-#logo{
+#logo,
+#buttons,
+#overlay{
   position: absolute;
+  width: 100vw;
+}
+
+#logo{
+  /* position: absolute; */
   z-index: 0;
+  /* width: 100vw; */
   padding: 5vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 #lottie{
   height: 6.5vw;
 }
 
-#summary{
-  position: absolute;
-  z-index: 5000;
-  top: 90vh;
+#buttons{
+  /* position: absolute; */
+  z-index: 3;
+  bottom: 0;
+  /* width: 100vw; */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
-#summary img{
+#swims{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between; 
+}
+
+.change-swim{
+  padding: 2.5vw 9.8vw;
+  margin: auto;
+}
+.hr{
   width: 100vw;
+  border-top: 1px solid #000;
+}
+.vl{
+  height: auto;
+  border-left: 1px solid #000;;
+}
+
+#info{
+  display: flex;
+  justify-content: center;
+  padding: 5vw;
 }
 
 #overlay{
-  position: absolute;
-  width: 100vw;
+  /* position: absolute; */
+  /* width: 100vw; */
   height: 100%;
-  background-color:rgba(0, 0, 0,0.5);
-  z-index: 0;
+  /* background-color:rgba(0, 0, 0,0.5); */
+  z-index: 2;
   overflow: scroll;
-  display: flex;
+  display: none;
   flex-direction: column;
   justify-content: space-between;
   padding: 5vw;
@@ -185,26 +221,7 @@ canvas {
   padding-right: 10vw;
 }
 
-.handle-container,
-.handle{
-  width:100%;
-}
 
-.handle-container{
-  position: absolute;
-  z-index: 1;
-  top: 10px;
-  height: 28vh;
-}
-
-.handle{
-  width: 20vw ;
-  background-color: grey;
-  margin: 0 auto;
-  border-radius: 2px;
-  opacity: 1;
-  height: 5px;
-}
 
 @media only screen and (orientation: landscape) {
   #logo{
