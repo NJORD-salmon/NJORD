@@ -21,11 +21,21 @@ body,
     local("TWKLausanne"), 
     url("./assets/font/TWKLausanne-250.woff2") 
     format("woff2");
+    font-weight: 250;
+}
+@font-face {
+  font-family: "TWKLausanne";
+  src:
+    local("TWKLausanne"), 
+    url("./assets/font/TWKLausanne-800.woff2") 
+    format("woff2");
+    font-weight: 800;
 }
 
 body {
   background: white;
   font-family: "TWKLausanne", 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-weight: 250;
   color: #000;
 }
 canvas { 
@@ -152,73 +162,83 @@ canvas {
 #overlay{
   position: absolute;
   width: 100vw;
+  display: flex;
 }
 
 #logo{
-  /* position: absolute; */
   z-index: 0;
-  /* width: 100vw; */
   padding: 5vw;
-  display: flex;
   flex-direction: row;
   justify-content: center;
 }
 #lottie{
-  height: 6.5vw;
+  height: 3vh;
 }
 
 #buttons{
-  /* position: absolute; */
   z-index: 3;
   bottom: 0;
-  /* width: 100vw; */
-  display: flex;
   flex-direction: column;
   justify-content: space-between;
+  background-color: white;
 }
+
 #swims{
   display: flex;
   flex-direction: row;
   justify-content: space-between; 
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
 }
 
 .change-swim{
-  padding: 2.5vw 9.8vw;
+  padding: 1vh 9.8vw;
   margin: auto;
 }
-.hr{
-  width: 100vw;
-  border-top: 1px solid #000;
-}
+
 .vl{
   height: auto;
-  border-left: 1px solid #000;;
+  border-left: 1px solid #000;
 }
 
 #info{
   display: flex;
   justify-content: center;
-  padding: 5vw;
+}
+
+#change-info{
+  padding: 2.5vh 23vw;
 }
 
 #overlay{
-  /* position: absolute; */
-  /* width: 100vw; */
-  height: 100%;
+  top: 7vh;
+  height:83vh;
   /* background-color:rgba(0, 0, 0,0.5); */
   z-index: 2;
   overflow: scroll;
   display: none;
   flex-direction: column;
   justify-content: space-between;
-  padding: 5vw;
-  padding-top: 8vh;
-  font-size: 2vh;
+  padding: 4vh 3vw;
+  padding-top: 0;
 }
-#param-list ul {
+#overlay p{
+  clear: both;
+}
+
+#contact-info{
+clear: both;
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+}
+
+.param-list ul {
   float: left;
-  padding-left: 3vw;
+  margin: 0;
+  padding-left: 0;
   padding-right: 10vw;
+  list-style: none;
 }
 
 

@@ -56,7 +56,7 @@ export default function Visualizer() {
       </div>
 
       <div id="buttons">
-        <div className="hr"></div>
+
         <div id="swims">
           <div
             className="change-swim"
@@ -83,7 +83,7 @@ export default function Visualizer() {
             swim 3
           </div>
         </div>
-        <div className="hr"></div>
+
         <div id={"info"}>
           <div id={"change-info"}
             onClick={() => {
@@ -107,19 +107,100 @@ export default function Visualizer() {
 
       <div id="overlay">
         <div>
-          <p>thank you for your order</p>
-          <p>here are your choices:</p>
-          <div id="param-list">
+          <p>the Customized Njord Salmon comes from the cold
+            waters of the Norwegian fjords. every stage of
+            processing, starting from the strictly fresh raw material,
+            is the result of a long-standing tradition. Njord
+            Norwegian Salmon is a source of OMEGA-3 fatty acids.
+          </p>
+          <p>store at temperatures between 0°C and 4°C.
+            cooking instructions: bake in the oven at 180°C for 15
+            minutes or grill for 10 minutes on each side.
+          </p>
+          <p>ingredients: Norwegian Salmon (salmo salar) 97°10,
+            salt, Sicily sea water, aquamarine, beryl extract,
+            delphiniums flower, water from Cosenz, discolored
+            blueberries. farmed in Norway.
+            <br></br>
+            to be consumed by: 31/12/2024
+          </p>
+          <p>nutritional information - average values per 100g</p>
+          <div className="param-list">
             <ul >
-              <li>hue: {h}</li>
-              <li>saturation: {s}</li>
-              <li>lightness: {l}</li>
+              <li>energy</li>
+              <br></br>
+              <br></br>
+              <li>fats</li>
+              <li>*saturated</li>
+              <li>*monounsaturated</li>
+              <li>*polyunsaturated</li>
+              <br></br>
+              <li>carbohydrates</li>
+              <li>*of which sugars</li>
+              <br></br>
+              <li>proteins</li>
+              <br></br>
+              <li>salt</li>
+              <br></br>
+              <li>omega-3</li>
+              <br></br>
+              <li>fiber</li>
+              <br></br>
+              <li>sugar</li>
             </ul>
             <ul>
-              <li>texture: {t}</li>
-              <li>scale x: {u}</li>
-              <li>scale y: {v}</li>
+              <li>709 kJ</li>
+              <li>169 kcal</li>
+              <br></br>
+              <li>9,0 g</li>
+              <li>1,3 g</li>
+              <li>5,1 g</li>
+              <li>2,7 g</li>
+              <br></br>
+              <li>&lt;0,5 g</li>
+              <li>&lt;0,5 g</li>
+              <br></br>
+              <li>22 g</li>
+              <br></br>
+              <li>2,7 g</li>
+              <br></br>
+              <li>0,5 g</li>
+              <br></br>
+              <li>&lt;0,5 g</li>
+              <br></br>
+              <li>&lt;0,5 g</li>
             </ul>
+          </div>
+          <p>color information - values of your personal salmon</p>
+          <div className="param-list">
+            <ul >
+              <li>color</li>
+              <li>*HSL</li>
+            </ul>
+            <ul>
+              <li>H:{h}</li>
+              <li>S:{s}</li>
+              <li>L:{l}</li>
+            </ul>
+          </div>
+          <p>texture information - values of your personal salmon</p>
+          <div className="param-list">
+            <ul >
+              <li>texture</li>
+              <li>*scaling X</li>
+              <li>*scaling Y</li>
+            </ul>
+            <ul>
+              <li>name</li>
+              <li>{s} in percent</li>
+              <li>{l} in percent</li>
+              <br></br>
+            </ul>
+          </div>
+          <div id="contact-info">
+            <span>info@njord.no </span>
+            <span> instagram </span>
+            <span>www.njord.com </span>
           </div>
         </div>
       </div >

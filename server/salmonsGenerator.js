@@ -5,7 +5,7 @@ import { writeFile } from 'fs/promises'
 import { join } from 'path'
 
 const BASEPATH = './customizedSalmons'
-const NUM_SALMONS = 25
+const NUM_SALMONS = 15
 
 async function main() {
   for (let i = 0; i < NUM_SALMONS; i++) {
