@@ -176,7 +176,7 @@ canvas {
 }
 
 #buttons{
-  z-index: 3;
+  z-index: 2;
   bottom: 0;
   flex-direction: column;
   justify-content: space-between;
@@ -192,8 +192,8 @@ canvas {
 }
 
 .change-swim{
-  padding: 1vh 9.8vw;
-  margin: auto;
+  padding: 0.8vh 9.8vw;
+  margin: 0;
 }
 
 .vl{
@@ -211,19 +211,23 @@ canvas {
 }
 
 #overlay{
-  top: 7vh;
-  height:83vh;
+/*  top: 7vh; */
+/*  height:81vh; */
   /* background-color:rgba(0, 0, 0,0.5); */
+  height: 90vh;
   z-index: 2;
   overflow: scroll;
   display: none;
   flex-direction: column;
   justify-content: space-between;
-  padding: 4vh 3vw;
-  padding-top: 0;
+  padding: 4vh 4vw;
+  padding-top: 7vh;
 }
 #overlay p{
   clear: both;
+}
+.bold{
+  font-weight: 800;
 }
 
 #contact-info{
@@ -239,8 +243,22 @@ justify-content: space-between;
   padding-left: 0;
   padding-right: 10vw;
   list-style: none;
+  margin-bottom: 2vh;
+}
+.param-names{
+  width:66vw
 }
 
+a{
+  color: #000;
+  text-decoration: underline;
+}
+a:visited {
+  color: #000;
+}
+a:active {
+ font-weight: 800;
+} 
 
 
 @media only screen and (orientation: landscape) {
