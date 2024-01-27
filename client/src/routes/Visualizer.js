@@ -32,9 +32,24 @@ export default function Visualizer() {
 
   useEffect(() => {
     for (let i = 0; i < logo.length; i++) {
-      document.getElementById(`swim${i}`).style.fontWeight = "250";
+      document.getElementById(`swim${i}`).style.border = "1px solid #000";
+      document.getElementById(`swim${i}`).style.borderBottom = "0";
     }
-    document.getElementById(`swim${animIndex}`).style.fontWeight = "800";
+
+    document.getElementById(`swim${animIndex}`).style.border = "2px solid #000";
+
+    if (animIndex == 0) {
+      document.getElementById(`swim${animIndex}`).style.borderRight = "1px solid #000";
+      document.getElementById(`swim${animIndex + 1}`).style.borderRight = "0";
+    } else if (animIndex == 1) {
+      document.getElementById(`swim${animIndex}`).style.borderLeft = "1px solid #000";
+      document.getElementById(`swim${animIndex}`).style.borderRight = "1px solid #000";
+    } else if (animIndex == 2) {
+      document.getElementById(`swim${animIndex}`).style.borderLeft = "1px solid #000";
+      document.getElementById(`swim${animIndex - 1}`).style.borderLeft = "0";
+    }
+
+    document.getElementById(`swim${animIndex}`).style.borderBottom = "0";
   }, [animIndex])
 
 
@@ -168,7 +183,6 @@ export default function Visualizer() {
               }}>
               swim 1
             </div>
-            <div className="vl"></div>
             <div
               className="change-swim"
               id="swim1"
@@ -177,7 +191,6 @@ export default function Visualizer() {
               }}>
               swim 2
             </div>
-            <div className="vl"></div>
             <div
               className="change-swim"
               id="swim2"

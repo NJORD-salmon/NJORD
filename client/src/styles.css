@@ -187,13 +187,14 @@ canvas {
   display: flex;
   flex-direction: row;
   justify-content: space-between; 
-  border-top: 1px solid #000;
-  border-bottom: 1px solid #000;
 }
 
 .change-swim{
+  width: 33.33vw;
   padding: 0.8vh 9.8vw;
   margin: 0;
+  border: 1px solid #000;
+  border-bottom: 0;
 }
 
 .vl{
@@ -204,6 +205,7 @@ canvas {
 #info{
   display: flex;
   justify-content: center;
+  border: 2px solid #000;
 }
 
 #change-info{
