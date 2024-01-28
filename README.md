@@ -1,4 +1,10 @@
-# NJÖRD
+<div align="center">
+
+<img width="312" alt="NJÖRD" style="margin-bottom: 24px" src="./client/public/img/njord.svg">
+
+[![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
+
+</div>
 
 ## Overview
 
@@ -49,6 +55,37 @@ Then, there are multiple sections that can be accessed with the following links:
 
 This is a work of Speculative Design for the course Final Synthesis Design Studio for the Bachelor's Degree in Communication Design.
 
+---
+
+### Third party materials
+
+**Salmon Model**
+
+The gltf file used in the code is based on the model made by NestaEric.
+
+Model Information:
+
+- title: Chinook Salmon ( Ocean phase )
+- source: https://sketchfab.com/3d-models/chinook-salmon-ocean-phase-4d36e5f3db7e4c33908c42790e59caf3
+- author: NestaEric (https://sketchfab.com/Nestaeric)
+
+Model License:
+
+- license type: SKETCHFAB Standard (https://sketchfab.com/licenses)
+- requirements: Under basic restrictions, use worldwide, on all types of media, commercially or not, and in all types of derivative works
+
+---
+
+**Salmon Model**
+
+The font used for the project is TWK Lausanne, designed by Nizar Kazan, as a student trial.
+
+- licence type: https://www.weltkern.com/support_/informations
+
+© [TWK Lausanne] designed by [NIZAR KAZAN], published by WELTKERN®.
+
+---
+
 ### Group members
 
 - Bissoli Miriam
@@ -63,3 +100,14 @@ _Polytechnic University of Milan </br>
 School of Design </br>
 Final Synthesis Design Studio </br>
 AY 2023 — 2024_
+
+### License
+
+This work is licensed under a
+[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License][cc-by-nc-sa].
+
+[![CC BY-NC-SA 4.0][cc-by-nc-sa-image]][cc-by-nc-sa]
+
+[cc-by-nc-sa]: http://creativecommons.org/licenses/by-nc-sa/4.0/
+[cc-by-nc-sa-image]: https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png
+[cc-by-nc-sa-shield]: https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg

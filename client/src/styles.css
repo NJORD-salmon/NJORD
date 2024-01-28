@@ -242,6 +242,9 @@ justify-content: space-between;
 .param-names{
   width:66vw
 }
+.param-values{
+  text-align: right;
+}
 
 a{
   color: #000;
@@ -291,7 +294,7 @@ a:active {
     padding: 4vh 5vw;
   }
   #change-info{
-    padding: 10vh 4vw;
+    padding:7vh 4vw;
   }
   .param-list ul {
     padding-right: 0;

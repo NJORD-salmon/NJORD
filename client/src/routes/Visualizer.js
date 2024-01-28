@@ -12,7 +12,7 @@ import swim1 from '../assets/video/swim1.json'
 import swim2 from '../assets/video/swim2.json'
 import swim3 from '../assets/video/swim3.json'
 
-const textureName = ["tulips", "leaf", "imprint", "cascade", "normal", "plasma", "zebra", "waves", "microbe",]
+const textureName = ["tulips", "leaf", "imprint", "cascade", "zinc", "plasma", "zebra", "waves", "microbe",]
 
 // view the load progress
 function Loader() {
@@ -136,7 +136,7 @@ export default function Visualizer() {
                 <br></br>
                 <li>sugar</li>
               </ul>
-              <ul>
+              <ul className="param-values">
                 <li>709 kJ</li>
                 <li>169 kcal</li>
                 <br></br>
@@ -166,7 +166,7 @@ export default function Visualizer() {
                 <li>color</li>
                 <li>&#8627;HSL</li>
               </ul>
-              <ul>
+              <ul className="param-values">
                 <br></br>
                 <li>H: {h}°</li>
                 <li>S: {s}%</li>
@@ -181,10 +181,10 @@ export default function Visualizer() {
                 <li>&#8627;scaling X</li>
                 <li>&#8627;scaling Y</li>
               </ul>
-              <ul>
+              <ul className="param-values">
                 <li>{textureName[t]}</li>
-                <li>{Number.parseFloat(u).toFixed(2)}%</li>
-                <li>{Number.parseFloat(v).toFixed(2)}%</li>
+                <li>{Number.parseFloat(u).toFixed(2)}</li>
+                <li>{Number.parseFloat(v).toFixed(2)}</li>
                 <br></br>
               </ul>
             </div>
