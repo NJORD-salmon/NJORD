@@ -4,6 +4,7 @@ import { OrbitControls, Html, useProgress } from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
 import { useSearchParams } from "react-router-dom"
 import Lottie from "lottie-react"
+import { useOrientation } from "react-use"
 
 import Lights from "../components/light"
 import Model from "../components/model"
@@ -30,29 +31,51 @@ export default function Visualizer() {
 
   const [animIndex, setAnimIndex] = useState(0)
 
+  const { type } = useOrientation();
+
   useEffect(() => {
-    for (let i = 0; i < logo.length; i++) {
-      document.getElementById(`swim${i}`).style.border = "1px solid #000";
-      document.getElementById(`swim${i}`).style.borderBottom = "0";
+    if (type === "portrait-primary" || type === "portrait-secondary") {
+      for (let i = 0; i < logo.length; i++) {
+        document.getElementById(`swim${i}`).style.border = "1px solid #000";
+        document.getElementById(`swim${i}`).style.borderBottom = "0";
+      }
+
+      document.getElementById(`swim${animIndex}`).style.border = "2px solid #000";
+
+      if (animIndex == 0) {
+        document.getElementById(`swim${animIndex}`).style.borderRight = "1px solid #000";
+        document.getElementById(`swim${animIndex + 1}`).style.borderRight = "0";
+      } else if (animIndex == 1) {
+        document.getElementById(`swim${animIndex}`).style.borderLeft = "1px solid #000";
+        document.getElementById(`swim${animIndex}`).style.borderRight = "1px solid #000";
+      } else if (animIndex == 2) {
+        document.getElementById(`swim${animIndex}`).style.borderLeft = "1px solid #000";
+        document.getElementById(`swim${animIndex - 1}`).style.borderLeft = "0";
+      }
+
+      document.getElementById(`swim${animIndex}`).style.borderBottom = "0";
+
+    } else {
+
+      for (let i = 0; i < logo.length; i++) {
+        document.getElementById(`swim${i}`).style.border = "1px solid #000";
+        document.getElementById(`swim${i}`).style.borderBottom = "0";
+      }
+
+      document.getElementById(`swim${animIndex}`).style.border = "2px solid #000";
+
+      if (animIndex == 0) {
+        document.getElementById(`swim${animIndex + 1}`).style.borderTop = "0";
+      } else if (animIndex == 1) {
+        document.getElementById(`swim${animIndex + 1}`).style.borderTop = "0";
+      } else if (animIndex == 2) {
+        document.getElementById(`swim${animIndex - 1}`).style.borderBottom = "0";
+        document.getElementById(`swim${animIndex}`).style.borderBottom = "0";
+      }
+
+
     }
-
-    document.getElementById(`swim${animIndex}`).style.border = "2px solid #000";
-
-    if (animIndex == 0) {
-      document.getElementById(`swim${animIndex}`).style.borderRight = "1px solid #000";
-      document.getElementById(`swim${animIndex + 1}`).style.borderRight = "0";
-    } else if (animIndex == 1) {
-      document.getElementById(`swim${animIndex}`).style.borderLeft = "1px solid #000";
-      document.getElementById(`swim${animIndex}`).style.borderRight = "1px solid #000";
-    } else if (animIndex == 2) {
-      document.getElementById(`swim${animIndex}`).style.borderLeft = "1px solid #000";
-      document.getElementById(`swim${animIndex - 1}`).style.borderLeft = "0";
-    }
-
-    document.getElementById(`swim${animIndex}`).style.borderBottom = "0";
-  }, [animIndex])
-
-
+  }, [animIndex, type])
 
   return (
     <>
@@ -171,6 +194,7 @@ export default function Visualizer() {
               <span>www.njord.com</span>
             </div>
           </div>
+          <div style={{ padding: "5vh 0" }}></div>
         </div >
 
         <div id="buttons">

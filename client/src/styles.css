@@ -180,7 +180,7 @@ canvas {
   bottom: 0;
   flex-direction: column;
   justify-content: space-between;
-  background-color: white;
+  /* background-color:rgba(255,255,255,0); */
 }
 
 #swims{
@@ -197,11 +197,6 @@ canvas {
   border-bottom: 0;
 }
 
-.vl{
-  height: auto;
-  border-left: 1px solid #000;
-}
-
 #info{
   display: flex;
   justify-content: center;
@@ -213,10 +208,7 @@ canvas {
 }
 
 #overlay{
-/*  top: 7vh; */
-/*  height:81vh; */
-  /* background-color:rgba(0, 0, 0,0.5); */
-  height: 90vh;
+  height: 88vh;
   z-index: 2;
   overflow: scroll;
   display: none;
@@ -268,8 +260,45 @@ a:active {
     position: absolute;
     z-index: 0;
     padding: 5vh;
+    justify-content: end;
   }
   #lottie{
-    height: 3vw;
+    height: 7vh;
   }
+  #overlay{
+    width:80vw;
+    height: 100vh;
+    padding: 4vh 10vw;
+    padding-right: 5vw;
+  }
+
+  #buttons{
+    right: 0;
+    bottom: 0;
+  }
+  #swims{
+    flex-direction: column;
+  }
+  #info, 
+  #swims,
+  #buttons,
+  .change-swim{
+    width: 20vw;
+    right:0;
+    text-align: center;
+  }
+  .change-swim{
+    padding: 4vh 5vw;
+  }
+  #change-info{
+    padding: 10vh 4vw;
+  }
+  .param-list ul {
+    padding-right: 0;
+  }
+  .param-names{
+    width:58.55vw
+  }
+
+
 }

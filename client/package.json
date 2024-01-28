@@ -24,6 +24,7 @@
     "react-router-dom": "^6.19.0",
     "react-scripts": "^5.0.1",
     "react-spring": "^9.7.3",
+    "react-use": "^17.5.0",
     "three": "^0.158.0",
     "three-custom-shader-material": "^5.4.0"
   },
