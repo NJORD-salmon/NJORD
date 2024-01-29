@@ -1,14 +1,11 @@
 <div align="center">
 
-<div style={margin-bottom: "12px"}>
-
 <img width="312" alt="NJÖRD" style="margin-bottom: 40px" src="./client/public/img/njord.svg">
 
 </div>
 
 [![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
 
-</div>
 
 ## Overview
 
