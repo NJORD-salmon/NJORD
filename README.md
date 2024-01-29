@@ -2,9 +2,9 @@
 
 <img width="312" alt="NJÖRD" style="margin-bottom: 40px" src="./client/public/img/njord.svg">
 
-[![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
-
 </div>
+
+[![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
 
 ## Overview
 
