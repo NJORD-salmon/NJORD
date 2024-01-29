@@ -11,9 +11,10 @@ const textureName = [
 ]
 
 const randomIngredients = [
-  "salt, Sicily sea water, aquamarine, beryl extract, delphiniums flower, water from Cosenz, discolored blueberries.",
-
+  "salt, Sicily sea water, aquamarine, beryl extract, delphiniums flower, water from Cosenz, discolored blueberries."
 ]
+
+const randomIndex = Math.floor(Math.random() * randomIngredients.length);
 
 export default function SalmonDescription({ salmonParams }) {
   const { h, s, l, u, v, t } = salmonParams
@@ -38,7 +39,7 @@ export default function SalmonDescription({ salmonParams }) {
         </p>
         <p>
           <br></br>
-          ingredients: <span className="bold">Norwegian Salmon</span> (salmo salar) 97°10, {randomIngredients[0]} farmed in Norway.
+          ingredients: <span className="bold">Norwegian Salmon</span> (salmo salar) 97°10, {randomIngredients[randomIndex]} farmed in Norway.
           <br></br>
           to be consumed by: 31/12/2024
           <br></br>

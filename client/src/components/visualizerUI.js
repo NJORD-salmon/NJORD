@@ -48,7 +48,10 @@ export default function VisualizerUI({ salmonParams, animationInfo, swimAnimatio
       }
 
       {/* if salmon data are open, then buttons becomes the container's child */}
-      <div className="viz-ui-container">
+      <div className={showDetails
+        ? "viz-ui-container"
+        : "no-overlay"
+      }>
         {showDetails
           ? <SalmonDescription salmonParams={salmonParams} />
           : null

@@ -233,20 +233,26 @@ canvas {
   z-index: 2;
   overflow: scroll;
   justify-content: space-between;
-  padding: 4vh 4vw;
+  padding: 4vh 7vw;
   padding-top: 9vh;
 }
 #overlay p{
   clear: both;
 }
+#no-overlay{
+  display: none;
+}
 .bold{
   font-weight: 800;
 }
+.param-list{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
 .param-list ul {
-  float: left;
   margin: 0;
-  padding-left: 0;
-  padding-right: 10vw;
+  padding: 0;
   list-style: none;
   margin-bottom: 2vh;
 }
@@ -255,6 +261,7 @@ canvas {
 }
 .param-values{
   text-align: right;
+  padding-right: 0;
 }
 #contact-info{
   clear: both;
@@ -273,9 +280,6 @@ a:active {
  font-weight: 800;
 } 
 
-/* .active-button{
-  border-width: 2px;
-} */
 .active-button0{
   border-width: 2px;
   border-right-width: 1px;
@@ -283,13 +287,10 @@ a:active {
 .active-button1{
   border-width: 2px;
   border-right-width: 1px;
-  /* border-left-width: 1px; */
 }
 .active-button2{
   border-width: 2px;
-  /* border-left-width: 1px; */
 }
-
 
 @media only screen and (orientation: landscape) {
   #logo{
@@ -306,42 +307,46 @@ a:active {
     position: absolute;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
     height: 100vh;
+    width: 100vw;
+    padding: 3vh;
+    padding-right: 0;
+    padding-bottom: 0;
+    align-items: flex-end;
   }
 
   #overlay{
-    width:80vw;
-    /* height: 100vh; */
-    padding: 4vh 8vw;
-    padding-right: 6vw;
-    padding-bottom: 7vh;
+    width:79vw;
+    padding: 13vh 8vh 4vw 8vh;
   }
-
+ 
   #buttons-closed-details{
   position: absolute;
   z-index: 3;
-  right:0;
-  bottom: 0;
-  width: auto;
-}
+  
+  }
   #swims{
     flex-direction: column;
   }
   #info, 
   #swims,
   #buttons,
+  #buttons-closed-details,
   .change-swim{
     width: 20vw;
     right:0;
     text-align: center;
-  }
+  } 
+
   .change-swim{
     padding: 4vh 0;
+    border: 1px solid #000;
+    border-bottom-width: 0;
   }
   #change-info{
-    padding:7vh 0;
+    padding:7vh 1vw;
     text-align: center;
+    width: auto;
   }
   .param-list ul {
     padding-right: 0;
@@ -349,7 +354,17 @@ a:active {
   .param-names{
     width:58.55vw
   }
-  .active-button{
+  
+  .active-button0{
     border-width: 2px;
+    border-bottom-width: 1px;
+  }
+  .active-button1{
+    border-width: 2px;
+    border-bottom-width: 1px;
+  }
+  .active-button2{
+    border-width: 2px;
+    border-bottom: 0;
   }
 }

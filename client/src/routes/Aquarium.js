@@ -239,7 +239,7 @@ export default function Water() {
           <Fish fishes={fishes} currentState={currentState} animIndex={animIndex} />
         </Suspense>
         <OrbitControls />
-        <Stats />
+        {/* <Stats /> */}
       </Canvas>
     </>
   )
