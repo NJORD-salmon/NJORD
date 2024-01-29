@@ -1,6 +1,6 @@
 <div align="center">
 
-<img width="312" alt="NJÖRD" style="margin-bottom: 32px" src="./client/public/img/njord.svg">
+<img width="312" alt="NJÖRD" style="margin-bottom: 40px" src="./client/public/img/njord.svg">
 
 [![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
 
