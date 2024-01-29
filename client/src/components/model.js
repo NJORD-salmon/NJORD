@@ -171,7 +171,7 @@ export default function Model({
         myMesh.current.position.z + normalizedDirection[2] / 1000
       );
 
-      // TODO: store the current position as previous position
+      // store the current position as previous position
       prevPositionRef.current = [myMesh.current.position.x, myMesh.current.position.y, myMesh.current.position.z]
     }
   })
