@@ -20,7 +20,8 @@ import {
   FixVScale
 } from "../components/fixValues"
 import logo from '../assets/video/logo_white.json'
-import waterVideo from '../assets/video/video.mp4'
+import waterVideo from '../assets/video/aquarium_video.mp4'
+import bubbleVideo from '../assets/video/aquarium_bubbles.gif'
 
 
 // view the load progress
@@ -177,6 +178,9 @@ export default function Water() {
 
   return (
     <>
+      <div>
+        <img src={bubbleVideo} style={{ position: "absolute", zIndex: "3" }} />
+      </div>
       <div id="bkg">
         <ReactPlayer
           url={waterVideo}
@@ -229,13 +233,13 @@ export default function Water() {
       >
 
         {/* to give the impression of something farther away */}
-        <fog attach="fog" args={['#cecece', 0.1, 20]} />
+        <fog attach="fog" args={['#cecece', 0.1, 18]} />
 
         <Suspense fallback={<Loader />}>
           <Fish fishes={fishes} currentState={currentState} animIndex={animIndex} />
         </Suspense>
         <OrbitControls />
-
+        <Stats />
       </Canvas>
     </>
   )

@@ -80,7 +80,7 @@ Model License:
 
 The font used for the project is TWK Lausanne, designed by Nizar Kazan, as a student trial.
 
-- licence type: https://www.weltkern.com/support_/informations
+- license type: https://www.weltkern.com/support_/informations
 
 © [TWK Lausanne] designed by [NIZAR KAZAN], published by WELTKERN®.
 
