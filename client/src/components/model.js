@@ -105,50 +105,14 @@ export default function Model({
     }
   }, [animIndex, isAnimChanging])
 
-  // TODO?: check the position along the path and trigger animations accordingly
-  useFrame(() => {
-    if (movementAnim) {
-      //     if ((myMesh.current.position.x >= maxBoundaryX - 1 && myMesh.current.position.x <= maxBoundaryX - 0.5) ||
-      //       (myMesh.current.position.x <= minBoundaryX + 1 && myMesh.current.position.x >= minBoundaryX + 0.5)) {
-      //       setAnimIndex(6)
-      //     } else if ((myMesh.current.position.x >= maxBoundaryX - 0.5 && myMesh.current.position.x <= maxBoundaryX) ||
-      //       (myMesh.current.position.x <= minBoundaryX + 0.5 && myMesh.current.position.x >= minBoundaryX)) {
-      //       setAnimIndex(5)
-      //     }
-      //     else 
-      //     setAnimIndex(0)
-    }
-  })
-
-
-  // let lookAtX = 0
-  // let lookAtY = 0
-  // let changeX = 0.01
-  // let changeLookAtX = 0.01
-  // let salmonDirection = 1
-  // let lookAtDirection = 1
-  // let moveSalmon = true
-
   // initial movement setup
   useEffect(() => {
     if (startMoving) {
       myMesh.current.rotation.y = Math.PI / 2
 
-      // TODO: use previous position, if any, to initialize the correct salmon position
-      myMesh.current.position.x = prevPositionRef.current[0] /* + changeX */
+      // use previous position, if any, to initialize the correct salmon position
+      myMesh.current.position.x = prevPositionRef.current[0]
       myMesh.current.position.y = prevPositionRef.current[1]
-
-      // let normalizedDirection = -computeNormalizedDirection(myMesh.current.position, prevPositionRef)
-      // salmonDirection = (normalizedDirection > 0) ? -1 : 1
-
-      // myMesh.current.lookAt(
-      //   // myMesh.current.position.x + 1,
-      //   lookAtX + normalizedDirection[0] / 1000,
-      //   // myMesh.current.position.x + 0.001,
-      //   lookAtY + normalizedDirection[1] / 1000,
-      //   myMesh.current.position.z
-      // )
-
 
       // delay to add new salmon in aquarium
       if (currentState === "DISPLAY") {
@@ -177,31 +141,14 @@ export default function Model({
     if (startMoving || (isFirstFrame && currentState === 'DISPLAY')) {
       setIsFirstFrame(false)
 
-      /*  speedX = Math.max(maxBoundaryX - myMesh.current.position.x, 0)
-       speedY = Math.max(maxBoundaryY - myMesh.current.position.y, 0) */
-      /* displacementX = Math.sin()
-      displacementY = */
-
       // normal walk movements
       myMesh.current.position.x += /* directionX *  */displacementX
       myMesh.current.position.y += /* directionY  **/ displacementY
-
-
-      // TODO: find a way to implement rotation at the end
-
 
       const normalizedDirection = calculateNormalVector(myMesh.current.position, prevPositionRef)
       if (myMesh.current.position.y >= minBoundaryY + 2) {
         lastPosition = myMesh.current.position.x
       }
-
-      /* if (myMesh.current.position.y < minBoundaryY + 2) {
-        const theta = calculateAngle(normalizedDirection, [1, 0, 1])
-
-        console.log(myMesh.current.position.y)
-        myMesh.current.position.y = parabola(n, myMesh.current.position.x, lastPosition, theta, -viewport.height + n)
-        console.log(myMesh.current.position.y)
-      } else { */
 
       displacementX = computeChange(
         myMesh.current.position.x,
@@ -215,7 +162,6 @@ export default function Model({
         minBoundaryY,
         maxBoundaryY
       )
-      // }
 
       // to make sure the salmon is oriented as the path it follows    
       // use lookAt to set the rotation based on the direction
@@ -227,7 +173,6 @@ export default function Model({
 
       // TODO: store the current position as previous position
       prevPositionRef.current = [myMesh.current.position.x, myMesh.current.position.y, myMesh.current.position.z]
-
     }
   })
 

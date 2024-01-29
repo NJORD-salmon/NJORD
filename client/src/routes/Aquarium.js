@@ -2,7 +2,7 @@ import React, { useEffect, Suspense, useState, useRef } from "react"
 import Box from "@mui/material/Box"
 import Modal from "@mui/material/Modal"
 import { ErrorBoundary } from 'react-error-boundary'
-import { OrbitControls, Html, useProgress, Stats } from "@react-three/drei"
+import { OrbitControls, Html, useProgress } from "@react-three/drei"
 import { Canvas, useThree } from "@react-three/fiber"
 import Lottie from "lottie-react";
 import ReactPlayer from 'react-player'
@@ -239,7 +239,7 @@ export default function Water() {
           <Fish fishes={fishes} currentState={currentState} animIndex={animIndex} />
         </Suspense>
         <OrbitControls />
-        {/* <Stats /> */}
+
       </Canvas>
     </>
   )

@@ -11,7 +11,12 @@ const textureName = [
 ]
 
 const randomIngredients = [
-  "salt, Sicily sea water, aquamarine, beryl extract, delphiniums flower, water from Cosenz, discolored blueberries."
+  "salt, Sicilian sea water, aquamarine, beryl extract, delphiniums flower, water from Cosenz, discolored blueberries.",
+  "salt, Norwegian sea water, spirulina, iron extract, poppy flower, water from Cosenz, discolored strawberries.",
+  "salt, Scottish sea water, beetroot, amethyst extract, lavender flower, water from Cosenz, discolored grapes.",
+  "salt, Chilean sea water, capsanthin, seaweed extract, azalea flower, water from Cosenz, discolored mango.",
+  "salt, Japanese sea water, canthaxanthin, sandalwood extract, sunflower flower, water from Cosenz, discolored watermelon.",
+  "salt, Pacific Ocean sea water, charcoal, obsidian extract, gardenia flower, water from Cosenz, discolored watermelon.",
 ]
 
 const randomIndex = Math.floor(Math.random() * randomIngredients.length);
@@ -100,7 +105,7 @@ export default function SalmonDescription({ salmonParams }) {
             <li>color</li>
             <li>&#8627;HSL</li>
           </ul>
-          <ul >
+          <ul className="param-values">
             <br></br>
             <li>H: {h}°</li>
             <li>S: {s}%</li>
@@ -115,7 +120,7 @@ export default function SalmonDescription({ salmonParams }) {
             <li>&#8627;scaling X</li>
             <li>&#8627;scaling Y</li>
           </ul>
-          <ul >
+          <ul className="param-values">
             <li>{textureName[t]}</li>
             <li>{Number.parseFloat(u).toFixed(2)}</li>
             <li>{Number.parseFloat(v).toFixed(2)}</li>

@@ -14,11 +14,6 @@ const COMMANDS = {
   DATA: 'data'
 }
 
-const PAGES = {
-  WELCOME: 'welcome',
-  APP: 'app'
-}
-
 const BASEPATH = './customizedSalmons'
 
 let fishNumber = await loadInitialSalmonId(BASEPATH)
