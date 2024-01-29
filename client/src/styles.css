@@ -289,7 +289,7 @@ a:active {
   border-right-width: 1px;
 }
 .active-button2{
-  border-width: 2px;
+  border-width: 2px !important;
 }
 
 @media only screen and (orientation: landscape) {
