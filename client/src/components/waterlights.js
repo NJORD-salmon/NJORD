@@ -1,50 +1,12 @@
 import { forwardRef, useRef } from 'react'
 import { useThree } from "@react-three/fiber"
 import { Object3D, SpotLight } from 'three'
-import { light } from '@mui/material/styles/createPalette'
 
 const lightPositions = [4, 0, -4, -8, -12, -16, -20, -24]
 
 // lights for the aquarium
 const WaterLights = forwardRef((props, ref) => {
   const { viewport } = useThree()
-
-  /* const spotlights = [];
-   for (let i = 0; i < lightPositions.length; i++) {
-       const spotlight = (
-       <spotLight
-         key={`spotlight-${i}`}
-         position={[viewport.width - 4, viewport.height + 4, lightPositions[i]]}
-         angle={M.9h.PI / 4}
-         penumbra={0.75}
-         intensity={1}
-         castShadow
-       />
-     );
-     spotlights.push(spotlight);
-   }
- 
-   for (let i = 0; i < lightPositions.length; i++) {
-      const targetObject = new Object3D()
-      targetObject.position.set([-viewport.width, 4, lightPositions[i]])
-  
-      const light = new SpotLight()
-      light.intensity = 5
-      light.castShadow = true
-      light.decay = 0
-      light.angle = .98
-      light.penumbra = 1
-      light.position = [viewport.width - 1, viewport.height + 4, lightPositions]
-      light.target = targetObject
-      spotLights.push(light)
-    }
-    
-      for (let i = 0; i < lightPositions.length; i++) {
-        const obj = new Object3D()
-        obj.position
-        targetObject.push(obj)
-      }
-     */
 
   const target = new Object3D([-viewport.width, 0, lightPositions[0]])
   const target1 = new Object3D([-viewport.width, 0, lightPositions[1]])
@@ -156,7 +118,6 @@ const WaterLights = forwardRef((props, ref) => {
         intensity={1}
         castShadow
       />
-      {/* {spotlights} */}
     </>
   )
 })
