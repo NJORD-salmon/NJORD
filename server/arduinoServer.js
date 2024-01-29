@@ -19,6 +19,8 @@ const BASEPATH = './customizedSalmons'
 let fishNumber = await loadInitialSalmonId(BASEPATH)
 
 function main() {
+  console.log('initial fish number:', fishNumber)
+
   // set up websocket for client (webpage) and server communication
   const wss = setupWSS({
     port: 9000,
@@ -296,7 +298,8 @@ async function loadInitialSalmonId(directoryPath) {
 
   try {
     const salmonFiles = (await readdir(directoryPath)).filter(fname => fname.startsWith('fish_'))
-    const salmonFileName = salmonFiles[salmonFiles.length - 1]
+    sortFishFiles(salmonFiles)
+    const salmonFileName = salmonFiles[0]
     const index = Number.parseInt(
       salmonFileName.slice(salmonFileName.indexOf('_') + 1, salmonFileName.indexOf('.'))
     )
