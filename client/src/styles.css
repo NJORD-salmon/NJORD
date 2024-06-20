@@ -190,6 +190,10 @@ canvas {
   flex-direction: column;
   justify-content: space-between;
 }
+#buttons,
+#buttons-closed-details{
+  text-transform: uppercase;
+}
 #no-buttons{
   display: none;
 }
@@ -234,7 +238,7 @@ canvas {
   overflow: scroll;
   justify-content: space-between;
   padding: 4vh 7vw;
-  padding-top: 1vh;
+  padding-top: 5vh;
 }
 #overlay p{
   clear: both;
