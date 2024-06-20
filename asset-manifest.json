@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/NJORD/static/css/main.9daf3d28.css",
-    "main.js": "/NJORD/static/js/main.9c3fb44b.js",
+    "main.css": "/NJORD/static/css/main.aaee3248.css",
+    "main.js": "/NJORD/static/js/main.cd668ad0.js",
     "reactPlayerYouTube.js": "/NJORD/static/js/reactPlayerYouTube.4196dfcd.chunk.js",
     "reactPlayerSoundCloud.js": "/NJORD/static/js/reactPlayerSoundCloud.8337320d.chunk.js",
     "reactPlayerVimeo.js": "/NJORD/static/js/reactPlayerVimeo.e7c97780.chunk.js",
@@ -20,8 +20,8 @@
     "static/media/TWKLausanne-250.woff2": "/NJORD/static/media/TWKLausanne-250.3c230e4b1eb0045609d1.woff2",
     "static/media/TWKLausanne-800.woff2": "/NJORD/static/media/TWKLausanne-800.109cf93d439b0fd08558.woff2",
     "index.html": "/NJORD/index.html",
-    "main.9daf3d28.css.map": "/NJORD/static/css/main.9daf3d28.css.map",
-    "main.9c3fb44b.js.map": "/NJORD/static/js/main.9c3fb44b.js.map",
+    "main.aaee3248.css.map": "/NJORD/static/css/main.aaee3248.css.map",
+    "main.cd668ad0.js.map": "/NJORD/static/js/main.cd668ad0.js.map",
     "reactPlayerYouTube.4196dfcd.chunk.js.map": "/NJORD/static/js/reactPlayerYouTube.4196dfcd.chunk.js.map",
     "reactPlayerSoundCloud.8337320d.chunk.js.map": "/NJORD/static/js/reactPlayerSoundCloud.8337320d.chunk.js.map",
     "reactPlayerVimeo.e7c97780.chunk.js.map": "/NJORD/static/js/reactPlayerVimeo.e7c97780.chunk.js.map",
@@ -37,7 +37,7 @@
     "reactPlayerPreview.b4adf0e3.chunk.js.map": "/NJORD/static/js/reactPlayerPreview.b4adf0e3.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.9daf3d28.css",
-    "static/js/main.9c3fb44b.js"
+    "static/css/main.aaee3248.css",
+    "static/js/main.cd668ad0.js"
   ]
 }
