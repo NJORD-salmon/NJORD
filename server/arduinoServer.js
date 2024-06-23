@@ -285,7 +285,11 @@ async function readSalmonParameters(min, max) {
       console.error("failed reading files", error);
     }
   }
-  // get last 10 created files
+
+  // average parameters of all the files
+  FishAverages(fishes)
+
+  // get last 25 created files
   return (
     fishes.slice(min, max)
   )
@@ -325,5 +329,40 @@ async function sortFishFiles(fishFiles) {
 
   return sorted
 }
+
+// function to calculate the average salmon of all the saved json 
+async function FishAverages(fishes) {
+  const sum = fishes.reduce((totals, fish) => {
+    totals.hue += fish.hue;
+    totals.saturation += fish.saturation;
+    totals.lightness += fish.lightness;
+    totals.texture += fish.texture;
+    totals.scaleX += fish.scaleX;
+    totals.scaleY += fish.scaleY;
+    return totals;
+  }, {
+    hue: 0,
+    saturation: 0,
+    lightness: 0,
+    texture: 0,
+    scaleX: 0,
+    scaleY: 0
+  });
+
+  const length = fishes.length;
+
+  const averages = {
+    hue: (sum.hue / length).toFixed(0),
+    saturation: (sum.saturation / length).toFixed(0),
+    lightness: (sum.lightness / length).toFixed(0),
+    texture: (sum.texture / length).toFixed(0),
+    scaleX: (sum.scaleX / length).toFixed(3),
+    scaleY: (sum.scaleY / length).toFixed(3)
+  };
+
+  console.log(averages);
+  return averages;
+}
+
 
 main()
