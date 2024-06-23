@@ -286,8 +286,9 @@ async function readSalmonParameters(min, max) {
     }
   }
 
-  // average parameters of all the files
+  // calculate parameters of all the files
   FishAverages(fishes)
+  TextureMode(fishes)
 
   // get last 25 created files
   return (
@@ -364,5 +365,40 @@ async function FishAverages(fishes) {
   return averages;
 }
 
+async function TextureMode(fishes) {
+  // extract raw texture values and convert them from 0 to 8
+  const textures = fishes.map(fish => FixTexture(fish.texture));
+
+  // create a frequency map to keep track of how many times each texture value appears in the array
+  const frequencyMap = {};
+  textures.forEach(texture => {
+    if (frequencyMap[texture]) {
+      frequencyMap[texture]++;
+    } else {
+      frequencyMap[texture] = 1;
+    }
+  });
+
+  // find the mode
+  let maxFrequency = 0;
+  let mode = null;
+  for (const texture in frequencyMap) {
+    if (frequencyMap[texture] > maxFrequency) {
+      maxFrequency = frequencyMap[texture];
+      mode = Number(texture);
+    }
+  }
+
+  console.log(`Mode of textures: ${mode}`);
+  return mode;
+}
+
+// fix parameter to match the number of textures
+function FixTexture(texture) {
+  const numberOfTextures = 9
+  const textureRangeSize = 256 / numberOfTextures
+
+  return Math.floor(texture / textureRangeSize)
+}
 
 main()
