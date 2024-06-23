@@ -238,7 +238,7 @@ canvas {
   overflow: scroll;
   justify-content: space-between;
   padding: 4vh 7vw;
-  padding-top: 5vh;
+  padding-top: 7vh;
 }
 #overlay p{
   clear: both;
