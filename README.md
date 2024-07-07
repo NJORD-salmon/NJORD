@@ -6,12 +6,15 @@
 
 [![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
 
-
 ## Overview
 
 Farmed salmon have traditionally been fed colorants to maintain their characteristic hue. This is typically done to replicate the natural color of wild fish, which is influenced by their diet rich in krill.
 
 NJÖRD is a Norwegian company specializing in the production and distribution of colored salmon meat, offering a diverse range of products. Recently, NJÖRD introduced a new premium service that allows clients to control all visual characteristics of the fish. This service is accessible through dedicated machines installed in each store.
+
+- <a href="https://youtu.be/aJfLuOhftRE"><img width="15" alt="@njord.colors"  src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/1920px-YouTube_full-color_icon_%282017%29.svg.png"> Teaser</a>
+- <a href="https://youtu.be/oRXZiv2sKZk"><img width="15" alt="@njord.colors"  src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/1920px-YouTube_full-color_icon_%282017%29.svg.png"> Trailer</a>
+- <a href="https://www.instagram.com/njord.colors?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="><img width="12" alt="@njord.colors"  src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg"> Instagram</a>
 
 ## Purpose
 
