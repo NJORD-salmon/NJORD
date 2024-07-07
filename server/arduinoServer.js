@@ -289,6 +289,7 @@ async function readSalmonParameters(min, max) {
   // calculate parameters of all the files
   FishAverages(fishes)
   TextureMode(fishes)
+  HueMode(fishes)
 
   // get last 25 created files
   return (
@@ -400,5 +401,38 @@ function FixTexture(texture) {
 
   return Math.floor(texture / textureRangeSize)
 }
+
+async function HueMode(fishes) {
+  const sectorSize = 255 / 12; // Calculate the size of each sector
+  const hues = fishes.map(fish => fish.hue);
+
+  // Map each hue value to its corresponding sector
+  const sectors = hues.map(hue => Math.floor(hue / sectorSize));
+
+  // Create a frequency map for sectors
+  const frequencyMap = {};
+  sectors.forEach(sector => {
+    if (frequencyMap[sector]) {
+      frequencyMap[sector]++;
+    } else {
+      frequencyMap[sector] = 1;
+    }
+  });
+
+  // Find the mode sector
+  let maxFrequency = 0;
+  let modeSector = null;
+  for (const sector in frequencyMap) {
+    if (frequencyMap[sector] > maxFrequency) {
+      maxFrequency = frequencyMap[sector];
+      modeSector = Number(sector);
+    }
+  }
+
+  console.log(`Mode sector of hues: ${modeSector}`);
+  return modeSector;
+}
+
+
 
 main()
